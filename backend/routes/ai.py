@@ -1,6 +1,20 @@
 from fastapi import APIRouter
+from pydantic import BaseModel
+from openai import OpenAI
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 router = APIRouter()
+
+client = OpenAI(
+    base_url="https://integrate.api.nvidia.com/v1",
+    api_key=os.getenv("NVIDIA_API_KEY"),
+)
+
+class AskRequest(BaseModel):
+    question: str
 
 @router.get("/recommendations")
 def get_recommendations():
@@ -34,5 +48,23 @@ def get_recommendations():
     }
 
 @router.post("/ask")
-def ask_ai(question: str):
-    return {"answer": "AI modulu aktivləşdirilməyib."}
+def ask_ai(body: AskRequest):
+    try:
+        completion = client.chat.completions.create(
+            model="nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "Sən EcoAI enerji platformasının AI assistentisən. İstifadəçilərə enerji qənaəti, cihaz idarəetməsi və karbon azaldılması haqqında Azərbaycan dilində kömək edirsən."
+                },
+                {
+                    "role": "user",
+                    "content": body.question
+                }
+            ],
+            temperature=0.7,
+            max_tokens=1024,
+        )
+        return {"answer": completion.choices[0].message.content}
+    except Exception as e:
+        return {"answer": f"Xəta baş verdi: {str(e)}"}
