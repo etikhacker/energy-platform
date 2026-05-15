@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Zap, TrendingDown, Leaf, DollarSign, ArrowDown, ArrowUp } from 'lucide-react';
 
-const API = 'http://127.0.0.1:8000';
+const API = 'https://energy-platform-api.onrender.com';
 
 interface Stats {
   current_kwh: number;

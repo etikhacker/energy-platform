@@ -6,7 +6,7 @@ import EnergyChart from './components/EnergyChart';
 import AIRecommendations from './components/AIRecommendations';
 import ControlPanel from './components/ControlPanel';
 
-const API = 'http://127.0.0.1:8000';
+const API = 'https://energy-platform-api.onrender.com';
 type DeviceState = Record<string, boolean>;
 
 export default function App() {
