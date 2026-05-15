@@ -7,16 +7,16 @@ import EnergyChart from './components/dashboard/EnergyChart';
 import AIAssistant from './components/dashboard/kimi_AIAssistant';
 import DeviceControl from './components/dashboard/kimi_DeviceControl';
 import ForecastPanel from './components/dashboard/ForecastPanel';
+import AnalyticsPage from './components/dashboard/AnalyticsPage';
+import GridPage from './components/dashboard/GridPage';
 
 export default function App() {
-  const [activeNav] = useState('dashboard');
+  const [activeNav, setActiveNav] = useState('dashboard');
 
   return (
     <div className="relative w-screen h-screen overflow-hidden" style={{ background: '#001219' }}>
-      {/* Living Canvas background */}
       <LivingCanvas />
 
-      {/* Subtle content area backdrop */}
       <div
         className="fixed inset-0 pointer-events-none"
         style={{
@@ -25,20 +25,12 @@ export default function App() {
         }}
       />
 
-      {/* UI Layer */}
       <div className="relative flex h-full" style={{ zIndex: 10 }}>
-        {/* Sidebar */}
-        <Sidebar activeItem={activeNav} />
+        <Sidebar activeItem={activeNav} onNavigate={setActiveNav} />
 
-        {/* Content area */}
-        <main
-          className="flex-1 flex flex-col h-full"
-          style={{ marginLeft: 240 }}
-        >
-          {/* Header */}
+        <main className="flex-1 flex flex-col h-full" style={{ marginLeft: 240 }}>
           <Header />
 
-          {/* Dashboard content */}
           <div
             className="flex-1 overflow-y-auto"
             style={{
@@ -47,28 +39,42 @@ export default function App() {
               scrollbarColor: 'rgba(255,255,255,0.1) transparent',
             }}
           >
-            {/* KPI Row */}
-            <DashboardCards />
+            {activeNav === 'dashboard' && (
+              <>
+                <DashboardCards />
+                <div className="grid gap-6 mt-6" style={{ gridTemplateColumns: 'repeat(12, 1fr)' }}>
+                  <EnergyChart />
+                  <AIAssistant />
+                </div>
+                <div className="grid gap-6 mt-6" style={{ gridTemplateColumns: 'repeat(12, 1fr)' }}>
+                  <DeviceControl />
+                  <ForecastPanel />
+                </div>
+              </>
+            )}
 
-            {/* Second Row - Chart + AI */}
-            <div
-              className="grid gap-6 mt-6"
-              style={{ gridTemplateColumns: 'repeat(12, 1fr)' }}
-            >
-              <EnergyChart />
-              <AIAssistant />
-            </div>
+            {activeNav === 'analytics' && <AnalyticsPage />}
 
-            {/* Third Row - Devices + Forecast */}
-            <div
-              className="grid gap-6 mt-6"
-              style={{ gridTemplateColumns: 'repeat(12, 1fr)' }}
-            >
-              <DeviceControl />
-              <ForecastPanel />
-            </div>
+            {activeNav === 'grid' && <GridPage />}
 
-            {/* Bottom padding */}
+            {activeNav === 'devices' && (
+              <div className="flex items-center justify-center h-full">
+                <p className="text-white text-xl">Cihazlar — tezliklə</p>
+              </div>
+            )}
+
+            {activeNav === 'forecast' && (
+              <div className="flex items-center justify-center h-full">
+                <p className="text-white text-xl">Proqnoz — tezliklə</p>
+              </div>
+            )}
+
+            {activeNav === 'settings' && (
+              <div className="flex items-center justify-center h-full">
+                <p className="text-white text-xl">Parametrlər — tezliklə</p>
+              </div>
+            )}
+
             <div style={{ height: 24 }} />
           </div>
         </main>

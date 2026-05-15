@@ -1,145 +1,137 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 195 100% 5%;
-    --foreground: 0 0% 100%;
-    --card: 195 100% 10%;
-    --card-foreground: 0 0% 100%;
-    --popover: 195 100% 5%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 186 87% 33%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 195 100% 10%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 195 60% 16%;
-    --muted-foreground: 0 0% 65%;
-    --accent: 186 87% 33%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 350 84% 57%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 100% / 0.12;
-    --input: 195 60% 16%;
-    --ring: 186 87% 33%;
-    --radius: 12px;
-    --sidebar-background: 195 100% 10%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 186 87% 33%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 195 100% 14%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 0 0% 100% / 0.06;
-    --sidebar-ring: 186 87% 33%;
-  }
-
-  body {
-    @apply bg-ink-deep text-white;
-    font-family: 'Inter', sans-serif;
-    font-weight: 400;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    overflow: hidden;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-  }
+* {
+  box-sizing: border-box;
 }
 
-@layer components {
-  .liquid-glass {
-    background: rgba(0, 22, 30, 0.82);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 12px;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  }
+body {
+  margin: 0;
+  background: #001a20;
+  color: white;
+  font-family: 'Inter', sans-serif;
+}
 
-  .liquid-glass:hover {
-    border-color: rgba(255, 255, 255, 0.18);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  }
+/* ── Liquid Glass Card ── */
+.liquid-glass {
+  background: rgba(0, 20, 25, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
 
-  .liquid-glass-strong {
-    background: rgba(0, 22, 30, 0.92);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  }
+/* ── Toggle ── */
+.toggle-track {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.25s ease;
+  background: rgba(255, 255, 255, 0.15);
+  flex-shrink: 0;
+}
 
-  .font-mono-data {
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 500;
-  }
+.toggle-track.on {
+  background: #2a9d8f;
+}
 
-  .label-muted {
-    @apply text-[11px] uppercase tracking-[0.08em];
-    color: rgba(255, 255, 255, 0.65);
-  }
+.toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: left 0.25s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
 
-  .label-section {
-    @apply text-[12px] uppercase tracking-[0.06em];
-    color: rgba(255, 255, 255, 0.5);
-  }
+.toggle-track.on .toggle-thumb {
+  left: 18px;
+}
 
-  .toggle-track {
-    width: 40px;
-    height: 22px;
-    border-radius: 11px;
-    background: rgba(255, 255, 255, 0.1);
-    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-    position: relative;
-    cursor: pointer;
-  }
+/* ── Typography helpers ── */
+.label-muted {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
 
-  .toggle-track.on {
-    background: #2a9d8f;
-  }
+.font-mono-data {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
 
-  .toggle-thumb {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: white;
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  }
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
 
-  .toggle-track.on .toggle-thumb {
-    transform: translateX(18px);
-  }
+/* ── Sidebar ── */
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+}
 
-  .sidebar-item {
-    @apply h-9 flex items-center px-4 text-[12px] font-medium uppercase tracking-[0.06em] transition-colors duration-200 cursor-pointer;
-    color: rgba(255, 255, 255, 0.35);
-  }
+.sidebar-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.85);
+}
 
-  .sidebar-item:hover {
-    color: #ffffff;
-  }
+.sidebar-item.active {
+  background: rgba(42, 157, 143, 0.15);
+  color: #2a9d8f;
+}
 
-  .sidebar-item.active {
-    color: #ffffff;
-    border-left: 2px solid #0a9396;
-  }
+/* ── Grid layout ── */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 12px;
+  padding: 16px;
+}
 
-  .chart-grid-line {
-    stroke: rgba(255, 255, 255, 0.04);
-  }
+/* ── Stat cards ── */
+.stat-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 16px;
+}
 
-  .recharts-cartesian-grid-horizontal line,
-  .recharts-cartesian-grid-vertical line {
-    stroke: rgba(255, 255, 255, 0.04);
-  }
+/* ── Input / AI chat ── */
+.ai-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: white;
+  font-size: 13px;
+  padding: 8px 12px;
+  width: 100%;
+  outline: none;
+}
 
-  .recharts-text {
-    fill: rgba(255, 255, 255, 0.5);
-  }
+.ai-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.ai-input:focus {
+  border-color: rgba(42, 157, 143, 0.4);
 }

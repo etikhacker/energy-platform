@@ -8,23 +8,23 @@ export default function Header() {
     return () => clearInterval(timer);
   }, []);
 
-  const formattedTime = time.toLocaleTimeString('en-US', {
+  const formattedTime = time.toLocaleTimeString('az-AZ', {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
-    hour12: true,
+    hour12: false,
   });
 
-  const formattedDate = time.toLocaleDateString('en-US', {
+  const formattedDate = time.toLocaleDateString('az-AZ', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
   });
 
   const hour = time.getHours();
-  let greeting = 'Good Evening';
-  if (hour < 12) greeting = 'Good Morning';
-  else if (hour < 18) greeting = 'Good Afternoon';
+  let greeting = 'Xoş axşamlar';
+  if (hour < 12) greeting = 'Sabahınız xeyir';
+  else if (hour < 18) greeting = 'Günortanız xeyir';
 
   return (
     <header
@@ -37,10 +37,10 @@ export default function Header() {
         borderBottom: '1px solid rgba(255,255,255,0.06)',
       }}
     >
-      {/* Page title */}
-      <h2 className="text-[20px] font-medium text-white">Dashboard Overview</h2>
+      {/* Səhifə başlığı */}
+      <h2 className="text-[20px] font-medium text-white">İdarə Paneli</h2>
 
-      {/* Live timestamp */}
+      {/* Canlı vaxt */}
       <div className="flex items-center gap-2">
         <div
           className="w-2 h-2 rounded-full animate-pulse"
@@ -54,7 +54,7 @@ export default function Header() {
         </span>
       </div>
 
-      {/* Greeting */}
+      {/* Salamlama */}
       <p
         className="text-[13px] font-normal"
         style={{ color: 'rgba(255,255,255,0.65)' }}

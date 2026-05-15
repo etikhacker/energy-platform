@@ -26,32 +26,35 @@ const data24h = [
 
 const data1h = data24h.slice(-4);
 const data6h = data24h.slice(-8);
+
 const data7d = [
-  { time: 'Mon', solar: 28.5, consumption: 22.3, battery: 4.2 },
-  { time: 'Tue', solar: 31.2, consumption: 24.1, battery: 5.8 },
-  { time: 'Wed', solar: 26.8, consumption: 23.5, battery: 2.1 },
-  { time: 'Thu', solar: 33.4, consumption: 25.0, battery: 6.5 },
-  { time: 'Fri', solar: 29.1, consumption: 22.8, battery: 4.0 },
-  { time: 'Sat', solar: 35.2, consumption: 26.3, battery: 7.1 },
-  { time: 'Sun', solar: 32.0, consumption: 24.5, battery: 5.5 },
+  { time: 'Baz.e', solar: 28.5, consumption: 22.3, battery: 4.2 },
+  { time: 'Car.a', solar: 31.2, consumption: 24.1, battery: 5.8 },
+  { time: 'Car', solar: 26.8, consumption: 23.5, battery: 2.1 },
+  { time: 'Cum.a', solar: 33.4, consumption: 25.0, battery: 6.5 },
+  { time: 'Cum', solar: 29.1, consumption: 22.8, battery: 4.0 },
+  { time: 'Sen', solar: 35.2, consumption: 26.3, battery: 7.1 },
+  { time: 'Baz', solar: 32.0, consumption: 24.5, battery: 5.5 },
 ];
 
-type TimeRange = '1H' | '6H' | '24H' | '7D';
+type TimeRange = '1S' | '6S' | '24S' | '7G';
 
 const timeRangeData: Record<TimeRange, typeof data24h> = {
-  '1H': data1h,
-  '6H': data6h,
-  '24H': data24h,
-  '7D': data7d,
+  '1S': data1h,
+  '6S': data6h,
+  '24S': data24h,
+  '7G': data7d,
 };
+
+interface TooltipEntry {
+  name: string;
+  value: number;
+  color: string;
+}
 
 interface CustomTooltipProps {
   active?: boolean;
-  payload?: Array<{
-    name: string;
-    value: number;
-    color: string;
-  }>;
+  payload?: TooltipEntry[];
   label?: string;
 }
 
@@ -59,27 +62,22 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   if (!active || !payload) return null;
   return (
     <div
-      className="p-3"
       style={{
+        padding: 12,
         background: 'rgba(0, 42, 53, 0.9)',
         backdropFilter: 'blur(12px)',
         border: '1px solid rgba(255,255,255,0.12)',
         borderRadius: 8,
       }}
     >
-      <p className="text-[11px] mb-2" style={{ color: 'rgba(255,255,255,0.65)' }}>
+      <p style={{ fontSize: 11, marginBottom: 8, color: 'rgba(255,255,255,0.65)' }}>
         {label}
       </p>
       {payload.map((entry, i) => (
-        <div key={i} className="flex items-center gap-2 py-0.5">
-          <div
-            className="w-2 h-2 rounded-full"
-            style={{ background: entry.color }}
-          />
-          <span className="text-[12px]" style={{ color: 'rgba(255,255,255,0.85)' }}>
-            {entry.name}:
-          </span>
-          <span className="font-mono-data text-[12px] text-white">
+        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '2px 0' }}>
+          <div style={{ width: 8, height: 8, borderRadius: '50%', background: entry.color }} />
+          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)' }}>{entry.name}:</span>
+          <span style={{ fontSize: 12, color: '#ffffff', fontFamily: 'JetBrains Mono' }}>
             {entry.value} kW
           </span>
         </div>
@@ -89,24 +87,32 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
 }
 
 export default function EnergyChart() {
-  const [timeRange, setTimeRange] = useState<TimeRange>('24H');
+  const [timeRange, setTimeRange] = useState<TimeRange>('24S');
   const currentData = timeRangeData[timeRange];
 
   return (
     <div className="liquid-glass col-span-7" style={{ padding: 16, height: 360 }}>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-[16px] font-medium text-white">Real-Time Energy Flow</h3>
-        <div className="flex gap-1">
-          {(['1H', '6H', '24H', '7D'] as TimeRange[]).map((range) => (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        <h3 style={{ fontSize: 16, fontWeight: 500, color: '#ffffff', margin: 0 }}>
+          Canlı Enerji Axını
+        </h3>
+        <div style={{ display: 'flex', gap: 4 }}>
+          {(['1S', '6S', '24S', '7G'] as TimeRange[]).map((range) => (
             <button
               key={range}
               onClick={() => setTimeRange(range)}
-              className="px-3 py-1 text-[11px] font-medium uppercase tracking-wider transition-all duration-200"
               style={{
+                padding: '4px 12px',
+                fontSize: 11,
+                fontWeight: 500,
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
                 borderRadius: 6,
+                border: 'none',
+                cursor: 'pointer',
                 background: timeRange === range ? 'rgba(255,255,255,0.12)' : 'transparent',
                 color: timeRange === range ? '#ffffff' : 'rgba(255,255,255,0.5)',
+                transition: 'all 0.2s',
               }}
             >
               {range}
@@ -115,9 +121,8 @@ export default function EnergyChart() {
         </div>
       </div>
 
-      {/* Chart */}
       <div style={{ width: '100%', height: 300 }}>
-        <ResponsiveContainer>
+        <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={currentData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
             <defs>
               <linearGradient id="solarFill" x1="0" y1="0" x2="0" y2="1">
@@ -133,11 +138,7 @@ export default function EnergyChart() {
                 <stop offset="95%" stopColor="#0a9396" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid
-              strokeDasharray="3 3"
-              stroke="rgba(255,255,255,0.04)"
-              vertical={false}
-            />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
             <XAxis
               dataKey="time"
               tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
@@ -154,7 +155,7 @@ export default function EnergyChart() {
             <Area
               type="monotone"
               dataKey="solar"
-              name="Solar Generation"
+              name="Günəş Enerjisi"
               stroke="#e9d8a6"
               strokeWidth={1.5}
               fill="url(#solarFill)"
@@ -164,7 +165,7 @@ export default function EnergyChart() {
             <Area
               type="monotone"
               dataKey="consumption"
-              name="Consumption"
+              name="İstifadə"
               stroke="#e63946"
               strokeWidth={1.5}
               fill="url(#consumptionFill)"
@@ -174,7 +175,7 @@ export default function EnergyChart() {
             <Area
               type="monotone"
               dataKey="battery"
-              name="Battery Flow"
+              name="Batareya Axını"
               stroke="#0a9396"
               strokeWidth={1.5}
               fill="url(#batteryFill)"

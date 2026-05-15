@@ -55,15 +55,15 @@ function SavingsBar({ height, color }: { height: number; color: string }) {
 export default function ForecastPanel() {
   return (
     <div className="liquid-glass col-span-7" style={{ padding: 16, height: 320 }}>
-      {/* Header */}
+      {/* Başlıq */}
       <div className="flex items-center gap-2 mb-4">
         <CloudSun className="w-4 h-4" style={{ color: '#94d2bd' }} />
-        <h3 className="text-[16px] font-medium text-white">24h Energy Forecast</h3>
+        <h3 className="text-[16px] font-medium text-white">24 Saatlıq Enerji Proqnozu</h3>
       </div>
 
-      {/* Three column layout */}
+      {/* Üç sütunlu layout */}
       <div className="flex gap-4" style={{ height: 240 }}>
-        {/* Left - Area chart */}
+        {/* Sol - Qrafik */}
         <div style={{ width: '40%' }}>
           <ResponsiveContainer width="100%" height={160}>
             <AreaChart data={forecastData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
@@ -107,21 +107,21 @@ export default function ForecastPanel() {
           <div className="flex items-center gap-3 mt-2">
             <div className="flex items-center gap-1.5">
               <div className="w-2 h-2 rounded-full" style={{ background: '#e9d8a6' }} />
-              <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Solar</span>
+              <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Günəş</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="w-2 h-2 rounded-full" style={{ background: '#e63946' }} />
-              <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Usage</span>
+              <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>İstifadə</span>
             </div>
           </div>
         </div>
 
-        {/* Center - Tomorrow summary */}
+        {/* Orta - Sabah xülasəsi */}
         <div
           className="flex flex-col justify-center"
           style={{ width: '30%', paddingLeft: 8 }}
         >
-          <span className="label-muted mb-3">Tomorrow</span>
+          <span className="label-muted mb-3">Sabah</span>
           <div className="flex items-center gap-2 mb-2">
             <Sunrise className="w-4 h-4" style={{ color: '#e9d8a6' }} />
             <span className="font-mono-data text-[22px]" style={{ color: '#e9d8a6' }}>
@@ -129,27 +129,27 @@ export default function ForecastPanel() {
             </span>
           </div>
           <p className="text-[11px] mb-1" style={{ color: 'rgba(255,255,255,0.65)' }}>
-            Solar estimate
+            Günəş enerjisi proqnozu
           </p>
           <div className="flex items-center gap-2 mt-3">
-            <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Peak:</span>
+            <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Pik:</span>
             <span className="font-mono-data text-[13px]" style={{ color: '#94d2bd' }}>
               11:00 - 14:00
             </span>
           </div>
         </div>
 
-        {/* Right - Savings */}
+        {/* Sağ - Qənaət */}
         <div
           className="flex flex-col justify-center"
           style={{ width: '30%', paddingLeft: 8 }}
         >
-          <span className="label-muted mb-3">Predicted Savings</span>
+          <span className="label-muted mb-3">Proqnozlaşdırılan Qənaət</span>
           <span className="font-mono-data text-[32px]" style={{ color: '#2a9d8f' }}>
             $3.42
           </span>
           <p className="text-[11px] mt-1" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            vs. grid-only
+            şəbəkəyə nisbətən
           </p>
           <div className="flex items-end mt-4" style={{ height: 60 }}>
             {savingsData.map((val, i) => {
@@ -160,8 +160,8 @@ export default function ForecastPanel() {
             })}
           </div>
           <div className="flex justify-between mt-1">
-            <span className="text-[9px]" style={{ color: 'rgba(255,255,255,0.35)' }}>Mon</span>
-            <span className="text-[9px]" style={{ color: 'rgba(255,255,255,0.35)' }}>Sun</span>
+            <span className="text-[9px]" style={{ color: 'rgba(255,255,255,0.35)' }}>Baz</span>
+            <span className="text-[9px]" style={{ color: 'rgba(255,255,255,0.35)' }}>Baz</span>
           </div>
         </div>
       </div>

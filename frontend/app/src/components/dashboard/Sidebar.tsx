@@ -14,12 +14,12 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-  { id: 'grid', label: 'Grid', icon: UtilityPole },
-  { id: 'devices', label: 'Devices', icon: Cpu },
-  { id: 'forecast', label: 'Forecast', icon: CloudSun },
-  { id: 'settings', label: 'Settings', icon: Settings },
+  { id: 'dashboard', label: 'İdarə Paneli', icon: LayoutDashboard },
+  { id: 'analytics', label: 'Analitika',    icon: BarChart3 },
+  { id: 'grid',      label: 'Şəbəkə',       icon: UtilityPole },
+  { id: 'devices',   label: 'Cihazlar',     icon: Cpu },
+  { id: 'forecast',  label: 'Proqnoz',      icon: CloudSun },
+  { id: 'settings',  label: 'Parametrlər',  icon: Settings },
 ];
 
 export default function Sidebar({ activeItem, onNavigate }: SidebarProps) {
@@ -35,7 +35,7 @@ export default function Sidebar({ activeItem, onNavigate }: SidebarProps) {
         borderRight: '1px solid rgba(255,255,255,0.06)',
       }}
     >
-      {/* Brand */}
+      {/* Loqo */}
       <div className="px-5 pt-6 pb-4">
         <div className="flex items-center gap-2">
           <Zap className="w-6 h-6 text-ink-bright" />
@@ -47,16 +47,16 @@ export default function Sidebar({ activeItem, onNavigate }: SidebarProps) {
               className="text-[12px] font-mono-data mt-1"
               style={{ color: 'rgba(255,255,255,0.5)', letterSpacing: '0.12em' }}
             >
-              ENERGY
+              ENERJİ
             </p>
           </div>
         </div>
       </div>
 
-      {/* Separator */}
+      {/* Ayırıcı */}
       <div className="mx-4" style={{ height: 1, background: 'rgba(255,255,255,0.06)' }} />
 
-      {/* Navigation */}
+      {/* Naviqasiya */}
       <nav className="flex-1 py-4 flex flex-col gap-0.5">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -81,7 +81,7 @@ export default function Sidebar({ activeItem, onNavigate }: SidebarProps) {
         })}
       </nav>
 
-      {/* User */}
+      {/* İstifadəçi */}
       <div className="px-4 py-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="flex items-center gap-3">
           <div
