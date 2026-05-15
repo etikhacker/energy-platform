@@ -38,12 +38,36 @@ export default function App() {
       <main className="flex-1 overflow-y-auto pb-20 lg:pb-0">
         <div className="px-4 sm:px-6 py-6 max-w-screen-2xl mx-auto">
           <Header />
-          <DashboardCards />
-          <EnergyChart />
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-0">
-            <AIRecommendations />
-            <ControlPanel devices={devices} toggleDevice={toggleDevice} />
-          </div>
+
+          {activeNav === 'dashboard' && (
+            <>
+              <DashboardCards />
+              <EnergyChart />
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-0">
+                <AIRecommendations />
+                <ControlPanel devices={devices} toggleDevice={toggleDevice} />
+              </div>
+            </>
+          )}
+
+          {activeNav === 'analytics' && (
+            <div className="flex items-center justify-center h-96 text-slate-400 text-lg">
+              Analitika səhifəsi tezliklə...
+            </div>
+          )}
+
+          {activeNav === 'devices' && (
+            <div className="flex items-center justify-center h-96 text-slate-400 text-lg">
+              Cihazlar səhifəsi tezliklə...
+            </div>
+          )}
+
+          {activeNav === 'settings' && (
+            <div className="flex items-center justify-center h-96 text-slate-400 text-lg">
+              Parametrlər səhifəsi tezliklə...
+            </div>
+          )}
+
           <div className="h-6" />
         </div>
       </main>

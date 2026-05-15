@@ -1,14 +1,16 @@
 from fastapi import APIRouter
-import anthropic
-import os
-import json
-from dotenv import load_dotenv
-
-load_dotenv()
 
 router = APIRouter()
 client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
+
+client = OpenAI(
+    base_url="https://integrate.api.nvidia.com/v1",
+    api_key=os.getenv("NVIDIA_API_KEY"),
+)
+
+class AskRequest(BaseModel):
+    question: str
 
 @router.get("/recommendations")
 def get_recommendations():
@@ -75,12 +77,4 @@ Priority yalnız: "Yüksək", "Orta", "Aşağı"
 
 @router.post("/ask")
 def ask_ai(question: str):
-    message = client.messages.create(
-        model="claude-sonnet-4-20250514",
-        max_tokens=500,
-        messages=[{
-            "role": "user",
-            "content": f"Enerji qənaəti haqqında sual: {question}. Azərbaycanca qısa cavab ver."
-        }]
-    )
-    return {"answer": message.content[0].text}
+    return {"answer": "AI modulu aktivləşdirilməyib."}
