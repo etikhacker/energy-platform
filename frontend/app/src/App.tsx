@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 import LivingCanvas from './components/LivingCanvas';
 import Sidebar from './components/dashboard/Sidebar';
@@ -10,6 +11,7 @@ import DeviceControl from './components/dashboard/kimi_DeviceControl';
 import ForecastPanel from './components/dashboard/ForecastPanel';
 import AnalyticsPage from './components/dashboard/AnalyticsPage';
 import GridPage from './components/dashboard/GridPage';
+import LandingPage from './pages/LandingPage';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -45,13 +47,9 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
-          options: {
-            data: { full_name: fullName.trim() }
-          }
+          options: { data: { full_name: fullName.trim() } }
         });
         if (error) throw error;
-
-        // Profiles cədvəlinə əlavə et
         if (data.user) {
           await supabase.from('profiles').upsert({
             id: data.user.id,
@@ -80,7 +78,7 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(42, 157, 143, 0.2)', border: '1px solid rgba(42, 157, 143, 0.3)' }}>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(42,157,143,0.2)', border: '1px solid rgba(42,157,143,0.3)' }}>
               <span style={{ color: '#2a9d8f', fontSize: 18 }}>⚡</span>
             </div>
             <span className="text-white text-xl font-semibold">EcoAI</span>
@@ -94,51 +92,38 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
             {isRegister ? 'Qeydiyyat' : 'Daxil ol'}
           </h2>
 
-          {/* Ad Soyad - yalnız qeydiyyatda */}
           {isRegister && (
             <div className="mb-4">
               <label className="block text-xs mb-1.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Ad Soyad</label>
               <input
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                type="text" value={fullName} onChange={(e) => setFullName(e.target.value)}
                 placeholder="Ömər Babayev"
-                className="w-full px-3 py-2.5 text-sm outline-none"
-                style={inputStyle}
+                className="w-full px-3 py-2.5 text-sm outline-none" style={inputStyle}
                 onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
               />
             </div>
           )}
 
-          {/* Email */}
           <div className="mb-4">
             <label className="block text-xs mb-1.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Email</label>
             <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="email" value={email} onChange={(e) => setEmail(e.target.value)}
               placeholder="email@example.com"
-              className="w-full px-3 py-2.5 text-sm outline-none"
-              style={inputStyle}
+              className="w-full px-3 py-2.5 text-sm outline-none" style={inputStyle}
               onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
             />
           </div>
 
-          {/* Password */}
           <div className="mb-5">
             <label className="block text-xs mb-1.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Şifrə</label>
             <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              type="password" value={password} onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full px-3 py-2.5 text-sm outline-none"
-              style={inputStyle}
+              className="w-full px-3 py-2.5 text-sm outline-none" style={inputStyle}
               onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
             />
           </div>
 
-          {/* Error */}
           {error && (
             <div className="mb-4 px-3 py-2 text-xs" style={{
               background: error.includes('göndərildi') ? 'rgba(42,157,143,0.1)' : 'rgba(230,57,70,0.1)',
@@ -150,28 +135,23 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
             </div>
           )}
 
-          {/* Button */}
           <button
-            onClick={handleSubmit}
-            disabled={loading}
+            onClick={handleSubmit} disabled={loading}
             className="w-full py-2.5 text-sm font-medium transition-all"
             style={{
               background: loading ? 'rgba(42,157,143,0.3)' : 'rgba(42,157,143,0.8)',
               border: '1px solid rgba(42,157,143,0.4)',
-              borderRadius: 8,
-              color: '#ffffff',
+              borderRadius: 8, color: '#ffffff',
               cursor: loading ? 'not-allowed' : 'pointer',
             }}
           >
             {loading ? 'Gözləyin...' : isRegister ? 'Qeydiyyat' : 'Daxil ol'}
           </button>
 
-          {/* Switch */}
           <div className="mt-4 text-center">
             <button
               onClick={() => { setIsRegister(!isRegister); setError(''); setFullName(''); }}
-              className="text-xs"
-              style={{ color: 'rgba(255,255,255,0.4)' }}
+              className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}
             >
               {isRegister ? 'Artıq hesabınız var? Daxil olun' : 'Hesabınız yoxdur? Qeydiyyat'}
             </button>
@@ -182,21 +162,20 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
   );
 }
 
-export default function App() {
+function DashboardApp() {
   const [activeNav, setActiveNav] = useState('dashboard');
   const [session, setSession] = useState<Session>(null);
   const [loading, setLoading] = useState(true);
   const [fullName, setFullName] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
       setSession(data.session);
       if (data.session?.user?.id) {
         const { data: profile } = await supabase
-          .from('profiles')
-          .select('full_name')
-          .eq('id', data.session.user.id)
-          .single();
+          .from('profiles').select('full_name')
+          .eq('id', data.session.user.id).single();
         if (profile?.full_name) setFullName(profile.full_name);
       }
       setLoading(false);
@@ -206,10 +185,8 @@ export default function App() {
       setSession(session);
       if (session?.user?.id) {
         const { data: profile } = await supabase
-          .from('profiles')
-          .select('full_name')
-          .eq('id', session.user.id)
-          .single();
+          .from('profiles').select('full_name')
+          .eq('id', session.user.id).single();
         if (profile?.full_name) setFullName(profile.full_name);
       }
     });
@@ -240,7 +217,7 @@ export default function App() {
         <Sidebar
           activeItem={activeNav}
           onNavigate={setActiveNav}
-          onLogout={() => supabase.auth.signOut()}
+          onLogout={() => { supabase.auth.signOut(); navigate('/'); }}
           userEmail={session.user?.email}
           userName={displayName}
         />
@@ -284,5 +261,14 @@ export default function App() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/dashboard" element={<DashboardApp />} />
+    </Routes>
   );
 }
