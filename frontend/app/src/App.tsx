@@ -11,13 +11,10 @@ import DeviceControl from './components/dashboard/kimi_DeviceControl';
 import ForecastPanel from './components/dashboard/ForecastPanel';
 import AnalyticsPage from './components/dashboard/AnalyticsPage';
 import GridPage from './components/dashboard/GridPage';
-<<<<<<< HEAD
 import DevicesPage from './components/dashboard/DevicesPage';
 import ForecastFullPage from './components/dashboard/ForecastFullPage';
 import SettingsPage from './components/dashboard/SettingsPage';
-=======
 import LandingPage from './pages/LandingPage';
->>>>>>> 642898251cf1463d5a894012503820884163b12c
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -245,15 +242,11 @@ function DashboardApp() {
                 </div>
               </>
             )}
-<<<<<<< HEAD
-
             {activeNav === 'analytics'  && <AnalyticsPage />}
             {activeNav === 'grid'       && <GridPage />}
             {activeNav === 'devices'    && <DevicesPage />}
             {activeNav === 'forecast'   && <ForecastFullPage />}
             {activeNav === 'settings'   && <SettingsPage />}
-
-=======
             {activeNav === 'analytics' && <AnalyticsPage />}
             {activeNav === 'grid' && <GridPage />}
             {activeNav === 'devices' && (
@@ -271,7 +264,6 @@ function DashboardApp() {
                 <p className="text-white text-xl">Parametrlər — tezliklə</p>
               </div>
             )}
->>>>>>> 642898251cf1463d5a894012503820884163b12c
             <div style={{ height: 24 }} />
           </div>
         </main>
