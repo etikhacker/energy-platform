@@ -1,8 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Brain, TrendingDown, Sun, Bot, User, Send } from 'lucide-react';
 
-const API = 'https://energy-platform-api.onrender.com';
-
 interface Message {
   id: number;
   sender: 'ai' | 'user';
@@ -61,10 +59,11 @@ export default function AIAssistant() {
   const handleSend = async () => {
     if (!input.trim()) return;
 
+    const question = input.trim();
     const userMsg: Message = {
-      id: messages.length + 1,
+      id: Date.now(),
       sender: 'user',
-      text: input.trim(),
+      text: question,
       timestamp: new Date(),
     };
 
@@ -73,25 +72,38 @@ export default function AIAssistant() {
     setIsTyping(true);
 
     try {
-      const res = await fetch(`${API}/api/ai/ask?question=${encodeURIComponent(input.trim())}`, {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': import.meta.env.VITE_ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 300,
+          system: 'Sən enerji qənaət ekspertisən. Qısa, praktik və Azərbaycanca cavab ver. Maksimum 2-3 cümLə.',
+          messages: [{ role: 'user', content: question }],
+        }),
       });
-      const data = await res.json();
-      const aiMsg: Message = {
-        id: messages.length + 2,
+
+      const data = await response.json();
+      const answer = data.content?.[0]?.text || 'Cavab alınmadı.';
+
+      setMessages((prev) => [...prev, {
+        id: Date.now() + 1,
         sender: 'ai',
-        text: data.answer,
+        text: answer,
         timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, aiMsg]);
+      }]);
     } catch {
-      const aiMsg: Message = {
-        id: messages.length + 2,
+      setMessages((prev) => [...prev, {
+        id: Date.now() + 1,
         sender: 'ai',
-        text: 'Bağlantı xətası. Bir az sonra yenidən cəhd edin.',
+        text: 'Xəta baş verdi. Yenidən cəhd edin.',
         timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, aiMsg]);
+      }]);
     } finally {
       setIsTyping(false);
     }

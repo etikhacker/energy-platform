@@ -14,6 +14,7 @@ interface SidebarProps {
   onNavigate?: (item: string) => void;
   onLogout?: () => void;
   userEmail?: string;
+  userName?: string;
 }
 
 const navItems = [
@@ -25,8 +26,9 @@ const navItems = [
   { id: 'settings',  label: 'Parametrlər',  icon: Settings },
 ];
 
-export default function Sidebar({ activeItem, onNavigate, onLogout, userEmail }: SidebarProps) {
-  const initials = userEmail ? userEmail[0].toUpperCase() : 'U';
+export default function Sidebar({ activeItem, onNavigate, onLogout, userEmail, userName }: SidebarProps) {
+  const displayName = userName || userEmail?.split('@')[0] || 'İstifadəçi';
+  const initials = displayName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
 
   return (
     <aside
@@ -43,15 +45,12 @@ export default function Sidebar({ activeItem, onNavigate, onLogout, userEmail }:
       {/* Logo */}
       <div className="px-5 pt-6 pb-4">
         <div className="flex items-center gap-2">
-          <Zap className="w-6 h-6 text-ink-bright" />
+          <Zap className="w-6 h-6" style={{ color: '#0a9396' }} />
           <div>
             <h1 className="text-[28px] font-semibold text-white leading-none tracking-tight">
               EcoAI
             </h1>
-            <p
-              className="text-[12px] font-mono-data mt-1"
-              style={{ color: 'rgba(255,255,255,0.5)', letterSpacing: '0.12em' }}
-            >
+            <p className="text-[12px] font-mono-data mt-1" style={{ color: 'rgba(255,255,255,0.5)', letterSpacing: '0.12em' }}>
               ENERJİ
             </p>
           </div>
@@ -75,19 +74,17 @@ export default function Sidebar({ activeItem, onNavigate, onLogout, userEmail }:
                 color: isActive ? '#ffffff' : undefined,
               }}
             >
-              <Icon
-                className="w-[18px] h-[18px]"
-                style={{ color: isActive ? '#0a9396' : 'rgba(255,255,255,0.35)' }}
-              />
+              <Icon className="w-[18px] h-[18px]" style={{ color: isActive ? '#0a9396' : 'rgba(255,255,255,0.35)' }} />
               <span>{item.label}</span>
             </button>
           );
         })}
       </nav>
 
-      {/* User + Logout */}
+      {/* User */}
       <div className="px-4 py-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="flex items-center gap-3">
+          {/* Avatar */}
           <div
             className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0"
             style={{
@@ -98,18 +95,20 @@ export default function Sidebar({ activeItem, onNavigate, onLogout, userEmail }:
           >
             {initials}
           </div>
+
+          {/* Ad və email */}
           <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-medium text-white truncate">
-              {userEmail || 'İstifadəçi'}
-            </p>
-            <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.35)' }}>
-              Admin
+            <p className="text-[13px] font-medium text-white truncate">{displayName}</p>
+            <p className="text-[11px] truncate" style={{ color: 'rgba(255,255,255,0.35)' }}>
+              {userEmail || 'Admin'}
             </p>
           </div>
+
+          {/* Logout */}
           {onLogout && (
             <button
               onClick={onLogout}
-              className="w-7 h-7 flex items-center justify-center rounded-lg transition-colors"
+              className="w-7 h-7 flex items-center justify-center rounded-lg transition-colors flex-shrink-0"
               style={{ color: 'rgba(255,255,255,0.35)' }}
               onMouseEnter={(e) => (e.currentTarget.style.color = '#e63946')}
               onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.35)')}

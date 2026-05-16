@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 
 interface HeaderProps {
   userEmail?: string;
+  userName?: string;
 }
 
-export default function Header({ userEmail }: HeaderProps) {
+export default function Header({ userEmail, userName }: HeaderProps) {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -30,7 +31,8 @@ export default function Header({ userEmail }: HeaderProps) {
   if (hour < 12) greeting = 'Sabahınız xeyir';
   else if (hour < 18) greeting = 'Günortanız xeyir';
 
-  const displayName = userEmail ? userEmail.split('@')[0] : 'İstifadəçi';
+  const displayName = userName || userEmail?.split('@')[0] || 'İstifadəçi';
+  const firstName = displayName.split(' ')[0];
 
   return (
     <header
@@ -53,7 +55,7 @@ export default function Header({ userEmail }: HeaderProps) {
       </div>
 
       <p className="text-[13px] font-normal" style={{ color: 'rgba(255,255,255,0.65)' }}>
-        {greeting}, {displayName}
+        {greeting}, <span style={{ color: '#94d2bd', fontWeight: 500 }}>{firstName}</span>
       </p>
     </header>
   );
