@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 
-export default function Header() {
+interface HeaderProps {
+  userEmail?: string;
+  userName?: string;
+}
+
+export default function Header({ userEmail, userName }: HeaderProps) {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -26,6 +31,9 @@ export default function Header() {
   if (hour < 12) greeting = 'Sabahınız xeyir';
   else if (hour < 18) greeting = 'Günortanız xeyir';
 
+  const displayName = userName || userEmail?.split('@')[0] || 'İstifadəçi';
+  const firstName = displayName.split(' ')[0];
+
   return (
     <header
       className="flex items-center justify-between px-6"
@@ -37,29 +45,17 @@ export default function Header() {
         borderBottom: '1px solid rgba(255,255,255,0.06)',
       }}
     >
-      {/* Səhifə başlığı */}
       <h2 className="text-[20px] font-medium text-white">İdarə Paneli</h2>
 
-      {/* Canlı vaxt */}
       <div className="flex items-center gap-2">
-        <div
-          className="w-2 h-2 rounded-full animate-pulse"
-          style={{ background: '#2a9d8f' }}
-        />
-        <span
-          className="font-mono-data text-[13px]"
-          style={{ color: '#94d2bd' }}
-        >
+        <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: '#2a9d8f' }} />
+        <span className="font-mono-data text-[13px]" style={{ color: '#94d2bd' }}>
           {formattedTime} — {formattedDate}
         </span>
       </div>
 
-      {/* Salamlama */}
-      <p
-        className="text-[13px] font-normal"
-        style={{ color: 'rgba(255,255,255,0.65)' }}
-      >
-        {greeting}, Alex
+      <p className="text-[13px] font-normal" style={{ color: 'rgba(255,255,255,0.65)' }}>
+        {greeting}, <span style={{ color: '#94d2bd', fontWeight: 500 }}>{firstName}</span>
       </p>
     </header>
   );
