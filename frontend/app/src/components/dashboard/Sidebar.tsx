@@ -6,11 +6,14 @@ import {
   CloudSun,
   Settings,
   Zap,
+  LogOut,
 } from 'lucide-react';
 
 interface SidebarProps {
   activeItem: string;
   onNavigate?: (item: string) => void;
+  onLogout?: () => void;
+  userEmail?: string;
 }
 
 const navItems = [
@@ -22,7 +25,9 @@ const navItems = [
   { id: 'settings',  label: 'Parametrlər',  icon: Settings },
 ];
 
-export default function Sidebar({ activeItem, onNavigate }: SidebarProps) {
+export default function Sidebar({ activeItem, onNavigate, onLogout, userEmail }: SidebarProps) {
+  const initials = userEmail ? userEmail[0].toUpperCase() : 'U';
+
   return (
     <aside
       className="fixed left-0 top-0 h-full flex flex-col"
@@ -35,13 +40,13 @@ export default function Sidebar({ activeItem, onNavigate }: SidebarProps) {
         borderRight: '1px solid rgba(255,255,255,0.06)',
       }}
     >
-      {/* Loqo */}
+      {/* Logo */}
       <div className="px-5 pt-6 pb-4">
         <div className="flex items-center gap-2">
           <Zap className="w-6 h-6 text-ink-bright" />
           <div>
             <h1 className="text-[28px] font-semibold text-white leading-none tracking-tight">
-              Aether
+              EcoAI
             </h1>
             <p
               className="text-[12px] font-mono-data mt-1"
@@ -53,10 +58,9 @@ export default function Sidebar({ activeItem, onNavigate }: SidebarProps) {
         </div>
       </div>
 
-      {/* Ayırıcı */}
       <div className="mx-4" style={{ height: 1, background: 'rgba(255,255,255,0.06)' }} />
 
-      {/* Naviqasiya */}
+      {/* Nav */}
       <nav className="flex-1 py-4 flex flex-col gap-0.5">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -81,25 +85,39 @@ export default function Sidebar({ activeItem, onNavigate }: SidebarProps) {
         })}
       </nav>
 
-      {/* İstifadəçi */}
+      {/* User + Logout */}
       <div className="px-4 py-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="flex items-center gap-3">
           <div
-            className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0"
             style={{
               background: 'rgba(10, 147, 150, 0.2)',
               border: '1px solid rgba(10, 147, 150, 0.3)',
               color: '#94d2bd',
             }}
           >
-            A
+            {initials}
           </div>
-          <div>
-            <p className="text-[13px] font-medium text-white">Alex Rivera</p>
+          <div className="flex-1 min-w-0">
+            <p className="text-[13px] font-medium text-white truncate">
+              {userEmail || 'İstifadəçi'}
+            </p>
             <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.35)' }}>
-              alex@aether.io
+              Admin
             </p>
           </div>
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="w-7 h-7 flex items-center justify-center rounded-lg transition-colors"
+              style={{ color: 'rgba(255,255,255,0.35)' }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = '#e63946')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.35)')}
+              title="Çıxış"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
     </aside>
