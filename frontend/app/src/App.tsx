@@ -9,6 +9,9 @@ import DeviceControl from './components/dashboard/kimi_DeviceControl';
 import ForecastPanel from './components/dashboard/ForecastPanel';
 import AnalyticsPage from './components/dashboard/AnalyticsPage';
 import GridPage from './components/dashboard/GridPage';
+import DevicesPage from './components/dashboard/DevicesPage';
+import ForecastFullPage from './components/dashboard/ForecastFullPage';
+import SettingsPage from './components/dashboard/SettingsPage';
 
 export default function App() {
   const [activeNav, setActiveNav] = useState('dashboard');
@@ -53,27 +56,11 @@ export default function App() {
               </>
             )}
 
-            {activeNav === 'analytics' && <AnalyticsPage />}
-
-            {activeNav === 'grid' && <GridPage />}
-
-            {activeNav === 'devices' && (
-              <div className="flex items-center justify-center h-full">
-                <p className="text-white text-xl">Cihazlar — tezliklə</p>
-              </div>
-            )}
-
-            {activeNav === 'forecast' && (
-              <div className="flex items-center justify-center h-full">
-                <p className="text-white text-xl">Proqnoz — tezliklə</p>
-              </div>
-            )}
-
-            {activeNav === 'settings' && (
-              <div className="flex items-center justify-center h-full">
-                <p className="text-white text-xl">Parametrlər — tezliklə</p>
-              </div>
-            )}
+            {activeNav === 'analytics'  && <AnalyticsPage />}
+            {activeNav === 'grid'       && <GridPage />}
+            {activeNav === 'devices'    && <DevicesPage />}
+            {activeNav === 'forecast'   && <ForecastFullPage />}
+            {activeNav === 'settings'   && <SettingsPage />}
 
             <div style={{ height: 24 }} />
           </div>
