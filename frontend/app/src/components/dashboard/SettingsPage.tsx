@@ -1,8 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createClient } from '@supabase/supabase-js';
 import {
   User, Bell, Shield, Zap,
-  Globe, ChevronRight, Check, Palette,
+  Globe, ChevronRight, Check, Palette, Save,
 } from 'lucide-react';
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 const bolmeler = [
   { id: 'profil',     icon: User,    ad: 'Profil' },
@@ -34,8 +40,7 @@ function SectionRow({ label, desc, children }: { label: string; desc?: string; c
   return (
     <div style={{
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: '14px 0',
-      borderBottom: '1px solid rgba(255,255,255,0.05)',
+      padding: '14px 0', borderBottom: '1px solid rgba(255,255,255,0.05)',
     }}>
       <div>
         <p style={{ fontSize: 13, color: '#fff', margin: 0 }}>{label}</p>
@@ -46,12 +51,31 @@ function SectionRow({ label, desc, children }: { label: string; desc?: string; c
   );
 }
 
+const inputStyle: React.CSSProperties = {
+  width: '100%', padding: '10px 14px', fontSize: 13,
+  background: 'rgba(255,255,255,0.06)',
+  border: '1px solid rgba(255,255,255,0.1)',
+  borderRadius: 8, color: '#fff', outline: 'none',
+  boxSizing: 'border-box',
+};
+
 export default function SettingsPage() {
   const [aktivBolme, setAktivBolme] = useState('profil');
   const [rengSxemi, setRengSxemi] = useState('okean');
   const [dil, setDil] = useState('az');
   const [valyuta, setValyuta] = useState('USD');
+  const [saveMsg, setSaveMsg] = useState('');
+  const [saving, setSaving] = useState(false);
 
+  // Profil state
+  const [profil, setProfil] = useState({
+    full_name: '',
+    email: '',
+    phone: '',
+    address: 'Bakı, Azərbaycan',
+  });
+
+  // Bildiriş state
   const [bildirish, setBildirish] = useState({
     emailBildirish: true,
     pikXeberdar: true,
@@ -72,16 +96,65 @@ export default function SettingsPage() {
     kompaktGoruntuq: false,
   });
 
-  const toggleBildirish = (key: keyof typeof bildirish) => {
-    setBildirish(prev => ({ ...prev, [key]: !prev[key] }));
+  // Supabase-dən profili yüklə
+  useEffect(() => {
+    const loadProfile = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      setProfil(prev => ({ ...prev, email: user.email || '' }));
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (profile) {
+        setProfil({
+          full_name: profile.full_name || '',
+          email: user.email || '',
+          phone: profile.phone || '',
+          address: profile.address || 'Bakı, Azərbaycan',
+        });
+      }
+    };
+    loadProfile();
+  }, []);
+
+  const saveProfil = async () => {
+    setSaving(true);
+    setSaveMsg('');
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('İstifadəçi tapılmadı');
+
+      const { error } = await supabase.from('profiles').upsert({
+        id: user.id,
+        full_name: profil.full_name,
+        phone: profil.phone,
+        address: profil.address,
+        updated_at: new Date().toISOString(),
+      });
+
+      if (error) throw error;
+      setSaveMsg('✓ Yadda saxlandı');
+    } catch (err) {
+      setSaveMsg('✗ Xəta baş verdi');
+    } finally {
+      setSaving(false);
+      setTimeout(() => setSaveMsg(''), 3000);
+    }
   };
 
-  const toggleEnerji = (key: keyof typeof enerji) => {
-    setEnerji(prev => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  const toggleGorunus = (key: keyof typeof gorunus) => {
-    setGorunus(prev => ({ ...prev, [key]: !prev[key] }));
+  const savePassword = async (current: string, newPass: string, confirm: string) => {
+    if (newPass !== confirm) { setSaveMsg('✗ Şifrələr uyğun deyil'); return; }
+    if (newPass.length < 6) { setSaveMsg('✗ Şifrə ən az 6 simvol olmalıdır'); return; }
+    setSaving(true);
+    const { error } = await supabase.auth.updateUser({ password: newPass });
+    setSaving(false);
+    setSaveMsg(error ? '✗ Xəta baş verdi' : '✓ Şifrə yeniləndi');
+    setTimeout(() => setSaveMsg(''), 3000);
   };
 
   const renderMezmun = () => {
@@ -92,42 +165,39 @@ export default function SettingsPage() {
           <div>
             <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: '0 0 20px 0' }}>Profil Məlumatları</h3>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24, padding: 16, background: 'rgba(255,255,255,0.04)', borderRadius: 12 }}>
-              <div style={{
-                width: 56, height: 56, borderRadius: '50%',
-                background: 'rgba(42,157,143,0.2)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 22, color: '#2a9d8f', fontWeight: 600,
-              }}>A</div>
+              <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(42,157,143,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, color: '#2a9d8f', fontWeight: 600 }}>
+                {profil.full_name ? profil.full_name[0].toUpperCase() : profil.email[0]?.toUpperCase() || 'U'}
+              </div>
               <div>
-                <p style={{ fontSize: 15, fontWeight: 600, color: '#fff', margin: 0 }}>Alex Rivera</p>
-                <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', margin: '2px 0 0 0' }}>alex@aether.io</p>
+                <p style={{ fontSize: 15, fontWeight: 600, color: '#fff', margin: 0 }}>{profil.full_name || 'İstifadəçi'}</p>
+                <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', margin: '2px 0 0 0' }}>{profil.email}</p>
               </div>
             </div>
-            {[
-              { label: 'Ad Soyad', value: 'Alex Rivera' },
-              { label: 'E-poçt',   value: 'alex@aether.io' },
-              { label: 'Telefon',  value: '+994 50 123 45 67' },
-              { label: 'Ünvan',    value: 'Bakı, Azərbaycan' },
-            ].map((f, i) => (
-              <div key={i} style={{ marginBottom: 14 }}>
-                <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 6 }}>{f.label}</label>
-                <input
-                  defaultValue={f.value}
-                  style={{
-                    width: '100%', padding: '10px 14px', fontSize: 13,
-                    background: 'rgba(255,255,255,0.06)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    borderRadius: 8, color: '#fff', outline: 'none',
-                    boxSizing: 'border-box',
-                  }}
-                />
-              </div>
-            ))}
-            <button style={{
-              marginTop: 8, padding: '10px 24px', fontSize: 13, fontWeight: 500,
-              background: '#2a9d8f', color: '#fff', border: 'none',
-              borderRadius: 8, cursor: 'pointer',
-            }}>Yadda Saxla</button>
+
+            <div style={{ marginBottom: 14 }}>
+              <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 6 }}>Ad Soyad</label>
+              <input value={profil.full_name} onChange={e => setProfil(p => ({ ...p, full_name: e.target.value }))} style={inputStyle} />
+            </div>
+            <div style={{ marginBottom: 14 }}>
+              <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 6 }}>E-poçt</label>
+              <input value={profil.email} disabled style={{ ...inputStyle, opacity: 0.5, cursor: 'not-allowed' }} />
+            </div>
+            <div style={{ marginBottom: 14 }}>
+              <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 6 }}>Telefon</label>
+              <input value={profil.phone} onChange={e => setProfil(p => ({ ...p, phone: e.target.value }))} placeholder="+994 50 000 00 00" style={inputStyle} />
+            </div>
+            <div style={{ marginBottom: 14 }}>
+              <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 6 }}>Ünvan</label>
+              <input value={profil.address} onChange={e => setProfil(p => ({ ...p, address: e.target.value }))} style={inputStyle} />
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 8 }}>
+              <button onClick={saveProfil} disabled={saving} style={{ padding: '10px 24px', fontSize: 13, fontWeight: 500, background: saving ? 'rgba(42,157,143,0.4)' : '#2a9d8f', color: '#fff', border: 'none', borderRadius: 8, cursor: saving ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Save style={{ width: 14, height: 14 }} />
+                {saving ? 'Saxlanılır...' : 'Yadda Saxla'}
+              </button>
+              {saveMsg && <span style={{ fontSize: 13, color: saveMsg.includes('✓') ? '#2a9d8f' : '#e63946' }}>{saveMsg}</span>}
+            </div>
           </div>
         );
 
@@ -136,19 +206,19 @@ export default function SettingsPage() {
           <div>
             <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: '0 0 20px 0' }}>Bildiriş Parametrləri</h3>
             <SectionRow label="E-poçt bildirişləri" desc="Vacib hadisələr üçün e-poçt al">
-              <Toggle aktiv={bildirish.emailBildirish} onChange={() => toggleBildirish('emailBildirish')} />
+              <Toggle aktiv={bildirish.emailBildirish} onChange={() => setBildirish(p => ({ ...p, emailBildirish: !p.emailBildirish }))} />
             </SectionRow>
             <SectionRow label="Pik saat xəbərdarlığı" desc="Yüksək tarif saatlarından əvvəl xəbərdar et">
-              <Toggle aktiv={bildirish.pikXeberdar} onChange={() => toggleBildirish('pikXeberdar')} />
+              <Toggle aktiv={bildirish.pikXeberdar} onChange={() => setBildirish(p => ({ ...p, pikXeberdar: !p.pikXeberdar }))} />
             </SectionRow>
             <SectionRow label="Batareya xəbərdarlığı" desc="Batareya 20%-dən aşağı düşdükdə">
-              <Toggle aktiv={bildirish.batareyaXeberdar} onChange={() => toggleBildirish('batareyaXeberdar')} />
+              <Toggle aktiv={bildirish.batareyaXeberdar} onChange={() => setBildirish(p => ({ ...p, batareyaXeberdar: !p.batareyaXeberdar }))} />
             </SectionRow>
             <SectionRow label="Həftəlik hesabat" desc="Həftəlik enerji statistikası">
-              <Toggle aktiv={bildirish.heftəlikHesabat} onChange={() => toggleBildirish('heftəlikHesabat')} />
+              <Toggle aktiv={bildirish.heftəlikHesabat} onChange={() => setBildirish(p => ({ ...p, heftəlikHesabat: !p.heftəlikHesabat }))} />
             </SectionRow>
             <SectionRow label="Sistem xəbərdarlıqları" desc="Şəbəkə kəsilməsi və texniki xətalar">
-              <Toggle aktiv={bildirish.sistemXeberdar} onChange={() => toggleBildirish('sistemXeberdar')} />
+              <Toggle aktiv={bildirish.sistemXeberdar} onChange={() => setBildirish(p => ({ ...p, sistemXeberdar: !p.sistemXeberdar }))} />
             </SectionRow>
           </div>
         );
@@ -158,29 +228,17 @@ export default function SettingsPage() {
           <div>
             <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: '0 0 20px 0' }}>Enerji İdarəetməsi</h3>
             <SectionRow label="Avtomatik optimallaşdırma" desc="Enerji istifadəsini AI ilə optimallaşdır">
-              <Toggle aktiv={enerji.avtomatikOptimizasiya} onChange={() => toggleEnerji('avtomatikOptimizasiya')} />
+              <Toggle aktiv={enerji.avtomatikOptimizasiya} onChange={() => setEnerji(p => ({ ...p, avtomatikOptimizasiya: !p.avtomatikOptimizasiya }))} />
             </SectionRow>
             <SectionRow label="Pik saatlardan qaç" desc="Yüksək tarif saatlarında istehlakı azalt">
-              <Toggle aktiv={enerji.pikSaatlarindenQacin} onChange={() => toggleEnerji('pikSaatlarindenQacin')} />
+              <Toggle aktiv={enerji.pikSaatlarindenQacin} onChange={() => setEnerji(p => ({ ...p, pikSaatlarindenQacin: !p.pikSaatlarindenQacin }))} />
             </SectionRow>
             <SectionRow label="Batareya prioriteti" desc="Şəbəkə əvəzinə batareyadan istifadə et">
-              <Toggle aktiv={enerji.batareyaOncelik} onChange={() => toggleEnerji('batareyaOncelik')} />
+              <Toggle aktiv={enerji.batareyaOncelik} onChange={() => setEnerji(p => ({ ...p, batareyaOncelik: !p.batareyaOncelik }))} />
             </SectionRow>
             <SectionRow label="Gecə saatlarında şarj" desc="23:00-06:00 arasında batareyaları şarj et">
-              <Toggle aktiv={enerji.geceSaatlariSarj} onChange={() => toggleEnerji('geceSaatlariSarj')} />
+              <Toggle aktiv={enerji.geceSaatlariSarj} onChange={() => setEnerji(p => ({ ...p, geceSaatlariSarj: !p.geceSaatlariSarj }))} />
             </SectionRow>
-            <div style={{ marginTop: 20 }}>
-              <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 8 }}>
-                Minimum batareya səviyyəsi: <span style={{ color: '#2a9d8f' }}>20%</span>
-              </label>
-              <input type="range" min={5} max={50} defaultValue={20} style={{ width: '100%', accentColor: '#2a9d8f' }} />
-            </div>
-            <div style={{ marginTop: 16 }}>
-              <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 8 }}>
-                Pik saat başlangıcı: <span style={{ color: '#2a9d8f' }}>17:00</span>
-              </label>
-              <input type="range" min={14} max={20} defaultValue={17} style={{ width: '100%', accentColor: '#2a9d8f' }} />
-            </div>
           </div>
         );
 
@@ -189,30 +247,20 @@ export default function SettingsPage() {
           <div>
             <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: '0 0 20px 0' }}>Görünüş</h3>
             <SectionRow label="Animasiyalar" desc="İnterfeys animasiyalarını aktiv et">
-              <Toggle aktiv={gorunus.animasiyalar} onChange={() => toggleGorunus('animasiyalar')} />
+              <Toggle aktiv={gorunus.animasiyalar} onChange={() => setGorunus(p => ({ ...p, animasiyalar: !p.animasiyalar }))} />
             </SectionRow>
             <SectionRow label="Kompakt görüntü" desc="Daha sıx məlumat göstər">
-              <Toggle aktiv={gorunus.kompaktGoruntuq} onChange={() => toggleGorunus('kompaktGoruntuq')} />
+              <Toggle aktiv={gorunus.kompaktGoruntuq} onChange={() => setGorunus(p => ({ ...p, kompaktGoruntuq: !p.kompaktGoruntuq }))} />
             </SectionRow>
             <div style={{ marginTop: 20 }}>
               <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginBottom: 12 }}>Rəng Sxemi</p>
               <div style={{ display: 'flex', gap: 10 }}>
                 {[
                   { ad: 'Dərin Okean', reng: '#001219', kod: 'okean' },
-                  { ad: 'Gecə',        reng: '#0d1117', kod: 'gece'  },
-                  { ad: 'Tünd Yaşıl',  reng: '#001a1a', kod: 'yasil' },
-                ].map((r) => (
-                  <div
-                    key={r.kod}
-                    onClick={() => setRengSxemi(r.kod)}
-                    style={{
-                      padding: '10px 14px', borderRadius: 8, cursor: 'pointer',
-                      background: rengSxemi === r.kod ? 'rgba(42,157,143,0.15)' : 'rgba(255,255,255,0.05)',
-                      border: `1px solid ${rengSxemi === r.kod ? 'rgba(42,157,143,0.4)' : 'rgba(255,255,255,0.08)'}`,
-                      display: 'flex', alignItems: 'center', gap: 8,
-                      transition: 'all 0.2s',
-                    }}
-                  >
+                  { ad: 'Gecə', reng: '#0d1117', kod: 'gece' },
+                  { ad: 'Tünd Yaşıl', reng: '#001a1a', kod: 'yasil' },
+                ].map(r => (
+                  <div key={r.kod} onClick={() => setRengSxemi(r.kod)} style={{ padding: '10px 14px', borderRadius: 8, cursor: 'pointer', background: rengSxemi === r.kod ? 'rgba(42,157,143,0.15)' : 'rgba(255,255,255,0.05)', border: `1px solid ${rengSxemi === r.kod ? 'rgba(42,157,143,0.4)' : 'rgba(255,255,255,0.08)'}`, display: 'flex', alignItems: 'center', gap: 8, transition: 'all 0.2s' }}>
                     <div style={{ width: 16, height: 16, borderRadius: 4, background: r.reng, border: '1px solid rgba(255,255,255,0.2)' }} />
                     <span style={{ fontSize: 12, color: rengSxemi === r.kod ? '#fff' : 'rgba(255,255,255,0.5)' }}>{r.ad}</span>
                     {rengSxemi === r.kod && <Check style={{ width: 12, height: 12, color: '#2a9d8f' }} />}
@@ -230,18 +278,8 @@ export default function SettingsPage() {
             <div style={{ marginBottom: 20 }}>
               <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 8 }}>İnterfeys Dili</label>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {[
-                  { kod: 'az', ad: 'Azərbaycan dili' },
-                  { kod: 'en', ad: 'English' },
-                  { kod: 'ru', ad: 'Русский' },
-                ].map(d => (
-                  <div key={d.kod} onClick={() => setDil(d.kod)} style={{
-                    padding: '12px 14px', borderRadius: 8, cursor: 'pointer',
-                    background: dil === d.kod ? 'rgba(42,157,143,0.12)' : 'rgba(255,255,255,0.04)',
-                    border: `1px solid ${dil === d.kod ? 'rgba(42,157,143,0.3)' : 'rgba(255,255,255,0.07)'}`,
-                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    transition: 'all 0.2s',
-                  }}>
+                {[{ kod: 'az', ad: 'Azərbaycan dili' }, { kod: 'en', ad: 'English' }, { kod: 'ru', ad: 'Русский' }].map(d => (
+                  <div key={d.kod} onClick={() => setDil(d.kod)} style={{ padding: '12px 14px', borderRadius: 8, cursor: 'pointer', background: dil === d.kod ? 'rgba(42,157,143,0.12)' : 'rgba(255,255,255,0.04)', border: `1px solid ${dil === d.kod ? 'rgba(42,157,143,0.3)' : 'rgba(255,255,255,0.07)'}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'all 0.2s' }}>
                     <span style={{ fontSize: 13, color: '#fff' }}>{d.ad}</span>
                     {dil === d.kod && <Check style={{ width: 14, height: 14, color: '#2a9d8f' }} />}
                   </div>
@@ -252,63 +290,48 @@ export default function SettingsPage() {
               <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 8 }}>Valyuta</label>
               <div style={{ display: 'flex', gap: 8 }}>
                 {['USD', 'EUR', 'AZN'].map(v => (
-                  <div key={v} onClick={() => setValyuta(v)} style={{
-                    padding: '8px 16px', borderRadius: 8, cursor: 'pointer',
-                    background: valyuta === v ? 'rgba(42,157,143,0.12)' : 'rgba(255,255,255,0.04)',
-                    border: `1px solid ${valyuta === v ? 'rgba(42,157,143,0.3)' : 'rgba(255,255,255,0.07)'}`,
-                    fontSize: 13, color: valyuta === v ? '#fff' : 'rgba(255,255,255,0.5)',
-                    transition: 'all 0.2s',
-                  }}>{v}</div>
+                  <div key={v} onClick={() => setValyuta(v)} style={{ padding: '8px 16px', borderRadius: 8, cursor: 'pointer', background: valyuta === v ? 'rgba(42,157,143,0.12)' : 'rgba(255,255,255,0.04)', border: `1px solid ${valyuta === v ? 'rgba(42,157,143,0.3)' : 'rgba(255,255,255,0.07)'}`, fontSize: 13, color: valyuta === v ? '#fff' : 'rgba(255,255,255,0.5)', transition: 'all 0.2s' }}>{v}</div>
                 ))}
               </div>
             </div>
           </div>
         );
 
-      case 'tehlukesiz':
+      case 'tehlukesiz': {
+        const [cur, setCur] = useState('');
+        const [nw, setNw] = useState('');
+        const [conf, setConf] = useState('');
         return (
           <div>
             <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: '0 0 20px 0' }}>Təhlükəsizlik</h3>
-            {[
-              { label: 'Cari Şifrə',       placeholder: '••••••••' },
-              { label: 'Yeni Şifrə',        placeholder: '••••••••' },
-              { label: 'Şifrəni Təsdiqlə', placeholder: '••••••••' },
-            ].map((f, i) => (
-              <div key={i} style={{ marginBottom: 14 }}>
-                <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 6 }}>{f.label}</label>
-                <input
-                  type="password"
-                  placeholder={f.placeholder}
-                  style={{
-                    width: '100%', padding: '10px 14px', fontSize: 13,
-                    background: 'rgba(255,255,255,0.06)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    borderRadius: 8, color: '#fff', outline: 'none',
-                    boxSizing: 'border-box',
-                  }}
-                />
-              </div>
-            ))}
-            <button style={{
-              marginTop: 8, padding: '10px 24px', fontSize: 13, fontWeight: 500,
-              background: '#2a9d8f', color: '#fff', border: 'none',
-              borderRadius: 8, cursor: 'pointer',
-            }}>Şifrəni Yenilə</button>
+            <div style={{ marginBottom: 14 }}>
+              <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 6 }}>Cari Şifrə</label>
+              <input type="password" value={cur} onChange={e => setCur(e.target.value)} placeholder="••••••••" style={inputStyle} />
+            </div>
+            <div style={{ marginBottom: 14 }}>
+              <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 6 }}>Yeni Şifrə</label>
+              <input type="password" value={nw} onChange={e => setNw(e.target.value)} placeholder="••••••••" style={inputStyle} />
+            </div>
+            <div style={{ marginBottom: 14 }}>
+              <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 6 }}>Şifrəni Təsdiqlə</label>
+              <input type="password" value={conf} onChange={e => setConf(e.target.value)} placeholder="••••••••" style={inputStyle} />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <button onClick={() => savePassword(cur, nw, conf)} disabled={saving} style={{ padding: '10px 24px', fontSize: 13, fontWeight: 500, background: '#2a9d8f', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
+                Şifrəni Yenilə
+              </button>
+              {saveMsg && <span style={{ fontSize: 13, color: saveMsg.includes('✓') ? '#2a9d8f' : '#e63946' }}>{saveMsg}</span>}
+            </div>
             <div style={{ marginTop: 24, padding: 16, background: 'rgba(230,57,70,0.08)', borderRadius: 10, border: '1px solid rgba(230,57,70,0.2)' }}>
               <p style={{ fontSize: 13, color: '#e63946', fontWeight: 500, margin: '0 0 6px 0' }}>Hesabı Sil</p>
               <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', margin: '0 0 12px 0' }}>Bu əməliyyat geri qaytarıla bilməz.</p>
-              <button style={{
-                padding: '8px 16px', fontSize: 12,
-                background: 'transparent', color: '#e63946',
-                border: '1px solid rgba(230,57,70,0.4)',
-                borderRadius: 6, cursor: 'pointer',
-              }}>Hesabı Sil</button>
+              <button style={{ padding: '8px 16px', fontSize: 12, background: 'transparent', color: '#e63946', border: '1px solid rgba(230,57,70,0.4)', borderRadius: 6, cursor: 'pointer' }}>Hesabı Sil</button>
             </div>
           </div>
         );
+      }
 
-      default:
-        return null;
+      default: return null;
     }
   };
 
@@ -318,12 +341,7 @@ export default function SettingsPage() {
         {bolmeler.map(b => {
           const Icon = b.icon;
           return (
-            <div key={b.id} onClick={() => setAktivBolme(b.id)} style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '10px 12px', borderRadius: 8, cursor: 'pointer',
-              background: aktivBolme === b.id ? 'rgba(42,157,143,0.12)' : 'transparent',
-              marginBottom: 2, transition: 'background 0.2s',
-            }}>
+            <div key={b.id} onClick={() => setAktivBolme(b.id)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', borderRadius: 8, cursor: 'pointer', background: aktivBolme === b.id ? 'rgba(42,157,143,0.12)' : 'transparent', marginBottom: 2, transition: 'background 0.2s' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <Icon style={{ width: 15, height: 15, color: aktivBolme === b.id ? '#2a9d8f' : 'rgba(255,255,255,0.45)' }} />
                 <span style={{ fontSize: 13, color: aktivBolme === b.id ? '#fff' : 'rgba(255,255,255,0.6)' }}>{b.ad}</span>
@@ -333,7 +351,6 @@ export default function SettingsPage() {
           );
         })}
       </div>
-
       <div className="liquid-glass" style={{ padding: 20, flex: 1 }}>
         {renderMezmun()}
       </div>
