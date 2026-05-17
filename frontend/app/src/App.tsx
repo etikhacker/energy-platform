@@ -18,7 +18,13 @@ import LandingPage from './pages/LandingPage';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
+  import.meta.env.VITE_SUPABASE_ANON_KEY,
+  {
+    auth: {
+      persistSession: true,
+      storageKey: 'ecoai-auth',
+    }
+  }
 );
 
 type Session = { user: { email?: string; id?: string } } | null;
