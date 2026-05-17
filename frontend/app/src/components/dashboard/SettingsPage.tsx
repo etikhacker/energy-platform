@@ -61,6 +61,29 @@ export default function SettingsPage() {
   const [saveMsg, setSaveMsg] = useState('');
   const [saving, setSaving] = useState(false);
 
+  // Profil
+  const [profil, setProfil] = useState({ full_name: '', email: '', phone: '', address: 'Bakı, Azərbaycan' });
+
+  // Bildiriş
+  const [bildirish, setBildirish] = useState({
+    emailBildirish: true, pikXeberdar: true, batareyaXeberdar: false,
+    heftəlikHesabat: true, sistemXeberdar: false,
+  });
+
+  // Enerji
+  const [enerji, setEnerji] = useState({
+    avtomatikOptimizasiya: true, pikSaatlarindenQacin: true,
+    batareyaOncelik: false, geceSaatlariSarj: true,
+  });
+
+  // Görünüş
+  const [gorunusState, setGorunusState] = useState({ animasiyalar: true, kompaktGoruntuq: false });
+
+  // Təhlükəsizlik — hook-lar burda olmalıdır, switch içində yox!
+  const [cur, setCur] = useState('');
+  const [nw, setNw] = useState('');
+  const [conf, setConf] = useState('');
+
   const bolmeler = [
     { id: 'profil',     icon: User,    ad: t('profil') },
     { id: 'bildirish',  icon: Bell,    ad: t('bildirisher') },
@@ -69,24 +92,6 @@ export default function SettingsPage() {
     { id: 'dil',        icon: Globe,   ad: t('dilVeRegion') },
     { id: 'tehlukesiz', icon: Shield,  ad: t('tehlukesizlik') },
   ];
-
-  const [profil, setProfil] = useState({
-    full_name: '', email: '', phone: '', address: 'Bakı, Azərbaycan',
-  });
-
-  const [bildirish, setBildirish] = useState({
-    emailBildirish: true, pikXeberdar: true, batareyaXeberdar: false,
-    heftəlikHesabat: true, sistemXeberdar: false,
-  });
-
-  const [enerji, setEnerji] = useState({
-    avtomatikOptimizasiya: true, pikSaatlarindenQacin: true,
-    batareyaOncelik: false, geceSaatlariSarj: true,
-  });
-
-  const [gorunusState, setGorunusState] = useState({
-    animasiyalar: true, kompaktGoruntuq: false,
-  });
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -106,7 +111,6 @@ export default function SettingsPage() {
     loadProfile();
   }, []);
 
-  // Dil dəyişdikdə i18n və localStorage yenilə
   const changeDil = (kod: string) => {
     setDil(kod);
     i18n.changeLanguage(kod);
@@ -133,11 +137,11 @@ export default function SettingsPage() {
     }
   };
 
-  const savePassword = async (current: string, newPass: string, confirm: string) => {
-    if (newPass !== confirm) { setSaveMsg(t('sifrelerUygunDeyil')); return; }
-    if (newPass.length < 6) { setSaveMsg(t('sifreEnAz')); return; }
+  const savePassword = async () => {
+    if (nw !== conf) { setSaveMsg(t('sifrelerUygunDeyil')); return; }
+    if (nw.length < 6) { setSaveMsg(t('sifreEnAz')); return; }
     setSaving(true);
-    const { error } = await supabase.auth.updateUser({ password: newPass });
+    const { error } = await supabase.auth.updateUser({ password: nw });
     setSaving(false);
     setSaveMsg(error ? t('xetaBasvVerdi') : t('sifreYenilendi'));
     setTimeout(() => setSaveMsg(''), 3000);
@@ -166,11 +170,7 @@ export default function SettingsPage() {
             ].map(f => (
               <div key={f.key} style={{ marginBottom: 14 }}>
                 <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 6 }}>{f.label}</label>
-                <input
-                  value={(profil as any)[f.key]}
-                  onChange={e => setProfil(p => ({ ...p, [f.key]: e.target.value }))}
-                  placeholder={f.placeholder} style={inputStyle}
-                />
+                <input value={(profil as any)[f.key]} onChange={e => setProfil(p => ({ ...p, [f.key]: e.target.value }))} placeholder={f.placeholder} style={inputStyle} />
               </div>
             ))}
             <div style={{ marginBottom: 14 }}>
@@ -287,10 +287,7 @@ export default function SettingsPage() {
           </div>
         );
 
-      case 'tehlukesiz': {
-        const [cur, setCur] = useState('');
-        const [nw, setNw] = useState('');
-        const [conf, setConf] = useState('');
+      case 'tehlukesiz':
         return (
           <div>
             <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: '0 0 20px 0' }}>{t('tehlukesizlikTitle')}</h3>
@@ -305,7 +302,7 @@ export default function SettingsPage() {
               </div>
             ))}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <button onClick={() => savePassword(cur, nw, conf)} disabled={saving} style={{ padding: '10px 24px', fontSize: 13, fontWeight: 500, background: '#2a9d8f', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
+              <button onClick={savePassword} disabled={saving} style={{ padding: '10px 24px', fontSize: 13, fontWeight: 500, background: '#2a9d8f', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
                 {t('sifreyiYenile')}
               </button>
               {saveMsg && <span style={{ fontSize: 13, color: saveMsg.includes('✓') ? '#2a9d8f' : '#e63946' }}>{saveMsg}</span>}
@@ -317,7 +314,6 @@ export default function SettingsPage() {
             </div>
           </div>
         );
-      }
 
       default: return null;
     }
