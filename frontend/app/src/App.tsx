@@ -78,7 +78,6 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
       <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 5, background: 'radial-gradient(ellipse at 30% 20%, rgba(0,18,25,0.4) 0%, rgba(0,18,25,0.2) 50%, transparent 100%)' }} />
 
       <div className="relative" style={{ zIndex: 10, width: 380 }}>
-        {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-2">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(42,157,143,0.2)', border: '1px solid rgba(42,157,143,0.3)' }}>
@@ -89,7 +88,6 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>Enerji İdarəetmə Platforması</p>
         </div>
 
-        {/* Card */}
         <div className="liquid-glass" style={{ padding: 28 }}>
           <h2 className="text-white text-lg font-medium mb-6">
             {isRegister ? 'Qeydiyyat' : 'Daxil ol'}
@@ -173,7 +171,11 @@ function DashboardApp() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Timeout — 3 saniyə ərzində cavab gəlməsə loading bitir
+    const timeout = setTimeout(() => setLoading(false), 3000);
+
     supabase.auth.getSession().then(async ({ data }) => {
+      clearTimeout(timeout);
       setSession(data.session);
       if (data.session?.user?.id) {
         const { data: profile } = await supabase
@@ -181,6 +183,9 @@ function DashboardApp() {
           .eq('id', data.session.user.id).single();
         if (profile?.full_name) setFullName(profile.full_name);
       }
+      setLoading(false);
+    }).catch(() => {
+      clearTimeout(timeout);
       setLoading(false);
     });
 
@@ -194,7 +199,10 @@ function DashboardApp() {
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      clearTimeout(timeout);
+      subscription.unsubscribe();
+    };
   }, []);
 
   if (loading) {
@@ -242,28 +250,11 @@ function DashboardApp() {
                 </div>
               </>
             )}
-            {activeNav === 'analytics'  && <AnalyticsPage />}
-            {activeNav === 'grid'       && <GridPage />}
-            {activeNav === 'devices'    && <DevicesPage />}
-            {activeNav === 'forecast'   && <ForecastFullPage />}
-            {activeNav === 'settings'   && <SettingsPage />}
             {activeNav === 'analytics' && <AnalyticsPage />}
-            {activeNav === 'grid' && <GridPage />}
-            {activeNav === 'devices' && (
-              <div className="flex items-center justify-center h-full">
-                <p className="text-white text-xl">Cihazlar — tezliklə</p>
-              </div>
-            )}
-            {activeNav === 'forecast' && (
-              <div className="flex items-center justify-center h-full">
-                <p className="text-white text-xl">Proqnoz — tezliklə</p>
-              </div>
-            )}
-            {activeNav === 'settings' && (
-              <div className="flex items-center justify-center h-full">
-                <p className="text-white text-xl">Parametrlər — tezliklə</p>
-              </div>
-            )}
+            {activeNav === 'grid'      && <GridPage />}
+            {activeNav === 'devices'   && <DevicesPage />}
+            {activeNav === 'forecast'  && <ForecastFullPage />}
+            {activeNav === 'settings'  && <SettingsPage />}
             <div style={{ height: 24 }} />
           </div>
         </main>
