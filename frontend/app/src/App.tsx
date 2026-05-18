@@ -11,13 +11,11 @@ import DeviceControl from './components/dashboard/kimi_DeviceControl';
 import ForecastPanel from './components/dashboard/ForecastPanel';
 import AnalyticsPage from './components/dashboard/AnalyticsPage';
 import GridPage from './components/dashboard/GridPage';
-<<<<<<< HEAD
 import DevicesPage from './components/dashboard/DevicesPage';
 import ForecastFullPage from './components/dashboard/ForecastFullPage';
 import SettingsPage from './components/dashboard/SettingsPage';
-=======
 import LandingPage from './pages/LandingPage';
->>>>>>> 642898251cf1463d5a894012503820884163b12c
+import AdminPage from './pages/AdminPage';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -81,7 +79,6 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
       <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 5, background: 'radial-gradient(ellipse at 30% 20%, rgba(0,18,25,0.4) 0%, rgba(0,18,25,0.2) 50%, transparent 100%)' }} />
 
       <div className="relative" style={{ zIndex: 10, width: 380 }}>
-        {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-2">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(42,157,143,0.2)', border: '1px solid rgba(42,157,143,0.3)' }}>
@@ -92,7 +89,6 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>Enerji İdarəetmə Platforması</p>
         </div>
 
-        {/* Card */}
         <div className="liquid-glass" style={{ padding: 28 }}>
           <h2 className="text-white text-lg font-medium mb-6">
             {isRegister ? 'Qeydiyyat' : 'Daxil ol'}
@@ -245,33 +241,11 @@ function DashboardApp() {
                 </div>
               </>
             )}
-<<<<<<< HEAD
-
             {activeNav === 'analytics'  && <AnalyticsPage />}
             {activeNav === 'grid'       && <GridPage />}
             {activeNav === 'devices'    && <DevicesPage />}
             {activeNav === 'forecast'   && <ForecastFullPage />}
             {activeNav === 'settings'   && <SettingsPage />}
-
-=======
-            {activeNav === 'analytics' && <AnalyticsPage />}
-            {activeNav === 'grid' && <GridPage />}
-            {activeNav === 'devices' && (
-              <div className="flex items-center justify-center h-full">
-                <p className="text-white text-xl">Cihazlar — tezliklə</p>
-              </div>
-            )}
-            {activeNav === 'forecast' && (
-              <div className="flex items-center justify-center h-full">
-                <p className="text-white text-xl">Proqnoz — tezliklə</p>
-              </div>
-            )}
-            {activeNav === 'settings' && (
-              <div className="flex items-center justify-center h-full">
-                <p className="text-white text-xl">Parametrlər — tezliklə</p>
-              </div>
-            )}
->>>>>>> 642898251cf1463d5a894012503820884163b12c
             <div style={{ height: 24 }} />
           </div>
         </main>
@@ -285,6 +259,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/dashboard" element={<DashboardApp />} />
+      <Route path="/admin" element={<AdminPage />} />
     </Routes>
   );
 }
