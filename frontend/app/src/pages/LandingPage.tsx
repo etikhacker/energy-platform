@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import {
   Zap, ArrowRight, Play, ChevronDown,
-  Brain, Activity, Leaf, TrendingDown, Globe,
+  Brain, TrendingDown, Globe,
   PlugZap, ScanLine, TrendingUp,
   Send, Mail, CheckCircle,
-  Twitter, Linkedin, Github, Menu, X,
-  Battery, Sun, BarChart3
+  Menu, X, Battery, Sun, BarChart3,
+  Linkedin, Github,
 } from "lucide-react";
 
 /* ─── NAVBAR ─── */
@@ -42,8 +42,8 @@ function Navbar({ scrollY }: { scrollY: number }) {
             Daxil Ol
           </a>
           <a href="#contact" className="btn-primary px-5 py-2.5 rounded-xl text-sm font-semibold">
-            Başla
-          </a>
+  Müraciət et
+</a>
         </div>
 
         <button className="md:hidden text-white/80 hover:text-white" onClick={() => setMenuOpen(!menuOpen)}>
@@ -58,7 +58,9 @@ function Navbar({ scrollY }: { scrollY: number }) {
           ))}
           <div className="flex flex-col gap-3 pt-2 border-t border-[#0a9396]/15">
             <a href="/dashboard" className="btn-outline px-5 py-2.5 rounded-xl text-sm font-semibold text-center">Daxil Ol</a>
-            <a href="#contact" className="btn-primary px-5 py-2.5 rounded-xl text-sm font-semibold text-center">Başla</a>
+          <a href="#contact" className="btn-primary ...">
+  Müraciət Et <ArrowRight className="w-4 h-4" />
+</a>  
           </div>
         </div>
       )}
@@ -412,7 +414,7 @@ function HowItWorksSection() {
 function CTASection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
-  const [email, setEmail] = useState("");
+  const [form, setForm] = useState({ name: '', company: '', email: '', phone: '' });
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
@@ -423,7 +425,7 @@ function CTASection() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) { setSubmitted(true); setEmail(""); }
+    if (form.name && form.email) { setSubmitted(true); }
   };
 
   return (
@@ -433,51 +435,48 @@ function CTASection() {
 
       <div className="max-w-4xl mx-auto px-6 relative z-10">
         <div className={`glass-card rounded-3xl p-12 text-center transition-all duration-700 ${visible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-12 scale-95"}`} style={{ background: "rgba(10,147,150,0.06)", border: "1px solid rgba(10,147,150,0.2)" }}>
-          <div className="inline-flex items-center gap-2 glass px-4 py-2 rounded-full mb-6">
-            <span className="w-2 h-2 rounded-full bg-[#0a9396] animate-pulse" />
-            <span className="text-[#94d2bd] text-sm font-medium">30 günlük pulsuz sınaq</span>
-          </div>
 
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-5">
-            Enerjinizi ağıllı idarə etməyə{" "}
-            <span className="shimmer-text">hazırsınız?</span>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            Demo versiya üçün{" "}
+            <span className="shimmer-text">qeydiyyat</span>
           </h2>
           <p className="text-[#94d2bd]/70 text-lg max-w-2xl mx-auto mb-10">
-            30 günlük pulsuz sınaq ilə EcoAI-nin güclü imkanlarını kəşf edin.
-            Kredit kartı tələb edilmir, istənilən vaxt ləğv edə bilərsiniz.
+            Məlumatlarınızı daxil edin, komandamız sizinlə əlaqə saxlayacaq.
           </p>
 
           {submitted ? (
             <div className="flex flex-col items-center gap-3">
               <CheckCircle className="w-12 h-12 text-[#0a9396]" />
-              <p className="text-white font-semibold text-lg">Qeydiyyatınız qəbul edildi!</p>
+              <p className="text-white font-semibold text-lg">Müraciətiniz qəbul edildi!</p>
               <p className="text-[#94d2bd]/60 text-sm">Yaxında sizinlə əlaqə saxlayacağıq.</p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
-              <div className="flex-1 relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#0a9396]/60" />
-                <input
-                  type="email" value={email} onChange={e => setEmail(e.target.value)}
-                  placeholder="email@şirkət.az"
-                  className="w-full pl-10 pr-4 py-4 rounded-xl text-white placeholder-[#94d2bd]/40 text-sm outline-none focus:border-[#0a9396] transition-colors"
-                  style={{ background: "rgba(0,18,25,0.6)", border: "1px solid rgba(10,147,150,0.25)" }}
-                  required
-                />
-              </div>
-              <button type="submit" className="btn-primary flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-sm font-semibold whitespace-nowrap">
-                <Send className="w-4 h-4" /> Pulsuz Başla
-              </button>
-            </form>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-3 max-w-2xl mx-auto">
+  <div className="flex flex-col sm:flex-row gap-3">
+    <input
+      value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
+      placeholder="Tam ad" required
+      className="flex-1 px-4 py-4 rounded-xl text-white placeholder-[#94d2bd]/40 text-sm outline-none"
+      style={{ background: "rgba(0,18,25,0.6)", border: "1px solid rgba(10,147,150,0.25)" }}
+    />
+    <input
+      type="email" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
+      placeholder="E-mail" required
+      className="flex-1 px-4 py-4 rounded-xl text-white placeholder-[#94d2bd]/40 text-sm outline-none"
+      style={{ background: "rgba(0,18,25,0.6)", border: "1px solid rgba(10,147,150,0.25)" }}
+    />
+    <input
+      value={form.phone} onChange={e => setForm(p => ({ ...p, phone: e.target.value }))}
+      placeholder="Mobil nömrə"
+      className="flex-1 px-4 py-4 rounded-xl text-white placeholder-[#94d2bd]/40 text-sm outline-none"
+      style={{ background: "rgba(0,18,25,0.6)", border: "1px solid rgba(10,147,150,0.25)" }}
+    />
+  </div>
+  <button type="submit" className="btn-primary w-full py-4 rounded-xl text-sm font-semibold">
+    Müraciət et
+  </button>
+</form>
           )}
-
-          <div className="flex flex-wrap justify-center gap-6 mt-8">
-            {["Kredit kartı yoxdur", "Hər zaman ləğv", "Texniki dəstək 7/24"].map((item, i) => (
-              <div key={i} className="flex items-center gap-2 text-[#94d2bd]/50 text-sm">
-                <CheckCircle className="w-3.5 h-3.5 text-[#0a9396]" /> {item}
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>
@@ -485,11 +484,31 @@ function CTASection() {
 }
 
 /* ─── FOOTER ─── */
-const footerLinks: Record<string, string[]> = {
-  Məhsul: ["Dashboard", "Analitika", "AI Optimizer", "Grid İdarəsi"],
-  Şirkət: ["Haqqımızda", "Komanda", "Karyera", "Press"],
-  Resurslar: ["Sənədlər", "API", "Bloq", "Dəstək"],
-  Hüquqi: ["Məxfilik", "İstifadə Şərtləri", "Cookies", "GDPR"],
+const footerLinks: Record<string, Record<string, string>> = {
+  Məhsul: {
+    "Dashboard": "/dashboard",
+    "Analitika": "/dashboard",
+    "AI Optimizer": "/dashboard",
+    "Grid İdarəsi": "/dashboard",
+  },
+  Şirkət: {
+    "Haqqımızda": "#",
+    "Komanda": "#",
+    "Karyera": "#",
+    "Press": "#",
+  },
+  Resurslar: {
+    "Sənədlər": "#",
+    "API": "#",
+    "Bloq": "#",
+    "Dəstək": "#",
+  },
+  Hüquqi: {
+    "Məxfilik": "#",
+    "İstifadə Şərtləri": "#",
+    "Cookies": "#",
+    "GDPR": "#",
+  },
 };
 
 function Footer() {
@@ -511,11 +530,16 @@ function Footer() {
               AI-powered enerji optimallaşdırma platforması. Daha az enerji, daha çox qənaət, daha yaşıl gələcək.
             </p>
             <div className="flex items-center gap-3">
-              {[Twitter, Linkedin, Github, Mail].map((Icon, i) => (
-                <a key={i} href="#" className="w-9 h-9 rounded-lg glass flex items-center justify-center text-[#94d2bd]/50 hover:text-[#0a9396] transition-all duration-200">
-                  <Icon className="w-4 h-4" />
-                </a>
-              ))}
+              {[
+  { Icon: Linkedin, href: "https://www.linkedin.com/in/omar-babayev-21888437b?utm_source=share_via&utm_content=profile&utm_medium=member_android" },
+  { Icon: Github, href: "https://github.com/etikhacker" },
+  { Icon: Mail, href: "mailto:babayev.omr.23@gmail.com" },
+  { Icon: Send, href: "https://t.me/EduTrackAssistantBot" },
+].map(({ Icon, href }, i) => (
+  <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-lg glass flex items-center justify-center text-[#94d2bd]/50 hover:text-[#0a9396] transition-all duration-200">
+    <Icon className="w-4 h-4" />
+  </a>
+))}
             </div>
           </div>
 
@@ -523,11 +547,11 @@ function Footer() {
             <div key={category}>
               <h4 className="text-white font-semibold text-sm mb-4">{category}</h4>
               <ul className="space-y-2.5">
-                {items.map((item, i) => (
-                  <li key={i}>
-                    <a href="#" className="text-[#94d2bd]/50 text-sm hover:text-[#0a9396] transition-colors duration-200">{item}</a>
-                  </li>
-                ))}
+                {Object.entries(items).map(([label, href]) => (
+  <li key={label}>
+    <a href={href} className="text-[#94d2bd]/50 text-sm hover:text-[#0a9396] transition-colors duration-200">{label}</a>
+  </li>
+))}
               </ul>
             </div>
           ))}

@@ -1,0 +1,707 @@
+{
+  "platform": "AI Əsaslı Enerji Qənaət Platforması",
+  "version": "1.0.0",
+  "description": "Smart bina üçün 1 aylıq mock sensor datasıdır. Elektrik istehlakı, temperatur, rütubət, CO2 səviyyəsi və işıqlanma sensoru daxildir.",
+  "metadata": {
+    "building_id": "BAKU-HQ-001",
+    "building_name": "Bakı Baş Ofisi",
+    "location": {
+      "city": "Bakı",
+      "country": "Azərbaycan",
+      "latitude": 40.4093,
+      "longitude": 49.8671
+    },
+    "floors": 5,
+    "total_area_m2": 2500,
+    "sensors_count": 12,
+    "data_period": {
+      "start": "2025-04-01",
+      "end": "2025-04-30",
+      "frequency": "günlük"
+    }
+  },
+  "sensors": [
+    {
+      "sensor_id": "ELEC-001",
+      "type": "electricity",
+      "unit": "kWh",
+      "location": "Əsas Elektrik Paneli",
+      "floor": "Zirzəmi"
+    },
+    {
+      "sensor_id": "TEMP-001",
+      "type": "temperature",
+      "unit": "°C",
+      "location": "Mərtəbə 1 - Lobbi",
+      "floor": 1
+    },
+    {
+      "sensor_id": "TEMP-002",
+      "type": "temperature",
+      "unit": "°C",
+      "location": "Mərtəbə 3 - Açıq Ofis",
+      "floor": 3
+    },
+    {
+      "sensor_id": "HUM-001",
+      "type": "humidity",
+      "unit": "%",
+      "location": "Mərtəbə 2 - Konfrans Otağı",
+      "floor": 2
+    },
+    {
+      "sensor_id": "CO2-001",
+      "type": "co2",
+      "unit": "ppm",
+      "location": "Mərtəbə 4 - İş Otağı",
+      "floor": 4
+    },
+    {
+      "sensor_id": "LIGHT-001",
+      "type": "light",
+      "unit": "lux",
+      "location": "Mərtəbə 5 - Toplantı Salonu",
+      "floor": 5
+    },
+    {
+      "sensor_id": "HVAC-001",
+      "type": "hvac_power",
+      "unit": "kWh",
+      "location": "Kondisioner Sistemi",
+      "floor": "Çatı"
+    },
+    {
+      "sensor_id": "SOLAR-001",
+      "type": "solar_generation",
+      "unit": "kWh",
+      "location": "Dam Günəş Panelləri",
+      "floor": "Çatı"
+    }
+  ],
+  "daily_readings": [
+    {
+      "date": "2025-04-01",
+      "day_of_week": "Çərşənbə axşamı",
+      "is_working_day": true,
+      "occupancy_rate": 0.87,
+      "outdoor_temp_c": 14.2,
+      "readings": {
+        "ELEC-001": { "value": 342.5, "status": "normal", "carbon_kg": 171.25 },
+        "TEMP-001": { "value": 21.3, "status": "normal" },
+        "TEMP-002": { "value": 22.1, "status": "normal" },
+        "HUM-001": { "value": 48.5, "status": "normal" },
+        "CO2-001": { "value": 612, "status": "normal" },
+        "LIGHT-001": { "value": 420, "status": "normal" },
+        "HVAC-001": { "value": 98.4, "status": "normal", "carbon_kg": 49.2 },
+        "SOLAR-001": { "value": 45.2, "status": "normal", "carbon_saved_kg": 22.6 }
+      },
+      "ai_recommendation": "Normal iş günü. Enerji istehlakı orta həddədir.",
+      "energy_saved_kwh": 12.3,
+      "total_carbon_kg": 197.85
+    },
+    {
+      "date": "2025-04-02",
+      "day_of_week": "Çərşənbə",
+      "is_working_day": true,
+      "occupancy_rate": 0.91,
+      "outdoor_temp_c": 15.8,
+      "readings": {
+        "ELEC-001": { "value": 358.2, "status": "normal", "carbon_kg": 179.1 },
+        "TEMP-001": { "value": 21.8, "status": "normal" },
+        "TEMP-002": { "value": 22.5, "status": "normal" },
+        "HUM-001": { "value": 50.1, "status": "normal" },
+        "CO2-001": { "value": 645, "status": "normal" },
+        "LIGHT-001": { "value": 435, "status": "normal" },
+        "HVAC-001": { "value": 102.1, "status": "normal", "carbon_kg": 51.05 },
+        "SOLAR-001": { "value": 52.8, "status": "normal", "carbon_saved_kg": 26.4 }
+      },
+      "ai_recommendation": "Yüksək işçi sıxlığı. HVAC-ı 1°C azaltmaq 8% qənaət verə bilər.",
+      "energy_saved_kwh": 15.6,
+      "total_carbon_kg": 203.75
+    },
+    {
+      "date": "2025-04-03",
+      "day_of_week": "Cümə axşamı",
+      "is_working_day": true,
+      "occupancy_rate": 0.78,
+      "outdoor_temp_c": 13.5,
+      "readings": {
+        "ELEC-001": { "value": 312.7, "status": "normal", "carbon_kg": 156.35 },
+        "TEMP-001": { "value": 20.9, "status": "normal" },
+        "TEMP-002": { "value": 21.4, "status": "normal" },
+        "HUM-001": { "value": 46.8, "status": "normal" },
+        "CO2-001": { "value": 578, "status": "normal" },
+        "LIGHT-001": { "value": 398, "status": "normal" },
+        "HVAC-001": { "value": 89.3, "status": "normal", "carbon_kg": 44.65 },
+        "SOLAR-001": { "value": 38.6, "status": "cloudy", "carbon_saved_kg": 19.3 }
+      },
+      "ai_recommendation": "Az işçi. 3-cü mərtəbənin işıqlarını avtomatik söndür.",
+      "energy_saved_kwh": 22.1,
+      "total_carbon_kg": 181.7
+    },
+    {
+      "date": "2025-04-04",
+      "day_of_week": "Cümə",
+      "is_working_day": true,
+      "occupancy_rate": 0.65,
+      "outdoor_temp_c": 16.1,
+      "readings": {
+        "ELEC-001": { "value": 289.4, "status": "normal", "carbon_kg": 144.7 },
+        "TEMP-001": { "value": 21.5, "status": "normal" },
+        "TEMP-002": { "value": 22.0, "status": "normal" },
+        "HUM-001": { "value": 52.3, "status": "normal" },
+        "CO2-001": { "value": 534, "status": "normal" },
+        "LIGHT-001": { "value": 380, "status": "normal" },
+        "HVAC-001": { "value": 84.7, "status": "normal", "carbon_kg": 42.35 },
+        "SOLAR-001": { "value": 61.4, "status": "optimal", "carbon_saved_kg": 30.7 }
+      },
+      "ai_recommendation": "Cümə: Az işçi. Günəş panelləri maksimum işləyir. Net karbon aşağıdır.",
+      "energy_saved_kwh": 28.5,
+      "total_carbon_kg": 156.35
+    },
+    {
+      "date": "2025-04-05",
+      "day_of_week": "Şənbə",
+      "is_working_day": false,
+      "occupancy_rate": 0.05,
+      "outdoor_temp_c": 17.4,
+      "readings": {
+        "ELEC-001": { "value": 98.2, "status": "low", "carbon_kg": 49.1 },
+        "TEMP-001": { "value": 19.5, "status": "eco_mode" },
+        "TEMP-002": { "value": 19.8, "status": "eco_mode" },
+        "HUM-001": { "value": 43.2, "status": "normal" },
+        "CO2-001": { "value": 415, "status": "excellent" },
+        "LIGHT-001": { "value": 120, "status": "eco_mode" },
+        "HVAC-001": { "value": 21.4, "status": "eco_mode", "carbon_kg": 10.7 },
+        "SOLAR-001": { "value": 68.9, "status": "optimal", "carbon_saved_kg": 34.45 }
+      },
+      "ai_recommendation": "Həftəsonu rejimi aktiv. Bütün sistemlər enerji qənaət modunda.",
+      "energy_saved_kwh": 45.8,
+      "total_carbon_kg": 25.35
+    },
+    {
+      "date": "2025-04-06",
+      "day_of_week": "Bazar",
+      "is_working_day": false,
+      "occupancy_rate": 0.02,
+      "outdoor_temp_c": 18.2,
+      "readings": {
+        "ELEC-001": { "value": 87.6, "status": "low", "carbon_kg": 43.8 },
+        "TEMP-001": { "value": 19.2, "status": "eco_mode" },
+        "TEMP-002": { "value": 19.5, "status": "eco_mode" },
+        "HUM-001": { "value": 41.8, "status": "normal" },
+        "CO2-001": { "value": 402, "status": "excellent" },
+        "LIGHT-001": { "value": 85, "status": "eco_mode" },
+        "HVAC-001": { "value": 18.9, "status": "eco_mode", "carbon_kg": 9.45 },
+        "SOLAR-001": { "value": 72.3, "status": "optimal", "carbon_saved_kg": 36.15 }
+      },
+      "ai_recommendation": "Həftəsonu. Günəş istehsalı rekord həddə. Şəbəkəyə enerji qaytarılır.",
+      "energy_saved_kwh": 52.1,
+      "total_carbon_kg": 17.1
+    },
+    {
+      "date": "2025-04-07",
+      "day_of_week": "Bazar ertəsi",
+      "is_working_day": true,
+      "occupancy_rate": 0.88,
+      "outdoor_temp_c": 14.9,
+      "readings": {
+        "ELEC-001": { "value": 349.8, "status": "normal", "carbon_kg": 174.9 },
+        "TEMP-001": { "value": 21.4, "status": "normal" },
+        "TEMP-002": { "value": 22.2, "status": "normal" },
+        "HUM-001": { "value": 49.7, "status": "normal" },
+        "CO2-001": { "value": 628, "status": "normal" },
+        "LIGHT-001": { "value": 428, "status": "normal" },
+        "HVAC-001": { "value": 99.8, "status": "normal", "carbon_kg": 49.9 },
+        "SOLAR-001": { "value": 48.1, "status": "normal", "carbon_saved_kg": 24.05 }
+      },
+      "ai_recommendation": "İş həftəsinin başlanğıcı. Sistemlər tam gücə qayıtdı.",
+      "energy_saved_kwh": 11.8,
+      "total_carbon_kg": 200.75
+    },
+    {
+      "date": "2025-04-08",
+      "day_of_week": "Çərşənbə axşamı",
+      "is_working_day": true,
+      "occupancy_rate": 0.93,
+      "outdoor_temp_c": 16.7,
+      "readings": {
+        "ELEC-001": { "value": 374.1, "status": "high", "carbon_kg": 187.05 },
+        "TEMP-001": { "value": 22.4, "status": "normal" },
+        "TEMP-002": { "value": 23.1, "status": "warning" },
+        "HUM-001": { "value": 55.2, "status": "warning" },
+        "CO2-001": { "value": 712, "status": "warning" },
+        "LIGHT-001": { "value": 458, "status": "normal" },
+        "HVAC-001": { "value": 118.4, "status": "high", "carbon_kg": 59.2 },
+        "SOLAR-001": { "value": 58.7, "status": "normal", "carbon_saved_kg": 29.35 }
+      },
+      "ai_recommendation": "⚠️ CO2 səviyyəsi yüksəkdir! Ventilyasiyanı artır. HVAC yükü həddindən artıqdır.",
+      "energy_saved_kwh": 8.2,
+      "total_carbon_kg": 216.9
+    },
+    {
+      "date": "2025-04-09",
+      "day_of_week": "Çərşənbə",
+      "is_working_day": true,
+      "occupancy_rate": 0.85,
+      "outdoor_temp_c": 15.3,
+      "readings": {
+        "ELEC-001": { "value": 338.6, "status": "normal", "carbon_kg": 169.3 },
+        "TEMP-001": { "value": 21.1, "status": "normal" },
+        "TEMP-002": { "value": 21.9, "status": "normal" },
+        "HUM-001": { "value": 48.1, "status": "normal" },
+        "CO2-001": { "value": 598, "status": "normal" },
+        "LIGHT-001": { "value": 415, "status": "normal" },
+        "HVAC-001": { "value": 95.2, "status": "normal", "carbon_kg": 47.6 },
+        "SOLAR-001": { "value": 44.8, "status": "normal", "carbon_saved_kg": 22.4 }
+      },
+      "ai_recommendation": "AI tənzimlənməsi CO2-ni normallaşdırdı. Sistem stabil.",
+      "energy_saved_kwh": 18.4,
+      "total_carbon_kg": 194.5
+    },
+    {
+      "date": "2025-04-10",
+      "day_of_week": "Cümə axşamı",
+      "is_working_day": true,
+      "occupancy_rate": 0.80,
+      "outdoor_temp_c": 17.2,
+      "readings": {
+        "ELEC-001": { "value": 321.4, "status": "normal", "carbon_kg": 160.7 },
+        "TEMP-001": { "value": 21.6, "status": "normal" },
+        "TEMP-002": { "value": 22.3, "status": "normal" },
+        "HUM-001": { "value": 47.5, "status": "normal" },
+        "CO2-001": { "value": 581, "status": "normal" },
+        "LIGHT-001": { "value": 402, "status": "normal" },
+        "HVAC-001": { "value": 91.8, "status": "normal", "carbon_kg": 45.9 },
+        "SOLAR-001": { "value": 63.2, "status": "optimal", "carbon_saved_kg": 31.6 }
+      },
+      "ai_recommendation": "Günəş istehsalı yüksəkdir. HVAC-ı günəş enerjisi ilə işlət.",
+      "energy_saved_kwh": 24.7,
+      "total_carbon_kg": 175.0
+    },
+    {
+      "date": "2025-04-11",
+      "day_of_week": "Cümə",
+      "is_working_day": true,
+      "occupancy_rate": 0.62,
+      "outdoor_temp_c": 18.5,
+      "readings": {
+        "ELEC-001": { "value": 278.3, "status": "normal", "carbon_kg": 139.15 },
+        "TEMP-001": { "value": 22.1, "status": "normal" },
+        "TEMP-002": { "value": 22.8, "status": "normal" },
+        "HUM-001": { "value": 50.8, "status": "normal" },
+        "CO2-001": { "value": 512, "status": "normal" },
+        "LIGHT-001": { "value": 368, "status": "normal" },
+        "HVAC-001": { "value": 82.1, "status": "normal", "carbon_kg": 41.05 },
+        "SOLAR-001": { "value": 69.8, "status": "optimal", "carbon_saved_kg": 34.9 }
+      },
+      "ai_recommendation": "Cümə: Az işçi + güclü günəş. Ən aşağı karbon günü!",
+      "energy_saved_kwh": 31.2,
+      "total_carbon_kg": 145.3
+    },
+    {
+      "date": "2025-04-12",
+      "day_of_week": "Şənbə",
+      "is_working_day": false,
+      "occupancy_rate": 0.04,
+      "outdoor_temp_c": 19.1,
+      "readings": {
+        "ELEC-001": { "value": 92.4, "status": "low", "carbon_kg": 46.2 },
+        "TEMP-001": { "value": 19.8, "status": "eco_mode" },
+        "TEMP-002": { "value": 20.1, "status": "eco_mode" },
+        "HUM-001": { "value": 44.1, "status": "normal" },
+        "CO2-001": { "value": 408, "status": "excellent" },
+        "LIGHT-001": { "value": 95, "status": "eco_mode" },
+        "HVAC-001": { "value": 19.8, "status": "eco_mode", "carbon_kg": 9.9 },
+        "SOLAR-001": { "value": 74.5, "status": "optimal", "carbon_saved_kg": 37.25 }
+      },
+      "ai_recommendation": "Həftəsonu eco rejim. Günəş panelləri şəbəkəyə enerji veriyor.",
+      "energy_saved_kwh": 48.3,
+      "total_carbon_kg": 18.85
+    },
+    {
+      "date": "2025-04-13",
+      "day_of_week": "Bazar",
+      "is_working_day": false,
+      "occupancy_rate": 0.03,
+      "outdoor_temp_c": 20.3,
+      "readings": {
+        "ELEC-001": { "value": 85.1, "status": "low", "carbon_kg": 42.55 },
+        "TEMP-001": { "value": 20.2, "status": "eco_mode" },
+        "TEMP-002": { "value": 20.5, "status": "eco_mode" },
+        "HUM-001": { "value": 42.9, "status": "normal" },
+        "CO2-001": { "value": 395, "status": "excellent" },
+        "LIGHT-001": { "value": 78, "status": "eco_mode" },
+        "HVAC-001": { "value": 17.2, "status": "eco_mode", "carbon_kg": 8.6 },
+        "SOLAR-001": { "value": 78.2, "status": "optimal", "carbon_saved_kg": 39.1 }
+      },
+      "ai_recommendation": "Aylıq rekord günəş istehsalı. Net karbon mənfi həddə yaxınlaşır.",
+      "energy_saved_kwh": 55.4,
+      "total_carbon_kg": 12.05
+    },
+    {
+      "date": "2025-04-14",
+      "day_of_week": "Bazar ertəsi",
+      "is_working_day": true,
+      "occupancy_rate": 0.90,
+      "outdoor_temp_c": 16.4,
+      "readings": {
+        "ELEC-001": { "value": 356.7, "status": "normal", "carbon_kg": 178.35 },
+        "TEMP-001": { "value": 21.7, "status": "normal" },
+        "TEMP-002": { "value": 22.4, "status": "normal" },
+        "HUM-001": { "value": 49.2, "status": "normal" },
+        "CO2-001": { "value": 619, "status": "normal" },
+        "LIGHT-001": { "value": 432, "status": "normal" },
+        "HVAC-001": { "value": 101.4, "status": "normal", "carbon_kg": 50.7 },
+        "SOLAR-001": { "value": 51.6, "status": "normal", "carbon_saved_kg": 25.8 }
+      },
+      "ai_recommendation": "Normal iş günü. AI cədvələ əsasən HVAC-ı optimallaşdırdı.",
+      "energy_saved_kwh": 14.1,
+      "total_carbon_kg": 203.25
+    },
+    {
+      "date": "2025-04-15",
+      "day_of_week": "Çərşənbə axşamı",
+      "is_working_day": true,
+      "occupancy_rate": 0.88,
+      "outdoor_temp_c": 17.8,
+      "readings": {
+        "ELEC-001": { "value": 344.9, "status": "normal", "carbon_kg": 172.45 },
+        "TEMP-001": { "value": 22.0, "status": "normal" },
+        "TEMP-002": { "value": 22.6, "status": "normal" },
+        "HUM-001": { "value": 51.4, "status": "normal" },
+        "CO2-001": { "value": 608, "status": "normal" },
+        "LIGHT-001": { "value": 421, "status": "normal" },
+        "HVAC-001": { "value": 97.6, "status": "normal", "carbon_kg": 48.8 },
+        "SOLAR-001": { "value": 55.9, "status": "normal", "carbon_saved_kg": 27.95 }
+      },
+      "ai_recommendation": "Ayın ortası. Enerji istehlakı trend olaraq azalır. AI tövsiyələri işə yarıyor.",
+      "energy_saved_kwh": 16.8,
+      "total_carbon_kg": 193.3
+    },
+    {
+      "date": "2025-04-16",
+      "day_of_week": "Çərşənbə",
+      "is_working_day": true,
+      "occupancy_rate": 0.82,
+      "outdoor_temp_c": 15.6,
+      "readings": {
+        "ELEC-001": { "value": 328.5, "status": "normal", "carbon_kg": 164.25 },
+        "TEMP-001": { "value": 21.3, "status": "normal" },
+        "TEMP-002": { "value": 22.0, "status": "normal" },
+        "HUM-001": { "value": 47.8, "status": "normal" },
+        "CO2-001": { "value": 586, "status": "normal" },
+        "LIGHT-001": { "value": 408, "status": "normal" },
+        "HVAC-001": { "value": 93.4, "status": "normal", "carbon_kg": 46.7 },
+        "SOLAR-001": { "value": 47.3, "status": "normal", "carbon_saved_kg": 23.65 }
+      },
+      "ai_recommendation": "Bulud var, günəş az. Şəbəkədən enerji çəkilişi artıb. Qənaət rejimi aktiv.",
+      "energy_saved_kwh": 19.6,
+      "total_carbon_kg": 187.3
+    },
+    {
+      "date": "2025-04-17",
+      "day_of_week": "Cümə axşamı",
+      "is_working_day": true,
+      "occupancy_rate": 0.76,
+      "outdoor_temp_c": 14.8,
+      "readings": {
+        "ELEC-001": { "value": 308.2, "status": "normal", "carbon_kg": 154.1 },
+        "TEMP-001": { "value": 20.8, "status": "normal" },
+        "TEMP-002": { "value": 21.5, "status": "normal" },
+        "HUM-001": { "value": 46.2, "status": "normal" },
+        "CO2-001": { "value": 562, "status": "normal" },
+        "LIGHT-001": { "value": 394, "status": "normal" },
+        "HVAC-001": { "value": 87.9, "status": "normal", "carbon_kg": 43.95 },
+        "SOLAR-001": { "value": 39.8, "status": "cloudy", "carbon_saved_kg": 19.9 }
+      },
+      "ai_recommendation": "Yağış ehtimalı var. HVAC-ı əvvəlcədən tənzimləyin.",
+      "energy_saved_kwh": 21.3,
+      "total_carbon_kg": 178.15
+    },
+    {
+      "date": "2025-04-18",
+      "day_of_week": "Cümə",
+      "is_working_day": true,
+      "occupancy_rate": 0.60,
+      "outdoor_temp_c": 13.2,
+      "readings": {
+        "ELEC-001": { "value": 271.8, "status": "normal", "carbon_kg": 135.9 },
+        "TEMP-001": { "value": 21.0, "status": "normal" },
+        "TEMP-002": { "value": 21.7, "status": "normal" },
+        "HUM-001": { "value": 58.4, "status": "warning" },
+        "CO2-001": { "value": 498, "status": "normal" },
+        "LIGHT-001": { "value": 355, "status": "normal" },
+        "HVAC-001": { "value": 79.4, "status": "normal", "carbon_kg": 39.7 },
+        "SOLAR-001": { "value": 28.4, "status": "rainy", "carbon_saved_kg": 14.2 }
+      },
+      "ai_recommendation": "Yağış günü. Rütubət artıb. Nəmlik nəzarəti aktiv edildi.",
+      "energy_saved_kwh": 29.4,
+      "total_carbon_kg": 161.4
+    },
+    {
+      "date": "2025-04-19",
+      "day_of_week": "Şənbə",
+      "is_working_day": false,
+      "occupancy_rate": 0.06,
+      "outdoor_temp_c": 12.8,
+      "readings": {
+        "ELEC-001": { "value": 105.3, "status": "low", "carbon_kg": 52.65 },
+        "TEMP-001": { "value": 18.9, "status": "eco_mode" },
+        "TEMP-002": { "value": 19.2, "status": "eco_mode" },
+        "HUM-001": { "value": 62.1, "status": "warning" },
+        "CO2-001": { "value": 421, "status": "excellent" },
+        "LIGHT-001": { "value": 108, "status": "eco_mode" },
+        "HVAC-001": { "value": 24.7, "status": "dehumidify", "carbon_kg": 12.35 },
+        "SOLAR-001": { "value": 18.9, "status": "rainy", "carbon_saved_kg": 9.45 }
+      },
+      "ai_recommendation": "Yağışlı həftəsonu. Nəmlik yüksəkdir, rütubətsizləşdirici rejim aktiv.",
+      "energy_saved_kwh": 38.7,
+      "total_carbon_kg": 55.55
+    },
+    {
+      "date": "2025-04-20",
+      "day_of_week": "Bazar",
+      "is_working_day": false,
+      "occupancy_rate": 0.02,
+      "outdoor_temp_c": 14.1,
+      "readings": {
+        "ELEC-001": { "value": 89.7, "status": "low", "carbon_kg": 44.85 },
+        "TEMP-001": { "value": 19.4, "status": "eco_mode" },
+        "TEMP-002": { "value": 19.7, "status": "eco_mode" },
+        "HUM-001": { "value": 54.8, "status": "normal" },
+        "CO2-001": { "value": 398, "status": "excellent" },
+        "LIGHT-001": { "value": 82, "status": "eco_mode" },
+        "HVAC-001": { "value": 20.3, "status": "eco_mode", "carbon_kg": 10.15 },
+        "SOLAR-001": { "value": 42.1, "status": "normal", "carbon_saved_kg": 21.05 }
+      },
+      "ai_recommendation": "Hava düzəlir. Günəş panelləri yenidən aktivdir.",
+      "energy_saved_kwh": 51.2,
+      "total_carbon_kg": 33.95
+    },
+    {
+      "date": "2025-04-21",
+      "day_of_week": "Bazar ertəsi",
+      "is_working_day": true,
+      "occupancy_rate": 0.89,
+      "outdoor_temp_c": 18.4,
+      "readings": {
+        "ELEC-001": { "value": 352.1, "status": "normal", "carbon_kg": 176.05 },
+        "TEMP-001": { "value": 22.2, "status": "normal" },
+        "TEMP-002": { "value": 22.9, "status": "normal" },
+        "HUM-001": { "value": 49.5, "status": "normal" },
+        "CO2-001": { "value": 624, "status": "normal" },
+        "LIGHT-001": { "value": 429, "status": "normal" },
+        "HVAC-001": { "value": 100.2, "status": "normal", "carbon_kg": 50.1 },
+        "SOLAR-001": { "value": 62.4, "status": "optimal", "carbon_saved_kg": 31.2 }
+      },
+      "ai_recommendation": "Hava istiləşib. Günəş + yüksək işçi. Balans yaxşıdır.",
+      "energy_saved_kwh": 13.5,
+      "total_carbon_kb": 194.95
+    },
+    {
+      "date": "2025-04-22",
+      "day_of_week": "Çərşənbə axşamı",
+      "is_working_day": true,
+      "occupancy_rate": 0.94,
+      "outdoor_temp_c": 19.8,
+      "readings": {
+        "ELEC-001": { "value": 381.4, "status": "high", "carbon_kg": 190.7 },
+        "TEMP-001": { "value": 23.1, "status": "warning" },
+        "TEMP-002": { "value": 23.8, "status": "warning" },
+        "HUM-001": { "value": 56.9, "status": "warning" },
+        "CO2-001": { "value": 728, "status": "warning" },
+        "LIGHT-001": { "value": 465, "status": "normal" },
+        "HVAC-001": { "value": 124.8, "status": "high", "carbon_kg": 62.4 },
+        "SOLAR-001": { "value": 66.8, "status": "optimal", "carbon_saved_kg": 33.4 }
+      },
+      "ai_recommendation": "⚠️ Yüksək istilik + sıxlıq. Kondisioner həddindən artıq işləyir. Temperatur ayarı tövsiyə edilir.",
+      "energy_saved_kwh": 6.8,
+      "total_carbon_kg": 219.7
+    },
+    {
+      "date": "2025-04-23",
+      "day_of_week": "Çərşənbə",
+      "is_working_day": true,
+      "occupancy_rate": 0.86,
+      "outdoor_temp_c": 18.9,
+      "readings": {
+        "ELEC-001": { "value": 341.7, "status": "normal", "carbon_kg": 170.85 },
+        "TEMP-001": { "value": 21.8, "status": "normal" },
+        "TEMP-002": { "value": 22.5, "status": "normal" },
+        "HUM-001": { "value": 50.2, "status": "normal" },
+        "CO2-001": { "value": 602, "status": "normal" },
+        "LIGHT-001": { "value": 418, "status": "normal" },
+        "HVAC-001": { "value": 96.8, "status": "normal", "carbon_kg": 48.4 },
+        "SOLAR-001": { "value": 64.5, "status": "optimal", "carbon_saved_kg": 32.25 }
+      },
+      "ai_recommendation": "AI tənzimləməsi temperatur xəbərdarlığını aradan qaldırdı.",
+      "energy_saved_kwh": 17.9,
+      "total_carbon_kg": 187.0
+    },
+    {
+      "date": "2025-04-24",
+      "day_of_week": "Cümə axşamı",
+      "is_working_day": true,
+      "occupancy_rate": 0.81,
+      "outdoor_temp_c": 20.1,
+      "readings": {
+        "ELEC-001": { "value": 325.8, "status": "normal", "carbon_kg": 162.9 },
+        "TEMP-001": { "value": 22.3, "status": "normal" },
+        "TEMP-002": { "value": 23.0, "status": "normal" },
+        "HUM-001": { "value": 48.7, "status": "normal" },
+        "CO2-001": { "value": 578, "status": "normal" },
+        "LIGHT-001": { "value": 405, "status": "normal" },
+        "HVAC-001": { "value": 92.6, "status": "normal", "carbon_kg": 46.3 },
+        "SOLAR-001": { "value": 70.2, "status": "optimal", "carbon_saved_kg": 35.1 }
+      },
+      "ai_recommendation": "İsti gün amma günəş panelləri kompensasiya edir. Net karbon azalır.",
+      "energy_saved_kwh": 23.1,
+      "total_carbon_kg": 174.1
+    },
+    {
+      "date": "2025-04-25",
+      "day_of_week": "Cümə",
+      "is_working_day": true,
+      "occupancy_rate": 0.58,
+      "outdoor_temp_c": 21.4,
+      "readings": {
+        "ELEC-001": { "value": 264.3, "status": "normal", "carbon_kg": 132.15 },
+        "TEMP-001": { "value": 22.8, "status": "normal" },
+        "TEMP-002": { "value": 23.5, "status": "normal" },
+        "HUM-001": { "value": 52.1, "status": "normal" },
+        "CO2-001": { "value": 487, "status": "normal" },
+        "LIGHT-001": { "value": 348, "status": "normal" },
+        "HVAC-001": { "value": 77.8, "status": "normal", "carbon_kg": 38.9 },
+        "SOLAR-001": { "value": 75.6, "status": "optimal", "carbon_saved_kg": 37.8 }
+      },
+      "ai_recommendation": "Cümə: Ən az istehlak + ən çox günəş. Aylıq rekord qənaət!",
+      "energy_saved_kwh": 34.8,
+      "total_carbon_kg": 133.25
+    },
+    {
+      "date": "2025-04-26",
+      "day_of_week": "Şənbə",
+      "is_working_day": false,
+      "occupancy_rate": 0.05,
+      "outdoor_temp_c": 22.1,
+      "readings": {
+        "ELEC-001": { "value": 95.8, "status": "low", "carbon_kg": 47.9 },
+        "TEMP-001": { "value": 20.5, "status": "eco_mode" },
+        "TEMP-002": { "value": 20.8, "status": "eco_mode" },
+        "HUM-001": { "value": 43.8, "status": "normal" },
+        "CO2-001": { "value": 411, "status": "excellent" },
+        "LIGHT-001": { "value": 102, "status": "eco_mode" },
+        "HVAC-001": { "value": 22.1, "status": "eco_mode", "carbon_kg": 11.05 },
+        "SOLAR-001": { "value": 80.4, "status": "optimal", "carbon_saved_kg": 40.2 }
+      },
+      "ai_recommendation": "Həftəsonu. Günəş aylıq pik həddə. Binanın enerjisi tamamilə öz-özünə təmin edilir.",
+      "energy_saved_kwh": 49.6,
+      "total_carbon_kg": 18.75
+    },
+    {
+      "date": "2025-04-27",
+      "day_of_week": "Bazar",
+      "is_working_day": false,
+      "occupancy_rate": 0.02,
+      "outdoor_temp_c": 23.0,
+      "readings": {
+        "ELEC-001": { "value": 88.4, "status": "low", "carbon_kg": 44.2 },
+        "TEMP-001": { "value": 21.0, "status": "eco_mode" },
+        "TEMP-002": { "value": 21.3, "status": "eco_mode" },
+        "HUM-001": { "value": 41.5, "status": "normal" },
+        "CO2-001": { "value": 388, "status": "excellent" },
+        "LIGHT-001": { "value": 75, "status": "eco_mode" },
+        "HVAC-001": { "value": 18.1, "status": "eco_mode", "carbon_kg": 9.05 },
+        "SOLAR-001": { "value": 82.1, "status": "optimal", "carbon_saved_kg": 41.05 }
+      },
+      "ai_recommendation": "Aylıq ən yüksək günəş istehsalı! Net karbon: mənfi. Bina enerji ixracatçısıdır.",
+      "energy_saved_kwh": 57.8,
+      "total_carbon_kg": 12.2
+    },
+    {
+      "date": "2025-04-28",
+      "day_of_week": "Bazar ertəsi",
+      "is_working_day": true,
+      "occupancy_rate": 0.91,
+      "outdoor_temp_c": 20.8,
+      "readings": {
+        "ELEC-001": { "value": 362.5, "status": "normal", "carbon_kg": 181.25 },
+        "TEMP-001": { "value": 22.6, "status": "normal" },
+        "TEMP-002": { "value": 23.3, "status": "normal" },
+        "HUM-001": { "value": 51.8, "status": "normal" },
+        "CO2-001": { "value": 631, "status": "normal" },
+        "LIGHT-001": { "value": 438, "status": "normal" },
+        "HVAC-001": { "value": 104.3, "status": "normal", "carbon_kg": 52.15 },
+        "SOLAR-001": { "value": 68.4, "status": "optimal", "carbon_saved_kg": 34.2 }
+      },
+      "ai_recommendation": "Həftənin son bazar ertəsi. Yüksək günəş + tam işçi. Balanslanmış istehlak.",
+      "energy_saved_kwh": 12.7,
+      "total_carbon_kb": 199.2
+    },
+    {
+      "date": "2025-04-29",
+      "day_of_week": "Çərşənbə axşamı",
+      "is_working_day": true,
+      "occupancy_rate": 0.87,
+      "outdoor_temp_c": 19.5,
+      "readings": {
+        "ELEC-001": { "value": 346.2, "status": "normal", "carbon_kg": 173.1 },
+        "TEMP-001": { "value": 22.0, "status": "normal" },
+        "TEMP-002": { "value": 22.7, "status": "normal" },
+        "HUM-001": { "value": 49.9, "status": "normal" },
+        "CO2-001": { "value": 614, "status": "normal" },
+        "LIGHT-001": { "value": 424, "status": "normal" },
+        "HVAC-001": { "value": 98.9, "status": "normal", "carbon_kg": 49.45 },
+        "SOLAR-001": { "value": 65.1, "status": "optimal", "carbon_saved_kg": 32.55 }
+      },
+      "ai_recommendation": "Ayın sonuna yaxın. Ümumi enerji qənaəti hədəfi aşıldı.",
+      "energy_saved_kwh": 15.9,
+      "total_carbon_kg": 190.0
+    },
+    {
+      "date": "2025-04-30",
+      "day_of_week": "Çərşənbə",
+      "is_working_day": true,
+      "occupancy_rate": 0.83,
+      "outdoor_temp_c": 18.7,
+      "readings": {
+        "ELEC-001": { "value": 332.1, "status": "normal", "carbon_kg": 166.05 },
+        "TEMP-001": { "value": 21.5, "status": "normal" },
+        "TEMP-002": { "value": 22.2, "status": "normal" },
+        "HUM-001": { "value": 48.4, "status": "normal" },
+        "CO2-001": { "value": 589, "status": "normal" },
+        "LIGHT-001": { "value": 412, "status": "normal" },
+        "HVAC-001": { "value": 94.8, "status": "normal", "carbon_kg": 47.4 },
+        "SOLAR-001": { "value": 63.7, "status": "optimal", "carbon_saved_kg": 31.85 }
+      },
+      "ai_recommendation": "Ayın son günü. Aylıq hesabat hazırlanır. Hədəf: 18% enerji qənaəti - ƏLDƏ EDİLDİ ✅",
+      "energy_saved_kwh": 20.4,
+      "total_carbon_kg": 181.6
+    }
+  ],
+  "monthly_summary": {
+    "period": "2025-04-01 / 2025-04-30",
+    "total_electricity_kwh": 8782.5,
+    "total_solar_generated_kwh": 1728.6,
+    "total_energy_saved_kwh": 726.4,
+    "total_carbon_emitted_kg": 4792.8,
+    "total_carbon_saved_kg": 864.3,
+    "net_carbon_kg": 3928.5,
+    "avg_daily_consumption_kwh": 292.75,
+    "avg_occupancy_rate": 0.62,
+    "working_days": 22,
+    "weekend_days": 8,
+    "warning_days": 3,
+    "energy_saving_target_pct": 18.0,
+    "energy_saving_achieved_pct": 18.7,
+    "target_achieved": true,
+    "top_ai_actions": [
+      "HVAC temperatur tənzimləməsi",
+      "Həftəsonu eco rejim aktivasiyası",
+      "CO2-ə görə ventilyasiya artırılması",
+      "Günəş enerjisi prioriteti",
+      "İşığın avtomatik söndürülməsi"
+    ]
+  }
+}

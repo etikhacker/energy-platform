@@ -19,7 +19,13 @@ import AdminPage from './pages/AdminPage';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
+  import.meta.env.VITE_SUPABASE_ANON_KEY,
+  {
+    auth: {
+      persistSession: true,
+      storageKey: 'ecoai-auth',
+    }
+  }
 );
 
 type Session = { user: { email?: string; id?: string } } | null;
@@ -172,7 +178,11 @@ function DashboardApp() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Timeout — 3 saniyə ərzində cavab gəlməsə loading bitir
+    const timeout = setTimeout(() => setLoading(false), 3000);
+
     supabase.auth.getSession().then(async ({ data }) => {
+      clearTimeout(timeout);
       setSession(data.session);
       if (data.session?.user?.id) {
         const { data: profile } = await supabase
@@ -180,6 +190,9 @@ function DashboardApp() {
           .eq('id', data.session.user.id).single();
         if (profile?.full_name) setFullName(profile.full_name);
       }
+      setLoading(false);
+    }).catch(() => {
+      clearTimeout(timeout);
       setLoading(false);
     });
 
@@ -193,7 +206,10 @@ function DashboardApp() {
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      clearTimeout(timeout);
+      subscription.unsubscribe();
+    };
   }, []);
 
   if (loading) {
@@ -219,7 +235,11 @@ function DashboardApp() {
         <Sidebar
           activeItem={activeNav}
           onNavigate={setActiveNav}
-          onLogout={() => { supabase.auth.signOut(); navigate('/'); }}
+          onLogout={async () => {
+  await supabase.auth.signOut();
+  setSession(null);
+  window.location.href = '/';
+}}
           userEmail={session.user?.email}
           userName={displayName}
         />
@@ -241,11 +261,18 @@ function DashboardApp() {
                 </div>
               </>
             )}
+
             {activeNav === 'analytics'  && <AnalyticsPage />}
             {activeNav === 'grid'       && <GridPage />}
             {activeNav === 'devices'    && <DevicesPage />}
             {activeNav === 'forecast'   && <ForecastFullPage />}
             {activeNav === 'settings'   && <SettingsPage />}
+            {activeNav === 'analytics' && <AnalyticsPage />}
+            {activeNav === 'grid'      && <GridPage />}
+            {activeNav === 'devices'   && <DevicesPage />}
+            {activeNav === 'forecast'  && <ForecastFullPage />}
+            {activeNav === 'settings'  && <SettingsPage />}
+
             <div style={{ height: 24 }} />
           </div>
         </main>
