@@ -27,9 +27,15 @@ export default function AdminPage() {
     checkAdmin();
   }, []);
 
-  const checkAdmin = async () => {
+ const checkAdmin = async () => {
+  try {
     const { data: { session } } = await supabase.auth.getSession();
-    if (!session) { setChecking(false); return; }
+    
+    if (!session) {
+      // Session yoxdur — dashboard-a yönləndir
+      window.location.href = '/dashboard';
+      return;
+    }
 
     const { data: profile } = await supabase
       .from('profiles')
@@ -37,12 +43,18 @@ export default function AdminPage() {
       .eq('id', session.user.id)
       .single();
 
+    console.log('Profile:', profile); // debug üçün
+    
     if (profile?.role === 'admin') {
       setIsAdmin(true);
       loadMuracietler();
     }
+  } catch (err) {
+    console.error('Admin check error:', err);
+  } finally {
     setChecking(false);
-  };
+  }
+};
 
   const loadMuracietler = async () => {
     const { data } = await supabase
