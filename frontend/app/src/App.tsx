@@ -267,11 +267,6 @@ function DashboardApp() {
             {activeNav === 'devices'    && <DevicesPage />}
             {activeNav === 'forecast'   && <ForecastFullPage />}
             {activeNav === 'settings'   && <SettingsPage />}
-            {activeNav === 'analytics' && <AnalyticsPage />}
-            {activeNav === 'grid'      && <GridPage />}
-            {activeNav === 'devices'   && <DevicesPage />}
-            {activeNav === 'forecast'  && <ForecastFullPage />}
-            {activeNav === 'settings'  && <SettingsPage />}
 
             <div style={{ height: 24 }} />
           </div>
