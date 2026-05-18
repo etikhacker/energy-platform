@@ -533,6 +533,7 @@ function Footer() {
   { Icon: Linkedin, href: "https://www.linkedin.com/in/omar-babayev-21888437b?utm_source=share_via&utm_content=profile&utm_medium=member_android" },
   { Icon: Github, href: "https://github.com/etikhacker" },
   { Icon: Mail, href: "babayev.omr.23@gmail.com" },
+  { Icon: Send, href: "https://t.me/EduTrackAssistantBot" },
 ].map(({ Icon, href }, i) => (
   <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-lg glass flex items-center justify-center text-[#94d2bd]/50 hover:text-[#0a9396] transition-all duration-200">
     <Icon className="w-4 h-4" />
