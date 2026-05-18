@@ -3,9 +3,19 @@ import { useEffect, useState } from 'react';
 interface HeaderProps {
   userEmail?: string;
   userName?: string;
+  activeNav?: string;
 }
 
-export default function Header({ userEmail, userName }: HeaderProps) {
+const pageTitles: Record<string, string> = {
+  dashboard: 'İdarə Paneli',
+  analytics: 'Analitika',
+  grid: 'Şəbəkə',
+  devices: 'Cihazlar',
+  forecast: 'Proqnoz',
+  settings: 'Parametrlər',
+};
+
+export default function Header({ userEmail, userName, activeNav = 'dashboard' }: HeaderProps) {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -14,16 +24,11 @@ export default function Header({ userEmail, userName }: HeaderProps) {
   }, []);
 
   const formattedTime = time.toLocaleTimeString('az-AZ', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
+    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
   });
 
   const formattedDate = time.toLocaleDateString('az-AZ', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
+    day: 'numeric', month: 'long', year: 'numeric',
   });
 
   const hour = time.getHours();
@@ -45,7 +50,9 @@ export default function Header({ userEmail, userName }: HeaderProps) {
         borderBottom: '1px solid rgba(255,255,255,0.06)',
       }}
     >
-      <h2 className="text-[20px] font-medium text-white">İdarə Paneli</h2>
+      <h2 className="text-[20px] font-medium text-white">
+        {pageTitles[activeNav] || 'İdarə Paneli'}
+      </h2>
 
       <div className="flex items-center gap-2">
         <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: '#2a9d8f' }} />

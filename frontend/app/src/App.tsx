@@ -235,17 +235,16 @@ function DashboardApp() {
         <Sidebar
           activeItem={activeNav}
           onNavigate={setActiveNav}
-          onLogout={async () => {
+        onLogout={async () => {
   await supabase.auth.signOut();
   setSession(null);
-  window.location.href = '/';
 }}
           userEmail={session.user?.email}
           userName={displayName}
         />
 
         <main className="flex-1 flex flex-col h-full" style={{ marginLeft: 240 }}>
-          <Header userEmail={session.user?.email} userName={displayName} />
+          <Header userEmail={session.user?.email} userName={displayName} activeNav={activeNav} />
 
           <div className="flex-1 overflow-y-auto" style={{ padding: 24, scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.1) transparent' }}>
             {activeNav === 'dashboard' && (
