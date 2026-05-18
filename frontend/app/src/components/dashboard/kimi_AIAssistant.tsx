@@ -71,24 +71,13 @@ export default function AIAssistant() {
     setInput('');
     setIsTyping(true);
 
-    try {
+ try {
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{
-              parts: [{
-                text: `Sən enerji qənaət ekspertisən. Qısa, praktik və Azərbaycanca cavab ver. Maksimum 2-3 cümlə.\n\nSual: ${question}`
-              }]
-            }]
-          }),
-        }
+        `https://energy-platform-api.onrender.com/api/ai/ask?question=${encodeURIComponent(question)}`,
+        { method: 'POST' }
       );
-
       const data = await response.json();
-      const answer = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Cavab alınmadı.';
+      const answer = data.answer || 'Cavab alınmadı.';
 
       setMessages((prev) => [...prev, {
         id: Date.now() + 1,
