@@ -234,11 +234,10 @@ function DashboardApp() {
         <Sidebar
           activeItem={activeNav}
           onNavigate={setActiveNav}
-          onLogout={() => { 
-  supabase.auth.signOut().then(() => {
-    setSession(null);
-    navigate('/');
-  });
+          onLogout={async () => { 
+  await supabase.auth.signOut();
+  setSession(null);
+  navigate('/');
 }}
           userEmail={session.user?.email}
           userName={displayName}

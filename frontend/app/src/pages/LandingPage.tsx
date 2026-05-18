@@ -41,8 +41,8 @@ function Navbar({ scrollY }: { scrollY: number }) {
           <a href="/dashboard" className="btn-outline px-5 py-2.5 rounded-xl text-sm font-semibold">
             Daxil Ol
           </a>
-          <a href="#contact" className="btn-primary ...">
-  Müraciət et <ArrowRight className="w-4 h-4" />
+          <a href="#contact" className="btn-primary px-5 py-2.5 rounded-xl text-sm font-semibold">
+  Müraciət et
 </a>
         </div>
 
@@ -58,9 +58,9 @@ function Navbar({ scrollY }: { scrollY: number }) {
           ))}
           <div className="flex flex-col gap-3 pt-2 border-t border-[#0a9396]/15">
             <a href="/dashboard" className="btn-outline px-5 py-2.5 rounded-xl text-sm font-semibold text-center">Daxil Ol</a>
-            <a href="#contact" className="btn-primary px-5 py-2.5 rounded-xl text-sm font-semibold">
-  Müraciət et
-</a>
+          <a href="#contact" className="btn-primary ...">
+  Müraciət Et <ArrowRight className="w-4 h-4" />
+</a>  
           </div>
         </div>
       )}
@@ -450,29 +450,31 @@ function CTASection() {
               <p className="text-[#94d2bd]/60 text-sm">Yaxında sizinlə əlaqə saxlayacağıq.</p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-3xl mx-auto">
-              <input
-                value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
-                placeholder="Tam ad" required
-                className="flex-1 px-4 py-4 rounded-xl text-white placeholder-[#94d2bd]/40 text-sm outline-none"
-                style={{ background: "rgba(0,18,25,0.6)", border: "1px solid rgba(10,147,150,0.25)" }}
-              />
-              <input
-                type="email" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
-                placeholder="E-mail" required
-                className="flex-1 px-4 py-4 rounded-xl text-white placeholder-[#94d2bd]/40 text-sm outline-none"
-                style={{ background: "rgba(0,18,25,0.6)", border: "1px solid rgba(10,147,150,0.25)" }}
-              />
-              <input
-                value={form.phone} onChange={e => setForm(p => ({ ...p, phone: e.target.value }))}
-                placeholder="Mobil nömrə"
-                className="flex-1 px-4 py-4 rounded-xl text-white placeholder-[#94d2bd]/40 text-sm outline-none"
-                style={{ background: "rgba(0,18,25,0.6)", border: "1px solid rgba(10,147,150,0.25)" }}
-              />
-              <button type="submit" className="btn-primary flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-sm font-semibold whitespace-nowrap">
-                Müraciət et
-              </button>
-            </form>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-3 max-w-2xl mx-auto">
+  <div className="flex flex-col sm:flex-row gap-3">
+    <input
+      value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
+      placeholder="Tam ad" required
+      className="flex-1 px-4 py-4 rounded-xl text-white placeholder-[#94d2bd]/40 text-sm outline-none"
+      style={{ background: "rgba(0,18,25,0.6)", border: "1px solid rgba(10,147,150,0.25)" }}
+    />
+    <input
+      type="email" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
+      placeholder="E-mail" required
+      className="flex-1 px-4 py-4 rounded-xl text-white placeholder-[#94d2bd]/40 text-sm outline-none"
+      style={{ background: "rgba(0,18,25,0.6)", border: "1px solid rgba(10,147,150,0.25)" }}
+    />
+    <input
+      value={form.phone} onChange={e => setForm(p => ({ ...p, phone: e.target.value }))}
+      placeholder="Mobil nömrə"
+      className="flex-1 px-4 py-4 rounded-xl text-white placeholder-[#94d2bd]/40 text-sm outline-none"
+      style={{ background: "rgba(0,18,25,0.6)", border: "1px solid rgba(10,147,150,0.25)" }}
+    />
+  </div>
+  <button type="submit" className="btn-primary w-full py-4 rounded-xl text-sm font-semibold">
+    Müraciət et
+  </button>
+</form>
           )}
         </div>
       </div>
