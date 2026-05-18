@@ -72,24 +72,23 @@ export default function AIAssistant() {
     setIsTyping(true);
 
     try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': import.meta.env.VITE_ANTHROPIC_API_KEY,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true',
-        },
-        body: JSON.stringify({
-          model: 'claude-haiku-4-5-20251001',
-          max_tokens: 300,
-          system: 'Sən enerji qənaət ekspertisən. Qısa, praktik və Azərbaycanca cavab ver. Maksimum 2-3 cümLə.',
-          messages: [{ role: 'user', content: question }],
-        }),
-      });
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{
+              parts: [{
+                text: `Sən enerji qənaət ekspertisən. Qısa, praktik və Azərbaycanca cavab ver. Maksimum 2-3 cümlə.\n\nSual: ${question}`
+              }]
+            }]
+          }),
+        }
+      );
 
       const data = await response.json();
-      const answer = data.content?.[0]?.text || 'Cavab alınmadı.';
+      const answer = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Cavab alınmadı.';
 
       setMessages((prev) => [...prev, {
         id: Date.now() + 1,
