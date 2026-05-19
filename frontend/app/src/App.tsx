@@ -16,17 +16,7 @@ import ForecastFullPage from './components/dashboard/ForecastFullPage';
 import SettingsPage from './components/dashboard/SettingsPage';
 import LandingPage from './pages/LandingPage';
 import AdminPage from './pages/AdminPage';
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY,
-  {
-    auth: {
-      persistSession: true,
-      storageKey: 'ecoai-auth',
-    }
-  }
-);
+import { supabase } from './lib/supabase';
 
 type Session = { user: { email?: string; id?: string } } | null;
 
