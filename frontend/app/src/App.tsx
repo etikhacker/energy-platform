@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from './lib/supabase';
 import LivingCanvas from './components/LivingCanvas';
 import Sidebar from './components/dashboard/Sidebar';
 import Header from './components/dashboard/Header';
@@ -16,7 +16,6 @@ import ForecastFullPage from './components/dashboard/ForecastFullPage';
 import SettingsPage from './components/dashboard/SettingsPage';
 import LandingPage from './pages/LandingPage';
 import AdminPage from './pages/AdminPage';
-import { supabase } from './lib/supabase';
 
 type Session = { user: { email?: string; id?: string } } | null;
 
