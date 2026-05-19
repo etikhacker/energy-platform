@@ -404,9 +404,9 @@ function HowItWorksSection() {
 
         <div className={`mt-16 text-center transition-all duration-700 delay-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
           <a href="/dashboard" className="btn-primary inline-flex items-center gap-2 px-10 py-4 rounded-2xl text-base font-semibold">
-            Dashboard-a keç — Pulsuz Sınaq
+            indi müraciət et
           </a>
-          <p className="text-[#94d2bd]/40 text-sm mt-3">Kredit kartı tələb edilmir</p>
+          <p className="text-[#94d2bd]/40 text-sm mt-3">AI gücünü keşf et</p>
         </div>
       </div>
     </section>
