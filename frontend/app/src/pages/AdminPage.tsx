@@ -36,18 +36,14 @@ export default function AdminPage() {
       return;
     }
 
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', session.user.id)
-      .single();
-
-    if (profile?.role === 'admin') {
+    // Email ilə yoxla — sadə və etibarlı
+    const adminEmail = import.meta.env.VITE_ADMIN_EMAIL;
+    if (session.user.email === adminEmail) {
       setIsAdmin(true);
       loadMuracietler();
     }
   } catch (err) {
-    console.error('Admin check error:', err);
+    console.error(err);
   } finally {
     setChecking(false);
   }
