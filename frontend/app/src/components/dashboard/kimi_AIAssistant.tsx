@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { Brain, TrendingDown, Sun, Bot, User, Send } from 'lucide-react';
 
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+
 interface Message {
   id: number;
   sender: 'ai' | 'user';
@@ -48,12 +50,8 @@ export default function AIAssistant() {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   const handleSend = async () => {
@@ -71,13 +69,23 @@ export default function AIAssistant() {
     setInput('');
     setIsTyping(true);
 
- try {
+    try {
       const response = await fetch(
-        `https://energy-platform-api.onrender.com/api/ai/ask?question=${encodeURIComponent(question)}`,
-        { method: 'POST' }
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            system_instruction: {
+              parts: [{ text: 'Sən enerji qənaət ekspertisən. Yalnız Azərbaycanca cavab ver. Qısa və praktik ol — maksimum 2-3 cümLə.' }]
+            },
+            contents: [{ parts: [{ text: question }] }],
+          }),
+        }
       );
+
       const data = await response.json();
-      const answer = data.answer || 'Cavab alınmadı.';
+      const answer = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Cavab alınmadı.';
 
       setMessages((prev) => [...prev, {
         id: Date.now() + 1,
