@@ -32,10 +32,9 @@ export default function AdminPage() {
     const { data: { session } } = await supabase.auth.getSession();
     
     if (!session) {
-      // Session yoxdur — dashboard-a yönləndir
-      window.location.href = '/dashboard';
-      return;
-    }
+  setChecking(false);
+  return; // isAdmin false qalır, "Giriş qadağandır" göstərilər
+}
 
     const { data: profile } = await supabase
       .from('profiles')
