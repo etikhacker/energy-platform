@@ -269,6 +269,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<DashboardApp />} />
       <Route path="/dashboard" element={<DashboardApp />} />
       <Route path="/admin" element={<AdminPage />} />
     </Routes>

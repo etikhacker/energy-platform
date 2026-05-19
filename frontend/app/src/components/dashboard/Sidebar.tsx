@@ -110,7 +110,7 @@ export default function Sidebar({ activeItem, onNavigate, onLogout, userEmail, u
             <button
              onClick={() => {
   localStorage.removeItem('ecoai-auth');
-  window.location.href = '/dashboard';
+  window.location.href = '/login';
 }}
               className="w-7 h-7 flex items-center justify-center rounded-lg transition-colors flex-shrink-0"
               style={{ color: 'rgba(255,255,255,0.35)' }}
