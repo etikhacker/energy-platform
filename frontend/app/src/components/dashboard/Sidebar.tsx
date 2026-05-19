@@ -1,3 +1,4 @@
+import { supabase } from '../../lib/supabase';
 import {
   LayoutDashboard,
   BarChart3,
@@ -107,9 +108,9 @@ export default function Sidebar({ activeItem, onNavigate, onLogout, userEmail, u
           {/* Logout */}
           {onLogout && (
             <button
-              onClick={() => {
-  onLogout?.();
-  setTimeout(() => window.location.href = '/dashboard', 300);
+             onClick={async () => {
+  await supabase.auth.signOut();
+  window.location.replace('/dashboard');
 }}
               className="w-7 h-7 flex items-center justify-center rounded-lg transition-colors flex-shrink-0"
               style={{ color: 'rgba(255,255,255,0.35)' }}
