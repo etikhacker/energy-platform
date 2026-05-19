@@ -38,7 +38,7 @@ function Navbar({ scrollY }: { scrollY: number }) {
         </div>
 
         <div className="hidden md:flex items-center gap-3">
-          <a href="/dashboard" className="btn-outline px-5 py-2.5 rounded-xl text-sm font-semibold">
+          <a href="/login" className="btn-outline px-5 py-2.5 rounded-xl text-sm font-semibold">
             Daxil Ol
           </a>
           <a href="#contact" className="btn-primary px-5 py-2.5 rounded-xl text-sm font-semibold">
