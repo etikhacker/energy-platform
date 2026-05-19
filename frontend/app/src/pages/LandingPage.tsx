@@ -310,14 +310,17 @@ function StatsSection() {
             </div>
             <div className="col-span-2">
               <div className="flex items-end gap-2 h-20">
-                {[40,55,45,65,58,75,70,85,78,90,88,95].map((h, i) => (
-                  <div key={i} className="flex-1 flex flex-col items-center justify-end gap-1">
-                    <div className="w-full rounded-t-md transition-all duration-1000"
-                      style={{ height: visible ? `${h}%` : "0%", background: `linear-gradient(180deg, #0a9396 0%, #2a9d8f 100%)`, transitionDelay: `${i * 60}ms`, opacity: 0.4 + (h / 100) * 0.6 }}
-                    />
-                  </div>
-                ))}
-              </div>
+  {[40,55,45,65,58,75,70,85,78,90,88,95].map((h, i) => (
+    <div key={i} className="flex-1 rounded-t-md"
+      style={{
+        height: `${h}%`,
+        background: `linear-gradient(180deg, #0a9396 0%, #2a9d8f 100%)`,
+        opacity: 0.4 + (h / 100) * 0.6,
+        transition: `height 1s ease ${i * 60}ms`,
+      }}
+    />
+  ))}
+</div>
               <div className="flex justify-between text-[#94d2bd]/40 text-xs mt-2">
                 {["Yan","Fev","Mar","Apr","May","İyn","İyl","Avq","Sen","Okt","Noy","Dek"].map(m => <span key={m}>{m}</span>)}
               </div>
