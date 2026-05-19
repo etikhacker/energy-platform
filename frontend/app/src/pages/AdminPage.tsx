@@ -32,9 +32,9 @@ export default function AdminPage() {
     const { data: { session } } = await supabase.auth.getSession();
     
     if (!session) {
-  setChecking(false);
-  return; // isAdmin false qalır, "Giriş qadağandır" göstərilər
-}
+      setChecking(false);
+      return;
+    }
 
     const { data: profile } = await supabase
       .from('profiles')
@@ -42,8 +42,6 @@ export default function AdminPage() {
       .eq('id', session.user.id)
       .single();
 
-    console.log('Profile:', profile); // debug üçün
-    
     if (profile?.role === 'admin') {
       setIsAdmin(true);
       loadMuracietler();
