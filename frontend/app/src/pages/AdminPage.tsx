@@ -17,6 +17,13 @@ interface Muraciet {
 }
 
 export default function AdminPage() {
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      console.log('SESSION:', data.session);
+      console.log('USER EMAIL:', data.session?.user?.email);
+      console.log('ADMIN EMAIL ENV:', import.meta.env.VITE_ADMIN_EMAIL);
+    });
+  }, []);
   const [muracietler, setMuracietler] = useState<Muraciet[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
