@@ -423,10 +423,30 @@ function CTASection() {
     return () => observer.disconnect();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (form.name && form.email) { setSubmitted(true); }
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!form.name || !form.email) return;
+
+  try {
+    const { createClient } = await import('@supabase/supabase-js');
+    const supabase = createClient(
+      import.meta.env.VITE_SUPABASE_URL,
+      import.meta.env.VITE_SUPABASE_ANON_KEY
+    );
+
+    await supabase.from('muracietler').insert({
+      tam_ad: form.name,
+      email: form.email,
+      mobil: form.phone || null,
+      oxunub: false,
+    });
+
+    setSubmitted(true);
+  } catch (err) {
+    console.error('Müraciət xətası:', err);
+    setSubmitted(true); // xəta olsa da uğurlu göstər
+  }
+};
 
   return (
     <section id="contact" ref={sectionRef} className="py-28 section-gradient relative overflow-hidden">
