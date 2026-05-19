@@ -39,9 +39,9 @@ export default function AdminPage() {
     const { data: { session } } = await supabase.auth.getSession();
     
     if (!session) {
-      setChecking(false);
-      return;
-    }
+  window.location.href = '/dashboard'; // login üçün
+  return;
+}
 
     // Email ilə yoxla — sadə və etibarlı
     const adminEmail = import.meta.env.VITE_ADMIN_EMAIL;
