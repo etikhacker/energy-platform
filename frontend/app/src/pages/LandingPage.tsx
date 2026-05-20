@@ -328,7 +328,7 @@ export default function EcoAI() {
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
               {heroStats.map((s) => (
-                <div data-reveal key={s.label} className="text-center glass rounded-2xl p-6">
+                <div data-reveal key={s.label} className="text-center glass rounded-2xl p-6 border border-[hsl(168_47%_71%/0.3)]">
                   <div className="text-4xl md:text-5xl font-semibold text-shimmer">
                     {s.value}<span className="text-2xl ml-0.5">{s.unit}</span>
                   </div>
@@ -337,7 +337,7 @@ export default function EcoAI() {
               ))}
             </div>
 
-            <div ref={chartRef} className="glass rounded-2xl p-6">
+            <div ref={chartRef} className="glass rounded-2xl p-6 min-h-[200px]">
               <div className="flex items-end justify-between mb-4 flex-wrap gap-3">
                 <div>
                   <h3 className="text-lg font-semibold">Aylıq enerji qənaəti</h3>
@@ -351,7 +351,7 @@ export default function EcoAI() {
                   <span className="text-[hsl(168_47%_71%)]">+18% YoY</span>
                 </div>
               </div>
-              <div className="flex items-end gap-2 md:gap-3 h-56">
+              <div className="flex items-end gap-2 md:gap-3 h-64">
                 {barData.map((v, i) => (
                   <div key={i} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
                     <div className="relative w-full flex items-end h-full">
@@ -389,7 +389,7 @@ export default function EcoAI() {
             {steps.map((s) => (
               <div data-reveal key={s.n} className="glass rounded-3xl p-7 relative hover:-translate-y-1 transition">
                 <div className="flex items-center justify-between mb-5">
-                  <span className="text-6xl font-semibold text-[hsl(168_47%_71%/0.18)] leading-none">{s.n}</span>
+                  <span className="text-6xl font-semibold text-[hsl(168_47%_71%/0.5)] leading-none">{s.n}</span>
                   <div className="w-12 h-12 rounded-2xl grid place-items-center glass-strong">
                     <s.icon className="w-5 h-5 text-[hsl(168_47%_71%)]" />
                   </div>
