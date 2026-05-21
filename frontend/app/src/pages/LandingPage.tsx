@@ -362,25 +362,25 @@ export default function LandingPage() {
                   <span className="text-[hsl(168_47%_71%)]">+18% YoY</span>
                 </div>
               </div>
-              <div className="flex items-end gap-2 md:gap-3 h-64">
-                {barData.map((v, i) => (
-                  <div key={i} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
-                    <div className="relative w-full flex items-end h-full">
-                      <div className="absolute -top-7 left-1/2 -translate-x-1/2 px-2 py-0.5 text-[10px] rounded-md glass-strong opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
-                        {v * 5} kWh
-                      </div>
-                      <div
-                        className="w-full rounded-t-lg bg-gradient-to-t from-[hsl(182_88%_31%)] to-[hsl(168_47%_71%)] shadow-[0_-4px_24px_-8px_hsl(168_47%_71%/0.6)] group-hover:from-[hsl(182_88%_41%)] group-hover:to-white"
-                        style={{
-                          height: chartVisible ? `${v}%` : "0%",
-                          transition: `height 1s cubic-bezier(.2,.7,.2,1) ${i * 70}ms, background 0.2s`,
-                        }}
-                      />
-                    </div>
-                    <span className="text-[10px] md:text-xs text-muted-foreground">{months[i]}</span>
-                  </div>
-                ))}
-              </div>
+              <div className="flex items-end gap-2 md:gap-3" style={{ height: 256 }}>
+  {barData.map((v, i) => (
+    <div key={i} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer" style={{ height: '100%' }}>
+      <div className="relative w-full flex items-end" style={{ height: '100%' }}>
+        <div className="absolute -top-7 left-1/2 -translate-x-1/2 px-2 py-0.5 text-[10px] rounded-md glass-strong opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
+          {v * 5} kWh
+        </div>
+        <div
+          className="w-full rounded-t-lg bg-gradient-to-t from-[hsl(182_88%_31%)] to-[hsl(168_47%_71%)]"
+          style={{
+            height: `${v}%`,
+            transition: `height 1s cubic-bezier(.2,.7,.2,1) ${i * 70}ms`,
+          }}
+        />
+      </div>
+      <span className="text-[10px] md:text-xs text-muted-foreground">{months[i]}</span>
+    </div>
+  ))}
+</div>
             </div>
           </div>
         </div>
