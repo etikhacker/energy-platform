@@ -7,7 +7,8 @@ import {
   Plug,
   Sparkles,
   PiggyBank,
-  Twitter,
+  Send,
+  Mail,
   Linkedin,
   Github,
   Facebook,
@@ -493,11 +494,17 @@ export default function LandingPage() {
                 AI-powered enerji optimallaşdırma platforması. Daha ağıllı, daha təmiz, daha sərfəli.
               </p>
               <div className="mt-5 flex items-center gap-3">
-                {[Twitter, Linkedin, Github, Facebook].map((Icon, i) => (
-                  <a key={i} href="#" className="w-9 h-9 grid place-items-center rounded-xl glass hover:bg-[hsl(168_47%_71%/0.12)] transition">
-                    <Icon className="w-4 h-4 text-[hsl(168_47%_71%)]" />
-                  </a>
-                ))}
+                {[
+  { Icon: Linkedin, href: "https://www.linkedin.com/in/omar-babayev-21888437b" },
+  { Icon: Github, href: "https://github.com/etikhacker" },
+  { Icon: Mail, href: "mailto:babayev.omr.23@gmail.com" },
+  { Icon: Send, href: "https://t.me/@EduTrackAssistantBot" },
+  { Icon: Facebook, href: "https://www.facebook.com/share/1BWb7iSsQ9/"}
+].map(({ Icon, href }) => (
+  <a key={href} href={href} target="_blank" rel="noopener noreferrer" className="w-9 h-9 grid place-items-center rounded-xl glass hover:bg-[hsl(168_47%_71%/0.12)] transition">
+    <Icon className="w-4 h-4 text-[hsl(168_47%_71%)]" />
+  </a>
+))}
               </div>
             </div>
             <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -516,7 +523,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="mt-12 pt-6 border-t border-[hsl(168_47%_71%/0.08)] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
-            <p>© 2025 EcoAI. Bütün hüquqlar qorunur.</p>
+            <p>© 2026 EcoAI. Bütün hüquqlar qorunur.</p>
             <p>Made with ⚡ in Baku</p>
           </div>
         </div>
