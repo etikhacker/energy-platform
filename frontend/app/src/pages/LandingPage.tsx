@@ -116,21 +116,15 @@ function useReveal() {
   }, []);
 }
 
-export default function EcoAI() {
+export default function LandingPage() {
   useReveal();
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
   const chartRef = useRef<HTMLDivElement>(null);
   const [chartVisible, setChartVisible] = useState(false);
 
   useEffect(() => {
-    if (!chartRef.current) return;
-    const io = new IntersectionObserver(
-      ([e]) => e.isIntersecting && setChartVisible(true),
-      { threshold: 0.3 }
-    );
-    io.observe(chartRef.current);
-    return () => io.disconnect();
-  }, []);
+  setChartVisible(true);
+}, []);
 
   const onSubmit = async (e: FormEvent) => {
   e.preventDefault();
@@ -182,8 +176,8 @@ export default function EcoAI() {
           </ul>
           <div className="flex items-center gap-2">
             <a href="/login" className="hidden sm:inline-flex items-center px-4 py-2 rounded-xl text-sm border border-[hsl(168_47%_71%/0.3)] text-[hsl(168_47%_71%)] hover:bg-[hsl(168_47%_71%/0.1)] transition">
-            Daxil Ol
-            </a>
+  Daxil Ol
+</a>
             <a href="#contact" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium bg-[hsl(182_88%_31%)] text-white hover:bg-[hsl(182_88%_36%)] shadow-[0_8px_24px_-8px_hsl(182_88%_31%/0.8)] transition">
               Müraciət et <ArrowRight className="w-4 h-4" />
             </a>
@@ -192,7 +186,7 @@ export default function EcoAI() {
       </header>
 
       {/* Hero — split layout with dashboard image */}
-      <section className="relative pt-32 md:pt-40 pb-20 px-4">
+      <section className="relative pt-40 md:pt-48 pb-20 px-4">
         <div className="mx-auto max-w-7xl grid lg:grid-cols-12 gap-10 items-center">
           <div className="lg:col-span-6">
             <div data-reveal className="inline-flex items-center gap-2 glass rounded-full px-4 py-1.5 text-xs text-[hsl(168_47%_71%)]">
@@ -255,7 +249,7 @@ export default function EcoAI() {
         {/* Hero stat strip */}
         <div data-reveal className="mx-auto max-w-7xl mt-20 grid grid-cols-2 md:grid-cols-4 gap-4">
           {heroStats.map((s) => (
-            <div key={s.label} className="glass rounded-2xl p-5 hover:-translate-y-1 transition group">
+            <div key={s.label} className="glass rounded-2xl p-5 hover:-translate-y-1 transition group border border-[hsl(168_47%_71%/0.2)]">
               <div className="flex items-center justify-between">
                 <div className="w-9 h-9 rounded-xl grid place-items-center bg-[hsl(182_88%_31%/0.2)] border border-[hsl(168_47%_71%/0.2)] group-hover:scale-110 transition">
                   <s.icon className="w-4 h-4 text-[hsl(168_47%_71%)]" />
@@ -404,7 +398,7 @@ export default function EcoAI() {
           <div className="relative grid md:grid-cols-3 gap-6">
             <div className="hidden md:block absolute top-20 left-[16%] right-[16%] h-px bg-gradient-to-r from-transparent via-[hsl(168_47%_71%/0.3)] to-transparent" />
             {steps.map((s) => (
-              <div data-reveal key={s.n} className="glass rounded-3xl p-7 relative hover:-translate-y-1 transition">
+              <div data-reveal key={s.n} className="glass rounded-3xl p-7 relative hover:-translate-y-1 transition border border-[hsl(168_47%_71%/0.25)]">
                 <div className="flex items-center justify-between mb-5">
                   <span className="text-6xl font-semibold text-[hsl(168_47%_71%/0.5)] leading-none">{s.n}</span>
                   <div className="w-12 h-12 rounded-2xl grid place-items-center glass-strong">
