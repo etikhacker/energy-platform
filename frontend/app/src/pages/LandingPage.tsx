@@ -132,15 +132,32 @@ export default function EcoAI() {
     return () => io.disconnect();
   }, []);
 
-  const onSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (!form.name || !form.email) {
-      toast.error("Zəhmət olmasa ad və e-mail daxil edin");
-      return;
-    }
-    toast.success("Müraciətiniz qəbul edildi", { description: "Komandamız tezliklə sizinlə əlaqə saxlayacaq." });
+  const onSubmit = async (e: FormEvent) => {
+  e.preventDefault();
+  if (!form.name || !form.email) {
+    toast.error("Zəhmət olmasa ad və e-mail daxil edin");
+    return;
+  }
+  try {
+    const { createClient } = await import('@supabase/supabase-js');
+    const supabase = createClient(
+      import.meta.env.VITE_SUPABASE_URL,
+      import.meta.env.VITE_SUPABASE_ANON_KEY
+    );
+    await supabase.from('muracietler').insert({
+      tam_ad: form.name,
+      email: form.email,
+      mobil: form.phone || null,
+      oxunub: false,
+    });
+    toast.success("Müraciətiniz qəbul edildi", {
+      description: "Komandamız tezliklə sizinlə əlaqə saxlayacaq."
+    });
     setForm({ name: "", email: "", phone: "" });
-  };
+  } catch {
+    toast.error("Xəta baş verdi, yenidən cəhd edin");
+  }
+};
 
   return (
     <div className="relative min-h-screen overflow-hidden text-foreground">
@@ -164,9 +181,9 @@ export default function EcoAI() {
             ))}
           </ul>
           <div className="flex items-center gap-2">
-            <button className="hidden sm:inline-flex items-center px-4 py-2 rounded-xl text-sm border border-[hsl(168_47%_71%/0.3)] text-[hsl(168_47%_71%)] hover:bg-[hsl(168_47%_71%/0.1)] transition">
-              Daxil Ol
-            </button>
+            <a href="/login" className="hidden sm:inline-flex items-center px-4 py-2 rounded-xl text-sm border border-[hsl(168_47%_71%/0.3)] text-[hsl(168_47%_71%)] hover:bg-[hsl(168_47%_71%/0.1)] transition">
+            Daxil Ol
+            </a>
             <a href="#contact" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium bg-[hsl(182_88%_31%)] text-white hover:bg-[hsl(182_88%_36%)] shadow-[0_8px_24px_-8px_hsl(182_88%_31%/0.8)] transition">
               Müraciət et <ArrowRight className="w-4 h-4" />
             </a>
