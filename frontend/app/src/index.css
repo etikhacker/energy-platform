@@ -153,3 +153,52 @@ body {
 .animate-float-slow {
   animation: float-slow 6s ease-in-out infinite;
 }
+
+/* ── Landing Page ── */
+.glass {
+  background: rgba(10, 147, 150, 0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(10, 147, 150, 0.15);
+}
+
+.glass-strong {
+  background: rgba(0, 18, 25, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(10, 147, 150, 0.2);
+}
+
+.grid-overlay {
+  background-image:
+    linear-gradient(rgba(10, 147, 150, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10, 147, 150, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.text-shimmer {
+  background: linear-gradient(90deg, #0a9396, #2a9d8f, #94d2bd, #2a9d8f, #0a9396);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s ease forwards;
+}
+
+:root {
+  --bg-deep: 182 88% 8%;
+}
