@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { supabase } from './lib/supabase';
+import { Toaster } from 'sonner';
 import LivingCanvas from './components/LivingCanvas';
 import Sidebar from './components/dashboard/Sidebar';
 import Header from './components/dashboard/Header';
@@ -267,11 +268,14 @@ function DashboardApp() {
 
 export default function App() {
   return (
+    <>
+      <Toaster position="top-right" richColors />
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<DashboardApp />} />
       <Route path="/dashboard" element={<DashboardApp />} />
       <Route path="/admin" element={<AdminPage />} />
     </Routes>
+    </>
   );
 }

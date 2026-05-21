@@ -205,7 +205,9 @@ export default function LandingPage() {
               <a href="#contact" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[hsl(182_88%_31%)] text-white font-medium hover:bg-[hsl(182_88%_36%)] shadow-[0_12px_32px_-10px_hsl(182_88%_31%/0.9)] transition">
                 Başla <ArrowRight className="w-4 h-4" />
               </a>
-              <button className="inline-flex items-center gap-2 px-6 py-3 rounded-xl glass hover:bg-[hsl(168_47%_71%/0.08)] transition">
+              <button
+              onClick={() => document.getElementById('how')?.scrollIntoView({ behavior: 'smooth' })}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl glass hover:bg-[hsl(168_47%_71%/0.08)] transition">
                 <PlayCircle className="w-5 h-5 text-[hsl(168_47%_71%)]" /> Demo İzlə
               </button>
             </div>
@@ -220,11 +222,14 @@ export default function LandingPage() {
             <div className="relative rounded-3xl overflow-hidden glass-strong p-2">
               <div className="absolute inset-0 bg-gradient-to-tr from-[hsl(182_88%_31%/0.4)] via-transparent to-[hsl(168_47%_71%/0.25)]" />
               <img
-                src={heroDashboard}
-                alt="EcoAI dashboard"
-                width={1600}
-                height={1100}
-                className="relative rounded-2xl w-full h-auto"
+                  src={heroDashboard}
+                  alt="EcoAI dashboard"
+                  width={1600}
+                  height={1100}
+                  className="relative rounded-2xl w-full h-auto"
+                  style={{
+                  animation: 'heroFloat 6s ease-in-out infinite',
+                }}
               />
             </div>
             {/* Floating mini cards */}
