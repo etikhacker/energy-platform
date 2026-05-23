@@ -202,7 +202,7 @@ export default function ForecastFullPage() {
       )}
 
       {/* Stat kartları */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${haftelik.length}, 1fr)`, gap: 10 }}>
         <div className="liquid-glass" style={{ padding: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
             <Sun style={{ width: 16, height: 16, color: '#e9d8a6' }} />
@@ -253,7 +253,9 @@ export default function ForecastFullPage() {
 
       {/* 7 günlük kartlar */}
       <div className="liquid-glass" style={{ padding: 16 }}>
-        <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: '0 0 16px 0' }}>7 Günlük Proqnoz</h3>
+        <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: '0 0 16px 0' }}>
+  {haftelik.length} Günlük Proqnoz
+</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 10 }}>
           {haftelik.map((g, i) => (
             <div key={i} style={{
