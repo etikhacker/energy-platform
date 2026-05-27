@@ -62,36 +62,29 @@ export default function SettingsPage() {
   const [saveMsg, setSaveMsg] = useState('');
   const [saving, setSaving] = useState(false);
 
-  // Profil state
-  const [profil, setProfil] = useState({
-    full_name: '',
-    email: '',
-    phone: '',
-    address: 'Bakı, Azərbaycan',
-  });
+  // Profil
+  const [profil, setProfil] = useState({ full_name: '', email: '', phone: '', address: 'Bakı, Azərbaycan' });
 
-  // Bildiriş state
+  // Şifrə — switch xaricində
+  const [curPass, setCurPass] = useState('');
+  const [newPass, setNewPass] = useState('');
+  const [confPass, setConfPass] = useState('');
+
+  // Bildiriş
   const [bildirish, setBildirish] = useState({
-    emailBildirish: true,
-    pikXeberdar: true,
-    batareyaXeberdar: false,
-    heftəlikHesabat: true,
-    sistemXeberdar: false,
+    emailBildirish: true, pikXeberdar: true,
+    batareyaXeberdar: false, heftəlikHesabat: true, sistemXeberdar: false,
   });
 
+  // Enerji
   const [enerji, setEnerji] = useState({
-    avtomatikOptimizasiya: true,
-    pikSaatlarindenQacin: true,
-    batareyaOncelik: false,
-    geceSaatlariSarj: true,
+    avtomatikOptimizasiya: true, pikSaatlarindenQacin: true,
+    batareyaOncelik: false, geceSaatlariSarj: true,
   });
 
-  const [gorunus, setGorunus] = useState({
-    animasiyalar: true,
-    kompaktGoruntuq: false,
-  });
+  // Görünüş
+  const [gorunus, setGorunus] = useState({ animasiyalar: true, kompaktGoruntuq: false });
 
-  // Supabase-dən profili yüklə
   useEffect(() => {
     const loadProfile = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -100,10 +93,7 @@ export default function SettingsPage() {
       setProfil(prev => ({ ...prev, email: user.email || '' }));
 
       const { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
+        .from('profiles').select('*').eq('id', user.id).single();
 
       if (profile) {
         setProfil({
@@ -117,13 +107,16 @@ export default function SettingsPage() {
     loadProfile();
   }, []);
 
+  const showMsg = (msg: string) => {
+    setSaveMsg(msg);
+    setTimeout(() => setSaveMsg(''), 3000);
+  };
+
   const saveProfil = async () => {
     setSaving(true);
-    setSaveMsg('');
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('İstifadəçi tapılmadı');
-
       const { error } = await supabase.from('profiles').upsert({
         id: user.id,
         full_name: profil.full_name,
@@ -131,25 +124,24 @@ export default function SettingsPage() {
         address: profil.address,
         updated_at: new Date().toISOString(),
       });
-
       if (error) throw error;
-      setSaveMsg('✓ Yadda saxlandı');
-    } catch (err) {
-      setSaveMsg('✗ Xəta baş verdi');
+      showMsg('✓ Yadda saxlandı');
+    } catch {
+      showMsg('✗ Xəta baş verdi');
     } finally {
       setSaving(false);
-      setTimeout(() => setSaveMsg(''), 3000);
     }
   };
 
-  const savePassword = async (current: string, newPass: string, confirm: string) => {
-    if (newPass !== confirm) { setSaveMsg('✗ Şifrələr uyğun deyil'); return; }
-    if (newPass.length < 6) { setSaveMsg('✗ Şifrə ən az 6 simvol olmalıdır'); return; }
+  const savePassword = async () => {
+    if (newPass !== confPass) { showMsg('✗ Şifrələr uyğun deyil'); return; }
+    if (newPass.length < 6) { showMsg('✗ Şifrə ən az 6 simvol olmalıdır'); return; }
     setSaving(true);
     const { error } = await supabase.auth.updateUser({ password: newPass });
     setSaving(false);
-    setSaveMsg(error ? '✗ Xəta baş verdi' : '✓ Şifrə yeniləndi');
-    setTimeout(() => setSaveMsg(''), 3000);
+    if (error) { showMsg('✗ Xəta baş verdi'); return; }
+    showMsg('✓ Şifrə yeniləndi');
+    setCurPass(''); setNewPass(''); setConfPass('');
   };
 
   const renderMezmun = () => {
@@ -161,7 +153,7 @@ export default function SettingsPage() {
             <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: '0 0 20px 0' }}>Profil Məlumatları</h3>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24, padding: 16, background: 'rgba(255,255,255,0.04)', borderRadius: 12 }}>
               <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(42,157,143,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, color: '#2a9d8f', fontWeight: 600 }}>
-                {profil.full_name ? profil.full_name[0].toUpperCase() : profil.email[0]?.toUpperCase() || 'U'}
+                {(profil.full_name?.[0] || profil.email?.[0] || 'U').toUpperCase()}
               </div>
               <div>
                 <p style={{ fontSize: 15, fontWeight: 600, color: '#fff', margin: 0 }}>{profil.full_name || 'İstifadəçi'}</p>
@@ -169,21 +161,25 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            <div style={{ marginBottom: 14 }}>
-              <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 6 }}>Ad Soyad</label>
-              <input value={profil.full_name} onChange={e => setProfil(p => ({ ...p, full_name: e.target.value }))} style={inputStyle} />
-            </div>
+            {[
+              { label: 'Ad Soyad', key: 'full_name', placeholder: 'Ömər Babayev' },
+              { label: 'Telefon', key: 'phone', placeholder: '+994 50 000 00 00' },
+              { label: 'Ünvan', key: 'address', placeholder: 'Bakı, Azərbaycan' },
+            ].map(f => (
+              <div key={f.key} style={{ marginBottom: 14 }}>
+                <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 6 }}>{f.label}</label>
+                <input
+                  value={profil[f.key as keyof typeof profil]}
+                  onChange={e => setProfil(p => ({ ...p, [f.key]: e.target.value }))}
+                  placeholder={f.placeholder}
+                  style={inputStyle}
+                />
+              </div>
+            ))}
+
             <div style={{ marginBottom: 14 }}>
               <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 6 }}>E-poçt</label>
               <input value={profil.email} disabled style={{ ...inputStyle, opacity: 0.5, cursor: 'not-allowed' }} />
-            </div>
-            <div style={{ marginBottom: 14 }}>
-              <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 6 }}>Telefon</label>
-              <input value={profil.phone} onChange={e => setProfil(p => ({ ...p, phone: e.target.value }))} placeholder="+994 50 000 00 00" style={inputStyle} />
-            </div>
-            <div style={{ marginBottom: 14 }}>
-              <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 6 }}>Ünvan</label>
-              <input value={profil.address} onChange={e => setProfil(p => ({ ...p, address: e.target.value }))} style={inputStyle} />
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 8 }}>
@@ -255,7 +251,7 @@ export default function SettingsPage() {
                   { ad: 'Gecə', reng: '#0d1117', kod: 'gece' },
                   { ad: 'Tünd Yaşıl', reng: '#001a1a', kod: 'yasil' },
                 ].map(r => (
-                  <div key={r.kod} onClick={() => setRengSxemi(r.kod)} style={{ padding: '10px 14px', borderRadius: 8, cursor: 'pointer', background: rengSxemi === r.kod ? 'rgba(42,157,143,0.15)' : 'rgba(255,255,255,0.05)', border: `1px solid ${rengSxemi === r.kod ? 'rgba(42,157,143,0.4)' : 'rgba(255,255,255,0.08)'}`, display: 'flex', alignItems: 'center', gap: 8, transition: 'all 0.2s' }}>
+                  <div key={r.kod} onClick={() => setRengSxemi(r.kod)} style={{ padding: '10px 14px', borderRadius: 8, cursor: 'pointer', background: rengSxemi === r.kod ? 'rgba(42,157,143,0.15)' : 'rgba(255,255,255,0.05)', border: `1px solid ${rengSxemi === r.kod ? 'rgba(42,157,143,0.4)' : 'rgba(255,255,255,0.08)'}`, display: 'flex', alignItems: 'center', gap: 8 }}>
                     <div style={{ width: 16, height: 16, borderRadius: 4, background: r.reng, border: '1px solid rgba(255,255,255,0.2)' }} />
                     <span style={{ fontSize: 12, color: rengSxemi === r.kod ? '#fff' : 'rgba(255,255,255,0.5)' }}>{r.ad}</span>
                     {rengSxemi === r.kod && <Check style={{ width: 12, height: 12, color: '#2a9d8f' }} />}
@@ -274,7 +270,7 @@ export default function SettingsPage() {
               <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 8 }}>İnterfeys Dili</label>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {[{ kod: 'az', ad: 'Azərbaycan dili' }, { kod: 'en', ad: 'English' }, { kod: 'ru', ad: 'Русский' }].map(d => (
-                  <div key={d.kod} onClick={() => setDil(d.kod)} style={{ padding: '12px 14px', borderRadius: 8, cursor: 'pointer', background: dil === d.kod ? 'rgba(42,157,143,0.12)' : 'rgba(255,255,255,0.04)', border: `1px solid ${dil === d.kod ? 'rgba(42,157,143,0.3)' : 'rgba(255,255,255,0.07)'}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'all 0.2s' }}>
+                  <div key={d.kod} onClick={() => setDil(d.kod)} style={{ padding: '12px 14px', borderRadius: 8, cursor: 'pointer', background: dil === d.kod ? 'rgba(42,157,143,0.12)' : 'rgba(255,255,255,0.04)', border: `1px solid ${dil === d.kod ? 'rgba(42,157,143,0.3)' : 'rgba(255,255,255,0.07)'}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <span style={{ fontSize: 13, color: '#fff' }}>{d.ad}</span>
                     {dil === d.kod && <Check style={{ width: 14, height: 14, color: '#2a9d8f' }} />}
                   </div>
@@ -285,34 +281,31 @@ export default function SettingsPage() {
               <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 8 }}>Valyuta</label>
               <div style={{ display: 'flex', gap: 8 }}>
                 {['USD', 'EUR', 'AZN'].map(v => (
-                  <div key={v} onClick={() => setValyuta(v)} style={{ padding: '8px 16px', borderRadius: 8, cursor: 'pointer', background: valyuta === v ? 'rgba(42,157,143,0.12)' : 'rgba(255,255,255,0.04)', border: `1px solid ${valyuta === v ? 'rgba(42,157,143,0.3)' : 'rgba(255,255,255,0.07)'}`, fontSize: 13, color: valyuta === v ? '#fff' : 'rgba(255,255,255,0.5)', transition: 'all 0.2s' }}>{v}</div>
+                  <div key={v} onClick={() => setValyuta(v)} style={{ padding: '8px 16px', borderRadius: 8, cursor: 'pointer', background: valyuta === v ? 'rgba(42,157,143,0.12)' : 'rgba(255,255,255,0.04)', border: `1px solid ${valyuta === v ? 'rgba(42,157,143,0.3)' : 'rgba(255,255,255,0.07)'}`, fontSize: 13, color: valyuta === v ? '#fff' : 'rgba(255,255,255,0.5)' }}>{v}</div>
                 ))}
               </div>
             </div>
           </div>
         );
 
-      case 'tehlukesiz': {
-        const [cur, setCur] = useState('');
-        const [nw, setNw] = useState('');
-        const [conf, setConf] = useState('');
+      case 'tehlukesiz':
         return (
           <div>
             <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: '0 0 20px 0' }}>Təhlükəsizlik</h3>
             <div style={{ marginBottom: 14 }}>
               <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 6 }}>Cari Şifrə</label>
-              <input type="password" value={cur} onChange={e => setCur(e.target.value)} placeholder="••••••••" style={inputStyle} />
+              <input type="password" value={curPass} onChange={e => setCurPass(e.target.value)} placeholder="••••••••" style={inputStyle} />
             </div>
             <div style={{ marginBottom: 14 }}>
               <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 6 }}>Yeni Şifrə</label>
-              <input type="password" value={nw} onChange={e => setNw(e.target.value)} placeholder="••••••••" style={inputStyle} />
+              <input type="password" value={newPass} onChange={e => setNewPass(e.target.value)} placeholder="••••••••" style={inputStyle} />
             </div>
             <div style={{ marginBottom: 14 }}>
               <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 6 }}>Şifrəni Təsdiqlə</label>
-              <input type="password" value={conf} onChange={e => setConf(e.target.value)} placeholder="••••••••" style={inputStyle} />
+              <input type="password" value={confPass} onChange={e => setConfPass(e.target.value)} placeholder="••••••••" style={inputStyle} />
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <button onClick={() => savePassword(cur, nw, conf)} disabled={saving} style={{ padding: '10px 24px', fontSize: 13, fontWeight: 500, background: '#2a9d8f', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
+              <button onClick={savePassword} disabled={saving} style={{ padding: '10px 24px', fontSize: 13, fontWeight: 500, background: '#2a9d8f', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
                 Şifrəni Yenilə
               </button>
               {saveMsg && <span style={{ fontSize: 13, color: saveMsg.includes('✓') ? '#2a9d8f' : '#e63946' }}>{saveMsg}</span>}
@@ -320,11 +313,12 @@ export default function SettingsPage() {
             <div style={{ marginTop: 24, padding: 16, background: 'rgba(230,57,70,0.08)', borderRadius: 10, border: '1px solid rgba(230,57,70,0.2)' }}>
               <p style={{ fontSize: 13, color: '#e63946', fontWeight: 500, margin: '0 0 6px 0' }}>Hesabı Sil</p>
               <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', margin: '0 0 12px 0' }}>Bu əməliyyat geri qaytarıla bilməz.</p>
-              <button style={{ padding: '8px 16px', fontSize: 12, background: 'transparent', color: '#e63946', border: '1px solid rgba(230,57,70,0.4)', borderRadius: 6, cursor: 'pointer' }}>Hesabı Sil</button>
+              <button onClick={async () => { if (confirm('Əminsiniz?')) { await supabase.auth.signOut(); window.location.href = '/login'; } }} style={{ padding: '8px 16px', fontSize: 12, background: 'transparent', color: '#e63946', border: '1px solid rgba(230,57,70,0.4)', borderRadius: 6, cursor: 'pointer' }}>
+                Hesabı Sil
+              </button>
             </div>
           </div>
         );
-      }
 
       default: return null;
     }
