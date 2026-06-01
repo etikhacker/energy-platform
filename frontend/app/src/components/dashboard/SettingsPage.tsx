@@ -56,7 +56,17 @@ const inputStyle: React.CSSProperties = {
 
 export default function SettingsPage() {
   const [aktivBolme, setAktivBolme] = useState('profil');
-  const [rengSxemi, setRengSxemi] = useState('okean');
+  const [rengSxemi, setRengSxemi] = useState(() => localStorage.getItem('theme') || 'okean');
+  const changeTheme = (kod: string) => {
+  setRengSxemi(kod);
+  localStorage.setItem('theme', kod);
+  const colors: Record<string, string> = {
+    okean: '#001219',
+    gece: '#0d1117',
+    yasil: '#001a1a',
+  };
+  document.body.style.background = colors[kod];
+};
   const [dil, setDil] = useState('az');
   const [valyuta, setValyuta] = useState('USD');
   const [saveMsg, setSaveMsg] = useState('');
@@ -251,7 +261,7 @@ export default function SettingsPage() {
                   { ad: 'Gecə', reng: '#0d1117', kod: 'gece' },
                   { ad: 'Tünd Yaşıl', reng: '#001a1a', kod: 'yasil' },
                 ].map(r => (
-                  <div key={r.kod} onClick={() => setRengSxemi(r.kod)} style={{ padding: '10px 14px', borderRadius: 8, cursor: 'pointer', background: rengSxemi === r.kod ? 'rgba(42,157,143,0.15)' : 'rgba(255,255,255,0.05)', border: `1px solid ${rengSxemi === r.kod ? 'rgba(42,157,143,0.4)' : 'rgba(255,255,255,0.08)'}`, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div key={r.kod} onClick={() => changeTheme(r.kod)} style={{ padding: '10px 14px', borderRadius: 8, cursor: 'pointer', background: rengSxemi === r.kod ? 'rgba(42,157,143,0.15)' : 'rgba(255,255,255,0.05)', border: `1px solid ${rengSxemi === r.kod ? 'rgba(42,157,143,0.4)' : 'rgba(255,255,255,0.08)'}`, display: 'flex', alignItems: 'center', gap: 8 }}>
                     <div style={{ width: 16, height: 16, borderRadius: 4, background: r.reng, border: '1px solid rgba(255,255,255,0.2)' }} />
                     <span style={{ fontSize: 12, color: rengSxemi === r.kod ? '#fff' : 'rgba(255,255,255,0.5)' }}>{r.ad}</span>
                     {rengSxemi === r.kod && <Check style={{ width: 12, height: 12, color: '#2a9d8f' }} />}
