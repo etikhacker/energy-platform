@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface HeaderProps {
   userEmail?: string;
@@ -7,15 +8,16 @@ interface HeaderProps {
 }
 
 const pageTitles: Record<string, string> = {
-  dashboard: 'İdarə Paneli',
-  analytics: 'Analitika',
-  grid: 'Şəbəkə',
-  devices: 'Cihazlar',
-  forecast: 'Proqnoz',
-  settings: 'Parametrlər',
+  dashboard: 'idarePaneli',
+  analytics: 'analitika',
+  grid: 'sebeke',
+  devices: 'cihazlar',
+  forecast: 'proqnoz',
+  settings: 'parametrler',
 };
 
 export default function Header({ userEmail, userName, activeNav = 'dashboard' }: HeaderProps) {
+  const { t, i18n } = useTranslation();
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -23,18 +25,18 @@ export default function Header({ userEmail, userName, activeNav = 'dashboard' }:
     return () => clearInterval(timer);
   }, []);
 
-  const formattedTime = time.toLocaleTimeString('az-AZ', {
+  const formattedTime = time.toLocaleTimeString(i18n.language === 'az' ? 'az-AZ' : i18n.language === 'ru' ? 'ru-RU' : 'en-US', {
     hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
   });
 
-  const formattedDate = time.toLocaleDateString('az-AZ', {
+  const formattedDate = time.toLocaleDateString(i18n.language === 'az' ? 'az-AZ' : i18n.language === 'ru' ? 'ru-RU' : 'en-US', {
     day: 'numeric', month: 'long', year: 'numeric',
   });
 
   const hour = time.getHours();
-  let greeting = 'Xoş axşamlar';
-  if (hour < 12) greeting = 'Sabahınız xeyir';
-  else if (hour < 18) greeting = 'Günortanız xeyir';
+  let greetingKey = 'axsaminiz';
+  if (hour < 12) greetingKey = 'sabahinizyeir';
+  else if (hour < 18) greetingKey = 'gunortan';
 
   const displayName = userName || userEmail?.split('@')[0] || 'İstifadəçi';
   const firstName = displayName.split(' ')[0];
@@ -51,7 +53,7 @@ export default function Header({ userEmail, userName, activeNav = 'dashboard' }:
       }}
     >
       <h2 className="text-[20px] font-medium text-white">
-        {pageTitles[activeNav] || 'İdarə Paneli'}
+        {t(pageTitles[activeNav] || 'idarePaneli')}
       </h2>
 
       <div className="flex items-center gap-2">
@@ -62,7 +64,7 @@ export default function Header({ userEmail, userName, activeNav = 'dashboard' }:
       </div>
 
       <p className="text-[13px] font-normal" style={{ color: 'rgba(255,255,255,0.65)' }}>
-        {greeting}, <span style={{ color: '#94d2bd', fontWeight: 500 }}>{firstName}</span>
+        {t(greetingKey)}, <span style={{ color: '#94d2bd', fontWeight: 500 }}>{firstName}</span>
       </p>
     </header>
   );

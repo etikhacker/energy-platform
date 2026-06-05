@@ -1,4 +1,5 @@
 import { supabase } from '../../lib/supabase';
+import { useTranslation } from 'react-i18next';
 import {
   LayoutDashboard,
   BarChart3,
@@ -19,15 +20,16 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { id: 'dashboard', label: 'İdarə Paneli', icon: LayoutDashboard },
-  { id: 'analytics', label: 'Analitika',    icon: BarChart3 },
-  { id: 'grid',      label: 'Şəbəkə',       icon: UtilityPole },
-  { id: 'devices',   label: 'Cihazlar',     icon: Cpu },
-  { id: 'forecast',  label: 'Proqnoz',      icon: CloudSun },
-  { id: 'settings',  label: 'Parametrlər',  icon: Settings },
+  { id: 'dashboard', labelKey: 'idarePaneli', icon: LayoutDashboard },
+  { id: 'analytics', labelKey: 'analitika',    icon: BarChart3 },
+  { id: 'grid',      labelKey: 'sebeke',       icon: UtilityPole },
+  { id: 'devices',   labelKey: 'cihazlar',     icon: Cpu },
+  { id: 'forecast',  labelKey: 'proqnoz',      icon: CloudSun },
+  { id: 'settings',  labelKey: 'parametrler',  icon: Settings },
 ];
 
 export default function Sidebar({ activeItem, onNavigate, onLogout, userEmail, userName }: SidebarProps) {
+  const { t, i18n } = useTranslation();
   const displayName = userName || userEmail?.split('@')[0] || 'İstifadəçi';
   const initials = displayName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
 
@@ -52,7 +54,7 @@ export default function Sidebar({ activeItem, onNavigate, onLogout, userEmail, u
               EcoAI
             </h1>
             <p className="text-[12px] font-mono-data mt-1" style={{ color: 'rgba(255,255,255,0.5)', letterSpacing: '0.12em' }}>
-              ENERJİ
+              {i18n.language === 'az' ? 'ENERJİ' : i18n.language === 'en' ? 'ENERGY' : 'ЭНЕРГИЯ'}
             </p>
           </div>
         </div>
@@ -76,7 +78,7 @@ export default function Sidebar({ activeItem, onNavigate, onLogout, userEmail, u
               }}
             >
               <Icon className="w-[18px] h-[18px]" style={{ color: isActive ? '#0a9396' : 'rgba(255,255,255,0.35)' }} />
-              <span>{item.label}</span>
+              <span>{t(item.labelKey)}</span>
             </button>
           );
         })}
@@ -108,15 +110,15 @@ export default function Sidebar({ activeItem, onNavigate, onLogout, userEmail, u
           {/* Logout */}
           {onLogout && (
             <button
-             onClick={() => {
-  localStorage.removeItem('ecoai-auth');
-  window.location.href = '/login';
-}}
+              onClick={() => {
+                localStorage.removeItem('ecoai-auth');
+                window.location.href = '/login';
+              }}
               className="w-7 h-7 flex items-center justify-center rounded-lg transition-colors flex-shrink-0"
               style={{ color: 'rgba(255,255,255,0.35)' }}
               onMouseEnter={(e) => (e.currentTarget.style.color = '#e63946')}
               onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.35)')}
-              title="Çıxış"
+              title={i18n.language === 'az' ? 'Çıxış' : i18n.language === 'en' ? 'Log Out' : 'Выход'}
             >
               <LogOut className="w-4 h-4" />
             </button>
