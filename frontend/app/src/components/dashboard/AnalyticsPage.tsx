@@ -33,7 +33,6 @@ export default function AnalyticsPage() {
   const { t, i18n } = useTranslation();
   const [period, setPeriod] = useState<'Həftəlik' | 'Aylıq'>('Aylıq');
 
-  // Məlumat massivləri tərcümə funksiyasının işləməsi üçün komponent daxilinə köçürüldü
   const monthlyData = [
     { ay: t('months.0', { defaultValue: 'Yan' }), gunesh: 420, sebeke: 180 },
     { ay: t('months.1', { defaultValue: 'Fev' }), gunesh: 390, sebeke: 210 },
@@ -127,7 +126,7 @@ export default function AnalyticsPage() {
             <div style={{ display: 'flex', gap: 4 }}>
               {[
                 { kod: 'Həftəlik', ad: i18n.language === 'az' ? 'Həftəlik' : i18n.language === 'en' ? 'Weekly' : 'Еженедельно' },
-                { kod: 'Aylıq', ad: i18n.language === 'az' ? 'Aylıq' : i18n.language === 'en' ? 'Monthly' : 'Ежемесяčno' }
+                { kod: 'Aylıq', ad: i18n.language === 'az' ? 'Aylıq' : i18n.language === 'en' ? 'Monthly' : 'Ежемесячно' }
               ].map((p) => (
                 <button key={p.kod} onClick={() => setPeriod(p.kod as any)} style={{
                   padding: '4px 12px', fontSize: 11, borderRadius: 6, border: 'none', cursor: 'pointer',
@@ -141,7 +140,7 @@ export default function AnalyticsPage() {
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={currentData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
-              <XAxis dataKey={xKey} tick={{ fill: 'rgba(255,255,255,0.45)', fontSize: 11, fontFamily: 'JetBrains Mono' }} axisLine={{ stroke: 'rgba(255,255,255,0.06)' }} tickLine={false} />
+              <XAxis dataKey="xKey" tick={{ fill: 'rgba(255,255,255,0.45)', fontSize: 11, fontFamily: 'JetBrains Mono' }} axisLine={{ stroke: 'rgba(255,255,255,0.06)' }} tickLine={false} />
               <YAxis tick={{ fill: 'rgba(255,255,255,0.45)', fontSize: 11, fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip />} />
               <Bar dataKey="gunesh" name={energyLabels.solar} fill="#e9d8a6" opacity={0.85} radius={[3,3,0,0]} />
@@ -172,7 +171,7 @@ export default function AnalyticsPage() {
           </ResponsiveContainer>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 4 }}>
             {enerjiPay.map((e, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <div style={{ width: 8, height: 8, borderRadius: '50%', background: e.color }} />
                   <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)' }}>{e.name}</span>

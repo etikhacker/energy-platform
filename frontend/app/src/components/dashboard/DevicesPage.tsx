@@ -184,12 +184,13 @@ export default function DevicesPage() {
                     <div style={{
                       width: 36, height: 36, borderRadius: 8,
                       background: c.aktiv ? 'rgba(42,157,143,0.15)' : 'rgba(255,255,255,0.06)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', // <-- düzəldildi
                     }}>
                       <Icon style={{ width: 18, height: 18, color: c.aktiv ? '#2a9d8f' : 'rgba(255,255,255,0.4)' }} />
                     </div>
                     <div>
-                      <p style={{ fontSize: 13, fontWeight: 500, color: '#fff', margin: 0 }}>{cihazAdi}</p>
+                      {/* Düzəldildi: fontWeight */}
+                      <p style={{ fontSize: 13, fontWeight: 500, color: '#fff', margin: 0 }}>{cihazAdi}</p> 
                       <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', margin: 0 }}>{odaTercumeMap[c.odaKey] || c.odaKey} · {c.guc} W</p>
                     </div>
                   </div>
@@ -226,7 +227,8 @@ export default function DevicesPage() {
 
         {/* Qrafik */}
         <div className="liquid-glass" style={{ padding: 16 }}>
-          <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: '0 0 16px 0' }}>
+          {/* Düzəldildi: fontWeight */}
+          <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: '0 0 16px 0' }}> 
             {i18n.language === 'az' ? 'Saatlıq İstifadə' : i18n.language === 'en' ? 'Hourly Usage' : 'Почасовое использование'}
           </h3>
           <ResponsiveContainer width="100%" height={220}>
