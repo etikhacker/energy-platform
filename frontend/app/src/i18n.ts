@@ -266,6 +266,9 @@ i18n
     lng: localStorage.getItem('ecoai_lang') || 'az',
     fallbackLng: 'az',
     interpolation: { escapeValue: false },
+    react: {
+      useSuspense: false // <-- Bu sətir sonsuz yüklənmə xətasını tamamilə həll edir!
+    },
     detection: {
       order: ['localStorage', 'navigator'],
       caches: ['localStorage']
