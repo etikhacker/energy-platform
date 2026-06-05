@@ -19,7 +19,9 @@ import {
   TrendingUp,
   Check,
   Cpu,
-  Globe
+  Globe,
+  Calendar,
+  Activity
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -47,6 +49,17 @@ interface StepItem {
 interface FooterCol {
   title: string;
   links: string[];
+}
+
+interface StatItem {
+  label: string;
+  value: string;
+  desc: string;
+  pct: string;
+  pctUp: boolean;
+  color: string;
+  glow: string;
+  icon: React.ComponentType<{ className?: string }>;
 }
 
 const nav: NavItem[] = [
@@ -85,6 +98,22 @@ const steps: StepItem[] = [
   { n: "02", icon: Sparkles, title: "Süni İntellekt Analizi", desc: "Sistem evinizin enerji profilini çıxarır, anomal yüklənmələri təyin edir və şəxsi strategiya hazırlayır." },
   { n: "03", icon: PiggyBank, title: "Avtomatlaşdırılmış Qənaət", desc: "EcoAI sizin yerinizə qərarlar qəbul edərək aylıq enerji xərclərini 40%-ə qədər aşağı salır." },
 ];
+
+// Statistika Bölməsi üçün Göstəricilər
+const statsData: StatItem[] = [
+  { label: "Solar İstehsal", value: "720 kWh", desc: "Aylıq ümumi istehsal", pct: "+14.8%", pctUp: true, color: "#fbbf24", glow: "rgba(250,204,21,0.2)", icon: Sun },
+  { label: "Ağıllı Qənaət", value: "₼184.50", desc: "Tarif fərqindən qənaət", pct: "+28.2%", pctUp: true, color: "#10b981", glow: "rgba(16,185,129,0.2)", icon: PiggyBank },
+  { label: "Azaldılmış CO₂", value: "1.2 Ton", desc: "Atmosferə buraxılmayan karbon", pct: "-18.5%", pctUp: true, color: "#64ffda", glow: "rgba(100,255,218,0.2)", icon: Leaf },
+  { label: "Şəbəkə Asılılığı", value: "14.2%", desc: "Dövlət xəttindən asılılıq", pct: "-45.0%", pctUp: false, color: "#ef4444", glow: "rgba(239,68,68,0.2)", icon: Zap }
+];
+
+const months = ["Yan", "Fev", "Mar", "Apr", "May", "İyn", "İyl", "Avq", "Sen", "Okt", "Noy", "Dek"];
+
+// Dinamik Qrafik Məlumatları (Production vs Consumption)
+const chartData = {
+  production: [42, 58, 51, 67, 73, 81, 88, 84, 76, 69, 78, 92],
+  consumption: [68, 62, 58, 45, 40, 32, 28, 35, 41, 52, 60, 71]
+};
 
 const footerCols: FooterCol[] = [
   { title: "Məhsul", links: ["Dashboard", "Analitika", "AI Optimizer", "Grid İdarəsi"] },
@@ -297,6 +326,7 @@ function TiltCard({
 export default function LandingPage() {
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<"production" | "consumption">("production");
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -318,7 +348,7 @@ export default function LandingPage() {
         oxunub: false,
       });
       toast.success("Müraciətiniz qəbul edildi", {
-        description: "Komandamız tezliklə sizinlə əlaqə saxlayacak."
+        description: "Komandamız tezliklə sizinlə əlaqə saxlayacaq."
       });
       setForm({ name: "", email: "", phone: "" });
     } catch {
@@ -474,6 +504,105 @@ export default function LandingPage() {
 
               </TiltCard>
             ))}
+          </div>
+
+        </div>
+      </section>
+
+      {/* DİNAMİK VƏ İNTERAKTİV 3D STATİSTİKA BÖLMƏSİ */}
+      <section id="stats" className="relative py-32 px-6 border-t border-white/5">
+        <div className="mx-auto max-w-7xl">
+          
+          <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+            <span className="text-[#64ffda] text-xs font-bold tracking-[0.3em] uppercase">CANLI GÖSTƏRİCİLƏR</span>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Ölçülə Bilən <span className="text-shimmer bg-gradient-to-r from-[#64ffda] to-[#00e699]">Nəticələr</span></h2>
+            <p className="text-gray-400">Süni intellekt tərəfindən idarə olunan sisteminizin real vaxt qənaət balansı.</p>
+          </div>
+
+          {/* 3D Göstərici Kartları */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+            {statsData.map((s: StatItem, i: number) => (
+              <TiltCard key={i} intensity={8} className="relative group rounded-2xl border border-white/5 bg-gradient-to-br from-white/5 to-transparent p-6 hover:border-[#64ffda]/20 transition-all" style={{ transformStyle: "preserve-3d" }}>
+                <div 
+                  className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-500 pointer-events-none"
+                  style={{ background: s.glow, filter: "blur(30px)", transform: "translateZ(-10px)" }}
+                />
+                
+                <div className="flex justify-between items-start" style={{ transform: "translateZ(45px)" }}>
+                  <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center" style={{ color: s.color }}>
+                    <s.icon className="w-5 h-5" />
+                  </div>
+                  <span className={`text-xs font-bold px-2 py-1 rounded-md ${s.pctUp ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
+                    {s.pct}
+                  </span>
+                </div>
+
+                <div className="mt-6 space-y-1" style={{ transform: "translateZ(70px)" }}>
+                  <h4 className="text-3xl font-black text-white">{s.value}</h4>
+                  <p className="text-sm font-bold text-gray-300">{s.label}</p>
+                  <p className="text-[10px] text-gray-500">{s.desc}</p>
+                </div>
+              </TiltCard>
+            ))}
+          </div>
+
+          {/* İnteraktiv Qrafik Paneli */}
+          <div className="rounded-3xl border border-white/5 bg-gradient-to-b from-white/5 to-transparent p-6 md:p-10 backdrop-blur-md">
+            
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-8">
+              <div className="space-y-1">
+                <h3 className="text-xl font-bold flex items-center gap-2">
+                  <Activity className="w-5 h-5 text-[#64ffda]" /> İllik Analitika Hesabatı
+                </h3>
+                <p className="text-xs text-gray-500">Hər ay üçün sistemin real vaxt enerji paylanması (kWh)</p>
+              </div>
+
+              {/* Dinamik Tab Keçid Düymələri */}
+              <div className="flex bg-white/5 p-1 rounded-xl border border-white/5">
+                <button
+                  onClick={() => setActiveTab("production")}
+                  className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-300 ${activeTab === "production" ? "bg-[#64ffda] text-[#030d0a] shadow-md" : "text-gray-400 hover:text-white"}`}
+                >
+                  Enerji İstehsalı
+                </button>
+                <button
+                  onClick={() => setActiveTab("consumption")}
+                  className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-300 ${activeTab === "consumption" ? "bg-[#ef4444] text-white shadow-md" : "text-gray-400 hover:text-white"}`}
+                >
+                  Enerji İstehlakı
+                </button>
+              </div>
+            </div>
+
+            {/* Dinamik Bar Qrafiki */}
+            <div className="flex items-end h-64 gap-2 md:gap-4 border-b border-white/5 pb-2 relative">
+              {chartData[activeTab].map((v: number, i: number) => (
+                <div key={i} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer h-full justify-end relative">
+                  
+                  {/* Hover vaxtı öndə açılan Şüşə Göstərici Panel (3D Pop) */}
+                  <div className="absolute bottom-full mb-3 px-3 py-1.5 text-[10px] rounded-lg glass-strong border border-white/10 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none transform translate-y-2 group-hover:translate-y-0 z-20 whitespace-nowrap shadow-xl">
+                    <span className="font-extrabold text-white">{v * 6} kWh</span>
+                  </div>
+
+                  {/* Dinamik Bar */}
+                  <div 
+                    className="w-full rounded-t-lg transition-all duration-1000 ease-out"
+                    style={{
+                      height: `${v}%`,
+                      background: activeTab === "production" 
+                        ? "linear-gradient(to top, #10b981, #64ffda)" 
+                        : "linear-gradient(to top, #b91c1c, #ef4444)",
+                      boxShadow: activeTab === "production"
+                        ? "0 0 15px rgba(100, 255, 218, 0.15)"
+                        : "0 0 15px rgba(239, 68, 68, 0.15)"
+                    }}
+                  />
+
+                  <span className="text-[10px] md:text-xs text-gray-500 font-semibold">{months[i]}</span>
+                </div>
+              ))}
+            </div>
+
           </div>
 
         </div>
