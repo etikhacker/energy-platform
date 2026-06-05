@@ -33,6 +33,7 @@ export default function AnalyticsPage() {
   const { t, i18n } = useTranslation();
   const [period, setPeriod] = useState<'Həftəlik' | 'Aylıq'>('Aylıq');
 
+  // Məlumat massivləri tərcümə funksiyasının işləməsi üçün komponent daxilinə köçürüldü
   const monthlyData = [
     { ay: t('months.0', { defaultValue: 'Yan' }), gunesh: 420, sebeke: 180 },
     { ay: t('months.1', { defaultValue: 'Fev' }), gunesh: 390, sebeke: 210 },
@@ -126,7 +127,7 @@ export default function AnalyticsPage() {
             <div style={{ display: 'flex', gap: 4 }}>
               {[
                 { kod: 'Həftəlik', ad: i18n.language === 'az' ? 'Həftəlik' : i18n.language === 'en' ? 'Weekly' : 'Еженедельно' },
-                { kod: 'Aylıq', ad: i18n.language === 'az' ? 'Aylıq' : i18n.language === 'en' ? 'Monthly' : 'Ежемесячно' }
+                { kod: 'Aylıq', ad: i18n.language === 'az' ? 'Aylıq' : i18n.language === 'en' ? 'Monthly' : 'Ежемесяčno' }
               ].map((p) => (
                 <button key={p.kod} onClick={() => setPeriod(p.kod as any)} style={{
                   padding: '4px 12px', fontSize: 11, borderRadius: 6, border: 'none', cursor: 'pointer',
