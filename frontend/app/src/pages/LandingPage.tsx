@@ -94,6 +94,60 @@ function Logo() {
   );
 }
 
+// 3D Effekt üçün Yerli Komponent (Fayl daxilində işləyir)
+function LocalCard3D({
+  children,
+  className = "",
+  intensity = 12,
+  style = {},
+}: {
+  children: React.ReactNode;
+  className?: string;
+  intensity?: number;
+  style?: React.CSSProperties;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [rotateX, setRotateX] = useState(0);
+  const [rotateY, setRotateY] = useState(0);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const card = cardRef.current;
+    const rect = card.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left - width / 2;
+    const mouseY = e.clientY - rect.top - height / 2;
+
+    const rY = (mouseX / (width / 2)) * intensity;
+    const rX = -(mouseY / (height / 2)) * intensity;
+
+    setRotateX(rX);
+    setRotateY(rY);
+  };
+
+  const handleMouseLeave = () => {
+    setRotateX(0);
+    setRotateY(0);
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className={`transition-all duration-300 ease-out ${className}`}
+      style={{
+        ...style,
+        transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+        transformStyle: "preserve-3d",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 function useReveal() {
   useEffect(() => {
     const els = document.querySelectorAll<HTMLElement>("[data-reveal]");
@@ -120,39 +174,43 @@ function useReveal() {
 export default function LandingPage() {
   useReveal();
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
+  const [loading, setLoading] = useState(false); // Form göndərmə loading state-i
   const chartRef = useRef<HTMLDivElement>(null);
   const [chartVisible, setChartVisible] = useState(false);
 
   useEffect(() => {
-  setChartVisible(true);
-}, []);
+    setChartVisible(true);
+  }, []);
 
   const onSubmit = async (e: FormEvent) => {
-  e.preventDefault();
-  if (!form.name || !form.email) {
-    toast.error("Zəhmət olmasa ad və e-mail daxil edin");
-    return;
-  }
-  try {
-    const { createClient } = await import('@supabase/supabase-js');
-    const supabase = createClient(
-      import.meta.env.VITE_SUPABASE_URL,
-      import.meta.env.VITE_SUPABASE_ANON_KEY
-    );
-    await supabase.from('muracietler').insert({
-      tam_ad: form.name,
-      email: form.email,
-      mobil: form.phone || null,
-      oxunub: false,
-    });
-    toast.success("Müraciətiniz qəbul edildi", {
-      description: "Komandamız tezliklə sizinlə əlaqə saxlayacaq."
-    });
-    setForm({ name: "", email: "", phone: "" });
-  } catch {
-    toast.error("Xəta baş verdi, yenidən cəhd edin");
-  }
-};
+    e.preventDefault();
+    if (!form.name || !form.email) {
+      toast.error("Zəhmət olmasa ad və e-mail daxil edin");
+      return;
+    }
+    setLoading(true);
+    try {
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(
+        import.meta.env.VITE_SUPABASE_URL,
+        import.meta.env.VITE_SUPABASE_ANON_KEY
+      );
+      await supabase.from('muracietler').insert({
+        tam_ad: form.name,
+        email: form.email,
+        mobil: form.phone || null,
+        oxunub: false,
+      });
+      toast.success("Müraciətiniz qəbul edildi", {
+        description: "Komandamız tezliklə sizinlə əlaqə saxlayacaq."
+      });
+      setForm({ name: "", email: "", phone: "" });
+    } catch {
+      toast.error("Xəta baş verdi, yenidən cəhd edin");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="relative min-h-screen overflow-hidden text-foreground">
@@ -177,8 +235,8 @@ export default function LandingPage() {
           </ul>
           <div className="flex items-center gap-2">
             <a href="/login" className="hidden sm:inline-flex items-center px-4 py-2 rounded-xl text-sm border border-[hsl(168_47%_71%/0.3)] text-[hsl(168_47%_71%)] hover:bg-[hsl(168_47%_71%/0.1)] transition">
-  Daxil Ol
-</a>
+              Daxil Ol
+            </a>
             <a href="#contact" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium bg-[hsl(182_88%_31%)] text-white hover:bg-[hsl(182_88%_36%)] shadow-[0_8px_24px_-8px_hsl(182_88%_31%/0.8)] transition">
               Müraciət et <ArrowRight className="w-4 h-4" />
             </a>
@@ -186,7 +244,7 @@ export default function LandingPage() {
         </nav>
       </header>
 
-      {/* Hero — split layout with dashboard image */}
+      {/* Hero */}
       <section className="relative pt-40 md:pt-48 pb-20 px-4">
         <div className="mx-auto max-w-7xl grid lg:grid-cols-12 gap-10 items-center">
           <div className="lg:col-span-6">
@@ -206,8 +264,8 @@ export default function LandingPage() {
                 Başla <ArrowRight className="w-4 h-4" />
               </a>
               <button
-              onClick={() => document.getElementById('how')?.scrollIntoView({ behavior: 'smooth' })}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl glass hover:bg-[hsl(168_47%_71%/0.08)] transition">
+                onClick={() => document.getElementById('how')?.scrollIntoView({ behavior: 'smooth' })}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl glass hover:bg-[hsl(168_47%_71%/0.08)] transition">
                 <PlayCircle className="w-5 h-5 text-[hsl(168_47%_71%)]" /> Demo İzlə
               </button>
             </div>
@@ -218,55 +276,68 @@ export default function LandingPage() {
             </div>
           </div>
 
+          {/* 3D Dashboard Image and Floating Cards */}
           <div data-reveal className="lg:col-span-6 relative">
-            <div className="relative rounded-3xl overflow-hidden glass-strong p-2">
-              <div className="absolute inset-0 bg-gradient-to-tr from-[hsl(182_88%_31%/0.4)] via-transparent to-[hsl(168_47%_71%/0.25)]" />
-              <img
+            <LocalCard3D className="relative p-2" intensity={12} style={{ transformStyle: "preserve-3d" }}>
+              <div className="relative rounded-3xl overflow-hidden glass-strong p-2" style={{ transform: "translateZ(0px)" }}>
+                <div className="absolute inset-0 bg-gradient-to-tr from-[hsl(182_88%_31%/0.4)] via-transparent to-[hsl(168_47%_71%/0.25)] pointer-events-none" />
+                <img
                   src={heroDashboard}
                   alt="EcoAI dashboard"
                   width={1600}
                   height={1100}
                   className="relative rounded-2xl w-full h-auto"
                   style={{
-                  animation: 'heroFloat 6s ease-in-out infinite',
-                }}
-              />
-            </div>
-            {/* Floating mini cards */}
-            <div className="absolute -left-4 md:-left-10 top-10 glass rounded-2xl p-4 w-44 hidden md:block animate-float">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <TrendingUp className="w-4 h-4 text-[hsl(168_47%_71%)]" /> Bu gün
+                    animation: 'heroFloat 6s ease-in-out infinite',
+                  }}
+                />
               </div>
-              <div className="mt-1 text-2xl font-semibold">+24%</div>
-              <div className="text-[10px] text-muted-foreground">enerji effektivliyi</div>
-            </div>
-            <div className="absolute -right-2 md:-right-8 bottom-8 glass rounded-2xl p-4 w-48 hidden md:block animate-float-slow">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Leaf className="w-4 h-4 text-[hsl(168_47%_71%)]" /> CO₂ qənaəti
+              
+              {/* Uçan mini kartlar (Parallaks 3D effekti ilə) */}
+              <div 
+                className="absolute -left-4 md:-left-10 top-10 glass rounded-2xl p-4 w-44 hidden md:block animate-float shadow-2xl"
+                style={{ transform: "translateZ(80px)" }}
+              >
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <TrendingUp className="w-4 h-4 text-[hsl(168_47%_71%)]" /> Bu gün
+                </div>
+                <div className="mt-1 text-2xl font-semibold">+24%</div>
+                <div className="text-[10px] text-muted-foreground">enerji effektivliyi</div>
               </div>
-              <div className="mt-1 text-2xl font-semibold">1.2 ton</div>
-              <div className="h-1 mt-2 rounded-full bg-[hsl(168_47%_71%/0.15)] overflow-hidden">
-                <div className="h-full w-4/5 bg-gradient-to-r from-[hsl(182_88%_31%)] to-[hsl(168_47%_71%)]" />
+
+              <div 
+                className="absolute -right-2 md:-right-8 bottom-8 glass rounded-2xl p-4 w-48 hidden md:block animate-float-slow shadow-2xl"
+                style={{ transform: "translateZ(110px)" }}
+              >
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Leaf className="w-4 h-4 text-[hsl(168_47%_71%)]" /> CO₂ qənaəti
+                </div>
+                <div className="mt-1 text-2xl font-semibold">1.2 ton</div>
+                <div className="h-1 mt-2 rounded-full bg-[hsl(168_47%_71%/0.15)] overflow-hidden">
+                  <div className="h-full w-4/5 bg-gradient-to-r from-[hsl(182_88%_31%)] to-[hsl(168_47%_71%)]" />
+                </div>
               </div>
-            </div>
+            </LocalCard3D>
           </div>
         </div>
 
-        {/* Hero stat strip */}
+        {/* Hero stat strip - 3D dəstəkli */}
         <div data-reveal className="mx-auto max-w-7xl mt-20 grid grid-cols-2 md:grid-cols-4 gap-4">
           {heroStats.map((s) => (
-            <div key={s.label} className="glass rounded-2xl p-5 hover:-translate-y-1 transition group border border-[hsl(168_47%_71%/0.2)]">
-              <div className="flex items-center justify-between">
-                <div className="w-9 h-9 rounded-xl grid place-items-center bg-[hsl(182_88%_31%/0.2)] border border-[hsl(168_47%_71%/0.2)] group-hover:scale-110 transition">
-                  <s.icon className="w-4 h-4 text-[hsl(168_47%_71%)]" />
+            <LocalCard3D key={s.label} intensity={6} className="w-full">
+              <div className="glass h-full rounded-2xl p-5 hover:-translate-y-1 transition group border border-[hsl(168_47%_71%/0.2)]">
+                <div className="flex items-center justify-between">
+                  <div className="w-9 h-9 rounded-xl grid place-items-center bg-[hsl(182_88%_31%/0.2)] border border-[hsl(168_47%_71%/0.2)] group-hover:scale-110 transition">
+                    <s.icon className="w-4 h-4 text-[hsl(168_47%_71%)]" />
+                  </div>
+                  <TrendingUp className="w-4 h-4 text-[hsl(168_47%_71%/0.6)]" />
                 </div>
-                <TrendingUp className="w-4 h-4 text-[hsl(168_47%_71%/0.6)]" />
+                <div className="mt-4 text-2xl md:text-3xl font-semibold">
+                  {s.value}<span className="text-base text-[hsl(168_47%_71%)] ml-1">{s.unit}</span>
+                </div>
+                <div className="mt-1 text-xs text-muted-foreground">{s.label}</div>
               </div>
-              <div className="mt-4 text-2xl md:text-3xl font-semibold">
-                {s.value}<span className="text-base text-[hsl(168_47%_71%)] ml-1">{s.unit}</span>
-              </div>
-              <div className="mt-1 text-xs text-muted-foreground">{s.label}</div>
-            </div>
+            </LocalCard3D>
           ))}
         </div>
       </section>
@@ -285,7 +356,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features — with images */}
+      {/* Features - 3D dəstəkli */}
       <section id="features" className="relative py-24 px-4">
         <div className="mx-auto max-w-7xl">
           <div data-reveal className="text-center mb-14 max-w-2xl mx-auto">
@@ -299,32 +370,34 @@ export default function LandingPage() {
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {features.map((f) => (
-              <div data-reveal key={f.title} className="glass rounded-3xl overflow-hidden group hover:border-[hsl(168_47%_71%/0.35)] transition flex flex-col">
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <img
-                    src={f.img}
-                    alt={f.title}
-                    loading="lazy"
-                    width={900}
-                    height={700}
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--bg-deep))] via-[hsl(var(--bg-deep)/0.3)] to-transparent" />
-                  <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] uppercase tracking-wider glass text-[hsl(168_47%_71%)]">
-                    {f.tag}
-                  </span>
-                  <div className="absolute bottom-3 right-3 w-10 h-10 rounded-xl grid place-items-center glass-strong">
-                    <f.icon className="w-5 h-5 text-[hsl(168_47%_71%)]" />
+              <LocalCard3D key={f.title} intensity={6} className="w-full flex">
+                <div className="glass rounded-3xl overflow-hidden group hover:border-[hsl(168_47%_71%/0.35)] transition flex flex-col w-full">
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <img
+                      src={f.img}
+                      alt={f.title}
+                      loading="lazy"
+                      width={900}
+                      height={700}
+                      className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--bg-deep))] via-[hsl(var(--bg-deep)/0.3)] to-transparent" />
+                    <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] uppercase tracking-wider glass text-[hsl(168_47%_71%)]">
+                      {f.tag}
+                    </span>
+                    <div className="absolute bottom-3 right-3 w-10 h-10 rounded-xl grid place-items-center glass-strong">
+                      <f.icon className="w-5 h-5 text-[hsl(168_47%_71%)]" />
+                    </div>
+                  </div>
+                  <div className="p-6 flex-1 flex flex-col">
+                    <h3 className="text-xl font-semibold">{f.title}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed flex-1">{f.desc}</p>
+                    <a href="#" className="mt-5 inline-flex items-center gap-1.5 text-sm text-[hsl(168_47%_71%)] hover:gap-2.5 transition-all">
+                      Daha çox <ArrowRight className="w-4 h-4" />
+                    </a>
                   </div>
                 </div>
-                <div className="p-6 flex-1 flex flex-col">
-                  <h3 className="text-xl font-semibold">{f.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed flex-1">{f.desc}</p>
-                  <a href="#" className="mt-5 inline-flex items-center gap-1.5 text-sm text-[hsl(168_47%_71%)] hover:gap-2.5 transition-all">
-                    Daha çox <ArrowRight className="w-4 h-4" />
-                  </a>
-                </div>
-              </div>
+              </LocalCard3D>
             ))}
           </div>
         </div>
@@ -369,24 +442,24 @@ export default function LandingPage() {
                 </div>
               </div>
               <div className="flex items-end gap-2 md:gap-3" style={{ height: 256 }}>
-  {barData.map((v, i) => (
-    <div key={i} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer" style={{ height: '100%' }}>
-      <div className="relative w-full flex items-end" style={{ height: '100%' }}>
-        <div className="absolute -top-7 left-1/2 -translate-x-1/2 px-2 py-0.5 text-[10px] rounded-md glass-strong opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
-          {v * 5} kWh
-        </div>
-        <div
-          className="w-full rounded-t-lg bg-gradient-to-t from-[hsl(182_88%_31%)] to-[hsl(168_47%_71%)]"
-          style={{
-            height: `${v}%`,
-            transition: `height 1s cubic-bezier(.2,.7,.2,1) ${i * 70}ms`,
-          }}
-        />
-      </div>
-      <span className="text-[10px] md:text-xs text-muted-foreground">{months[i]}</span>
-    </div>
-  ))}
-</div>
+                {barData.map((v, i) => (
+                  <div key={i} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer" style={{ height: '100%' }}>
+                    <div className="relative w-full flex items-end" style={{ height: '100%' }}>
+                      <div className="absolute -top-7 left-1/2 -translate-x-1/2 px-2 py-0.5 text-[10px] rounded-md glass-strong opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
+                        {v * 5} kWh
+                      </div>
+                      <div
+                        className="w-full rounded-t-lg bg-gradient-to-t from-[hsl(182_88%_31%)] to-[hsl(168_47%_71%)]"
+                        style={{
+                          height: `${v}%`,
+                          transition: `height 1s cubic-bezier(.2,.7,.2,1) ${i * 70}ms`,
+                        }}
+                      />
+                    </div>
+                    <span className="text-[10px] md:text-xs text-muted-foreground">{months[i]}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -404,16 +477,18 @@ export default function LandingPage() {
           <div className="relative grid md:grid-cols-3 gap-6">
             <div className="hidden md:block absolute top-20 left-[16%] right-[16%] h-px bg-gradient-to-r from-transparent via-[hsl(168_47%_71%/0.3)] to-transparent" />
             {steps.map((s) => (
-              <div data-reveal key={s.n} className="glass rounded-3xl p-7 relative hover:-translate-y-1 transition border border-[hsl(168_47%_71%/0.25)]">
-                <div className="flex items-center justify-between mb-5">
-                  <span className="text-6xl font-semibold text-[hsl(168_47%_71%/0.5)] leading-none">{s.n}</span>
-                  <div className="w-12 h-12 rounded-2xl grid place-items-center glass-strong">
-                    <s.icon className="w-5 h-5 text-[hsl(168_47%_71%)]" />
+              <LocalCard3D key={s.n} intensity={8} className="w-full">
+                <div className="glass h-full rounded-3xl p-7 relative hover:-translate-y-1 transition border border-[hsl(168_47%_71%/0.25)]">
+                  <div className="flex items-center justify-between mb-5">
+                    <span className="text-6xl font-semibold text-[hsl(168_47%_71%/0.5)] leading-none">{s.n}</span>
+                    <div className="w-12 h-12 rounded-2xl grid place-items-center glass-strong">
+                      <s.icon className="w-5 h-5 text-[hsl(168_47%_71%)]" />
+                    </div>
                   </div>
+                  <h3 className="text-xl font-semibold">{s.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
                 </div>
-                <h3 className="text-xl font-semibold">{s.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
-              </div>
+              </LocalCard3D>
             ))}
           </div>
         </div>
@@ -477,9 +552,19 @@ export default function LandingPage() {
               </label>
               <button
                 type="submit"
-                className="mt-2 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[hsl(182_88%_31%)] text-white font-medium hover:bg-[hsl(182_88%_36%)] shadow-[0_12px_32px_-10px_hsl(182_88%_31%/0.9)] transition"
+                disabled={loading}
+                className="mt-2 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[hsl(182_88%_31%)] text-white font-medium hover:bg-[hsl(182_88%_36%)] shadow-[0_12px_32px_-10px_hsl(182_88%_31%/0.9)] transition disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Müraciət et <ArrowRight className="w-4 h-4" />
+                {loading ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Göndərilir...
+                  </>
+                ) : (
+                  <>
+                    Müraciət et <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
               </button>
               <p className="text-[11px] text-muted-foreground text-center">
                 Göndərməklə <a href="#" className="text-[hsl(168_47%_71%)]">İstifadə Şərtləri</a> ilə razılaşırsınız.
@@ -500,16 +585,16 @@ export default function LandingPage() {
               </p>
               <div className="mt-5 flex items-center gap-3">
                 {[
-  { Icon: Linkedin, href: "https://www.linkedin.com/in/omar-babayev-21888437b" },
-  { Icon: Github, href: "https://github.com/etikhacker" },
-  { Icon: Mail, href: "mailto:babayev.omr.23@gmail.com" },
-  { Icon: Send, href: "https://t.me/@EduTrackAssistantBot" },
-  { Icon: Facebook, href: "https://www.facebook.com/share/1BWb7iSsQ9/"}
-].map(({ Icon, href }) => (
-  <a key={href} href={href} target="_blank" rel="noopener noreferrer" className="w-9 h-9 grid place-items-center rounded-xl glass hover:bg-[hsl(168_47%_71%/0.12)] transition">
-    <Icon className="w-4 h-4 text-[hsl(168_47%_71%)]" />
-  </a>
-))}
+                  { Icon: Linkedin, href: "https://www.linkedin.com/in/omar-babayev-21888437b" },
+                  { Icon: Github, href: "https://github.com/etikhacker" },
+                  { Icon: Mail, href: "mailto:babayev.omr.23@gmail.com" },
+                  { Icon: Send, href: "https://t.me/@EduTrackAssistantBot" },
+                  { Icon: Facebook, href: "https://www.facebook.com/share/1BWb7iSsQ9/"}
+                ].map(({ Icon, href }) => (
+                  <a key={href} href={href} target="_blank" rel="noopener noreferrer" className="w-9 h-9 grid place-items-center rounded-xl glass hover:bg-[hsl(168_47%_71%/0.12)] transition">
+                    <Icon className="w-4 h-4 text-[hsl(168_47%_71%)]" />
+                  </a>
+                ))}
               </div>
             </div>
             <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-8">
