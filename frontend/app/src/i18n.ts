@@ -1,6 +1,20 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
+
+// Xarici paket olmadan saf JS ilə dil təyinatı (Local Storage və ya Brauzer dili)
+const getInitialLanguage = (): string => {
+  const savedLang = localStorage.getItem('ecoai_lang');
+  if (savedLang) return savedLang;
+
+  const browserLang = navigator.language || (navigator as any).userLanguage;
+  if (browserLang) {
+    const shortLang = browserLang.split('-')[0];
+    if (['az', 'en', 'ru'].includes(shortLang)) {
+      return shortLang;
+    }
+  }
+  return 'az'; // Default olaraq Azərbaycan dili açılır
+};
 
 const resources = {
   az: {
@@ -259,19 +273,14 @@ const resources = {
 };
 
 i18n
-  .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources,
-    lng: localStorage.getItem('ecoai_lang') || 'az',
+    lng: getInitialLanguage(),
     fallbackLng: 'az',
     interpolation: { escapeValue: false },
     react: {
-      useSuspense: false // <-- Bu sətir sonsuz yüklənmə xətasını tamamilə həll edir!
-    },
-    detection: {
-      order: ['localStorage', 'navigator'],
-      caches: ['localStorage']
+      useSuspense: false // Sonsuz yüklənməni söndürür
     }
   });
 
