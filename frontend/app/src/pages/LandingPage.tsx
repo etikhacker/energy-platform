@@ -20,7 +20,6 @@ import {
   Check,
   Cpu,
   Globe,
-  Calendar,
   Activity
 } from "lucide-react";
 import { toast } from "sonner";
@@ -557,19 +556,36 @@ export default function LandingPage() {
                 <p className="text-xs text-gray-500">Hər ay üçün sistemin real vaxt enerji paylanması (kWh)</p>
               </div>
 
-              {/* Dinamik Tab Keçid Düymələri */}
-              <div className="flex bg-white/5 p-1 rounded-xl border border-white/5">
+              {/* Dinamik Tab Keçid Düymələri (Aydın İzahlı Yeni Konsept) */}
+              <div className="flex bg-white/5 p-1.5 rounded-2xl border border-white/5 gap-2">
                 <button
                   onClick={() => setActiveTab("production")}
-                  className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-300 ${activeTab === "production" ? "bg-[#64ffda] text-[#030d0a] shadow-md" : "text-gray-400 hover:text-white"}`}
+                  className={`flex items-center gap-3 px-5 py-3 rounded-xl text-xs font-bold transition-all duration-300 ${
+                    activeTab === "production" 
+                      ? "bg-[#10b981]/10 text-[#10b981] border border-[#10b981]/30 shadow-[0_0_15px_rgba(16,185,129,0.1)]" 
+                      : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
+                  }`}
                 >
-                  Enerji İstehsalı
+                  <Sun className={`w-4 h-4 ${activeTab === "production" ? "text-[#fbbf24]" : "text-gray-500"}`} />
+                  <div className="text-left">
+                    <span className="block leading-none">Enerji İstehsalı</span>
+                    <span className="text-[9px] text-gray-500 font-medium block mt-1">Panellərdən yaranan</span>
+                  </div>
                 </button>
+
                 <button
                   onClick={() => setActiveTab("consumption")}
-                  className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-300 ${activeTab === "consumption" ? "bg-[#ef4444] text-white shadow-md" : "text-gray-400 hover:text-white"}`}
+                  className={`flex items-center gap-3 px-5 py-3 rounded-xl text-xs font-bold transition-all duration-300 ${
+                    activeTab === "consumption" 
+                      ? "bg-[#ef4444]/10 text-[#ef4444] border border-[#ef4444]/30 shadow-[0_0_15px_rgba(239,68,68,0.1)]" 
+                      : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
+                  }`}
                 >
-                  Enerji İstehlakı
+                  <Zap className={`w-4 h-4 ${activeTab === "consumption" ? "text-[#ef4444]" : "text-gray-500"}`} />
+                  <div className="text-left">
+                    <span className="block leading-none">Enerji İstehlakı</span>
+                    <span className="text-[9px] text-gray-500 font-medium block mt-1">Cihazların xərclədiyi</span>
+                  </div>
                 </button>
               </div>
             </div>
