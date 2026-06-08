@@ -20,6 +20,16 @@ import AdminPage from './pages/AdminPage';
 
 type Session = { user: { email?: string; id?: string } } | null;
 
+const applyAppearanceSettings = () => {
+  const theme = localStorage.getItem('theme') || 'okean';
+  const animations = localStorage.getItem('animations') ?? 'on';
+  const density = localStorage.getItem('density') || 'comfortable';
+
+  document.documentElement.dataset.theme = theme;
+  document.documentElement.dataset.animations = animations;
+  document.documentElement.dataset.density = density;
+};
+
 const inputStyle = {
   background: 'rgba(255,255,255,0.06)',
   border: '1px solid rgba(255,255,255,0.12)',
@@ -70,7 +80,7 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
   };
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden flex items-center justify-center" style={{ background: '#001219' }}>
+    <div className="relative w-screen h-screen overflow-hidden flex items-center justify-center" style={{ background: 'var(--app-bg)' }}>
       <LivingCanvas />
       <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 5, background: 'radial-gradient(ellipse at 30% 20%, rgba(0,18,25,0.4) 0%, rgba(0,18,25,0.2) 50%, transparent 100%)' }} />
 
@@ -204,8 +214,8 @@ function DashboardApp() {
 
   if (loading) {
     return (
-      <div className="w-screen h-screen flex items-center justify-center" style={{ background: '#001219' }}>
-        <div className="w-6 h-6 rounded-full border-2 animate-spin" style={{ borderColor: '#2a9d8f', borderTopColor: 'transparent' }} />
+      <div className="w-screen h-screen flex items-center justify-center" style={{ background: 'var(--app-bg)' }}>
+        <div className="w-6 h-6 rounded-full border-2 animate-spin" style={{ borderColor: 'var(--accent)', borderTopColor: 'transparent' }} />
       </div>
     );
   }
@@ -217,7 +227,7 @@ function DashboardApp() {
   const displayName = fullName || session.user?.email?.split('@')[0] || 'İstifadəçi';
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden" style={{ background: '#001219' }}>
+    <div className="relative w-screen h-screen overflow-hidden" style={{ background: 'var(--app-bg)' }}>
       <LivingCanvas />
       <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 5, background: 'radial-gradient(ellipse at 30% 20%, rgba(0,18,25,0.4) 0%, rgba(0,18,25,0.2) 50%, transparent 100%)' }} />
 
@@ -237,7 +247,7 @@ function DashboardApp() {
         <main className="flex-1 flex flex-col h-full" style={{ marginLeft: 240 }}>
           <Header userEmail={session.user?.email} userName={displayName} activeNav={activeNav} />
 
-          <div className="flex-1 overflow-y-auto" style={{ padding: 24, scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.1) transparent' }}>
+          <div className="flex-1 overflow-y-auto" style={{ padding: 'var(--content-padding)', scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.1) transparent' }}>
             {activeNav === 'dashboard' && (
               <>
                 <DashboardCards />
@@ -267,6 +277,10 @@ function DashboardApp() {
 }
 
 export default function App() {
+  useEffect(() => {
+    applyAppearanceSettings();
+  }, []);
+
   return (
     <>
       <Toaster position="top-right" richColors />

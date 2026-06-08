@@ -46,7 +46,7 @@ export default function Header({ userEmail, userName, activeNav = 'dashboard' }:
       className="flex items-center justify-between px-6"
       style={{
         height: 56,
-        background: 'rgba(0, 26, 35, 0.75)',
+        background: 'var(--app-bg-soft)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
         borderBottom: '1px solid rgba(255,255,255,0.06)',
@@ -57,14 +57,14 @@ export default function Header({ userEmail, userName, activeNav = 'dashboard' }:
       </h2>
 
       <div className="flex items-center gap-2">
-        <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: '#2a9d8f' }} />
-        <span className="font-mono-data text-[13px]" style={{ color: '#94d2bd' }}>
+        <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--accent)' }} />
+        <span className="font-mono-data text-[13px]" style={{ color: 'var(--accent)' }}>
           {formattedTime} — {formattedDate}
         </span>
       </div>
 
       <p className="text-[13px] font-normal" style={{ color: 'rgba(255,255,255,0.65)' }}>
-        {t(greetingKey)}, <span style={{ color: '#94d2bd', fontWeight: 500 }}>{firstName}</span>
+        {t(greetingKey)}, <span style={{ color: 'var(--accent)', fontWeight: 500 }}>{firstName}</span>
       </p>
     </header>
   );

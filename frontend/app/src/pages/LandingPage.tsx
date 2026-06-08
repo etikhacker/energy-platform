@@ -726,7 +726,7 @@ export default function LandingPage() {
                   </>
                 ) : (
                   <>
-                    Yoxla <ArrowRight className="w-4 h-4" />
+                    Müraciət et <ArrowRight className="w-4 h-4" />
                   </>
                 )}
               </button>

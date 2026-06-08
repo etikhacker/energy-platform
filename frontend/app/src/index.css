@@ -7,20 +7,70 @@
   box-sizing: border-box;
 }
 
+:root {
+  --app-bg: #001219;
+  --app-bg-soft: rgba(0, 26, 35, 0.88);
+  --glass-bg: rgba(0, 20, 25, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --accent: #2a9d8f;
+  --accent-strong: #0a9396;
+  --accent-soft: rgba(42, 157, 143, 0.15);
+  --content-padding: 24px;
+  --panel-padding: 16px;
+  --row-padding: 14px 0;
+  --sidebar-item-padding: 8px 12px;
+}
+
+:root[data-theme='gece'] {
+  --app-bg: #0d1117;
+  --app-bg-soft: rgba(13, 17, 23, 0.9);
+  --glass-bg: rgba(18, 24, 34, 0.78);
+  --glass-border: rgba(148, 163, 184, 0.16);
+  --accent: #8ab4f8;
+  --accent-strong: #5f8ee8;
+  --accent-soft: rgba(138, 180, 248, 0.16);
+}
+
+:root[data-theme='yasil'] {
+  --app-bg: #001a1a;
+  --app-bg-soft: rgba(0, 34, 28, 0.9);
+  --glass-bg: rgba(0, 30, 26, 0.78);
+  --glass-border: rgba(137, 204, 147, 0.16);
+  --accent: #6bcf8f;
+  --accent-strong: #35a66c;
+  --accent-soft: rgba(107, 207, 143, 0.16);
+}
+
+:root[data-density='compact'] {
+  --content-padding: 16px;
+  --panel-padding: 12px;
+  --row-padding: 10px 0;
+  --sidebar-item-padding: 7px 10px;
+}
+
+:root[data-animations='off'] *,
+:root[data-animations='off'] *::before,
+:root[data-animations='off'] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
 body {
   margin: 0;
-  background: #001a20;
+  background: var(--app-bg);
   color: white;
   font-family: 'Inter', sans-serif;
 }
 
 /* ── Liquid Glass Card ── */
 .liquid-glass {
-  background: rgba(0, 20, 25, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
   border-radius: 16px;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  padding: var(--panel-padding);
 }
 
 /* ── Toggle ── */
@@ -37,7 +87,7 @@ body {
 }
 
 .toggle-track.on {
-  background: #2a9d8f;
+  background: var(--accent);
 }
 
 .toggle-thumb {
@@ -84,6 +134,7 @@ body {
   align-items: center;
   gap: 10px;
   padding: 8px 12px;
+  padding: var(--sidebar-item-padding);
   border-radius: 10px;
   cursor: pointer;
   transition: background 0.2s;
@@ -97,8 +148,8 @@ body {
 }
 
 .sidebar-item.active {
-  background: rgba(42, 157, 143, 0.15);
-  color: #2a9d8f;
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 /* ── Grid layout ── */
@@ -114,7 +165,7 @@ body {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
-  padding: 16px;
+  padding: var(--panel-padding);
 }
 
 /* ── Input / AI chat ── */

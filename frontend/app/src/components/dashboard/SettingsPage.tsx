@@ -55,6 +55,15 @@ const inputStyle: React.CSSProperties = {
   boxSizing: 'border-box',
 };
 
+const applyAppearance = (theme: string, animations: boolean, compact: boolean) => {
+  document.documentElement.dataset.theme = theme;
+  document.documentElement.dataset.animations = animations ? 'on' : 'off';
+  document.documentElement.dataset.density = compact ? 'compact' : 'comfortable';
+  localStorage.setItem('theme', theme);
+  localStorage.setItem('animations', animations ? 'on' : 'off');
+  localStorage.setItem('density', compact ? 'compact' : 'comfortable');
+};
+
 export default function SettingsPage() {
   const { t, i18n } = useTranslation();
   const [aktivBolme, setAktivBolme] = useState('profil');
@@ -62,13 +71,7 @@ export default function SettingsPage() {
   
   const changeTheme = (kod: string) => {
     setRengSxemi(kod);
-    localStorage.setItem('theme', kod);
-    const colors: Record<string, string> = {
-      okean: '#001219',
-      gece: '#0d1117',
-      yasil: '#001a1a',
-    };
-    document.body.style.background = colors[kod];
+    applyAppearance(kod, gorunus.animasiyalar, gorunus.kompaktGoruntuq);
   };
 
   const [valyuta, setValyuta] = useState('USD');
@@ -96,7 +99,26 @@ export default function SettingsPage() {
   });
 
   // Görünüş
-  const [gorunus, setGorunus] = useState({ animasiyalar: true, kompaktGoruntuq: false });
+  const [gorunus, setGorunus] = useState(() => ({
+    animasiyalar: localStorage.getItem('animations') !== 'off',
+    kompaktGoruntuq: localStorage.getItem('density') === 'compact',
+  }));
+
+  const changeAnimations = () => {
+    setGorunus(prev => {
+      const next = { ...prev, animasiyalar: !prev.animasiyalar };
+      applyAppearance(rengSxemi, next.animasiyalar, next.kompaktGoruntuq);
+      return next;
+    });
+  };
+
+  const changeDensity = () => {
+    setGorunus(prev => {
+      const next = { ...prev, kompaktGoruntuq: !prev.kompaktGoruntuq };
+      applyAppearance(rengSxemi, next.animasiyalar, next.kompaktGoruntuq);
+      return next;
+    });
+  };
 
   const changeLanguage = (kod: string) => {
     i18n.changeLanguage(kod);
@@ -256,10 +278,10 @@ export default function SettingsPage() {
           <div>
             <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: '0 0 20px 0' }}>{t('gorunus')}</h3>
             <SectionRow label={t('animasiyalar')} desc={t('animasiyalarDesc')}>
-              <Toggle aktiv={gorunus.animasiyalar} onChange={() => setGorunus(p => ({ ...p, animasiyalar: !p.animasiyalar }))} />
+              <Toggle aktiv={gorunus.animasiyalar} onChange={changeAnimations} />
             </SectionRow>
             <SectionRow label={t('kompaktGoruntuq')} desc={t('kompaktGoruntuqDesc')}>
-              <Toggle aktiv={gorunus.kompaktGoruntuq} onChange={() => setGorunus(p => ({ ...p, kompaktGoruntuq: !p.kompaktGoruntuq }))} />
+              <Toggle aktiv={gorunus.kompaktGoruntuq} onChange={changeDensity} />
             </SectionRow>
             <div style={{ marginTop: 20 }}>
               <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginBottom: 12 }}>{t('rengSxemi')}</p>
@@ -298,7 +320,7 @@ export default function SettingsPage() {
                     style={{ padding: '12px 14px', borderRadius: 8, cursor: 'pointer', background: i18n.language === d.kod ? 'rgba(42,157,143,0.12)' : 'rgba(255,255,255,0.04)', border: `1px solid ${i18n.language === d.kod ? 'rgba(42,157,143,0.3)' : 'rgba(255,255,255,0.07)'}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} // justifycontent düzəldildi -> justifyContent
                   >
                     <span style={{ fontSize: 13, color: '#fff' }}>{d.ad}</span>
-                    {i18n.language === d.kod && <Check style={{ width: 14, height: 14, color: '#2a9d8f' }} />}
+                    {i18n.language === d.kod && <Check style={{ width: 14, height: 14, color: 'var(--accent)' }} />}
                   </div>
                 ))}
               </div>

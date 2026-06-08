@@ -17,7 +17,6 @@ export default function LivingCanvas() {
     resize();
     window.addEventListener('resize', resize);
 
-    // Parıltı hissəcikləri
     const particles: {
       x: number;
       y: number;
@@ -38,63 +37,84 @@ export default function LivingCanvas() {
       });
     }
 
-    let animId: number;
+    const readTheme = () => {
+      const styles = getComputedStyle(document.documentElement);
+      return {
+        bg: styles.getPropertyValue('--app-bg').trim() || '#001219',
+        accent: styles.getPropertyValue('--accent').trim() || '#2a9d8f',
+        animations: document.documentElement.dataset.animations !== 'off',
+      };
+    };
+
+    const accentWithAlpha = (color: string, alpha: number) => {
+      if (!color.startsWith('#')) return `rgba(148, 210, 189, ${alpha})`;
+
+      const hex = color.replace('#', '');
+      const normalized = hex.length === 3
+        ? hex.split('').map((char) => char + char).join('')
+        : hex;
+
+      const value = Number.parseInt(normalized, 16);
+      const r = (value >> 16) & 255;
+      const g = (value >> 8) & 255;
+      const b = value & 255;
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+
+    let animId = 0;
     let t = 0;
 
-    const draw = () => {
-      animId = requestAnimationFrame(draw);
-      t += 0.012;
+    const drawFrame = (animated: boolean) => {
+      if (animated) {
+        animId = requestAnimationFrame(() => drawFrame(true));
+        t += 0.012;
+      }
 
       const w = canvas.width;
       const h = canvas.height;
+      const theme = readTheme();
 
-      // Tünd arxa fon
-      ctx.fillStyle = '#001a23';
+      ctx.fillStyle = theme.bg;
       ctx.fillRect(0, 0, w, h);
 
-      // İnce gradient üst-alt
       const grad = ctx.createLinearGradient(0, 0, 0, h);
-      grad.addColorStop(0, 'rgba(0, 40, 55, 0.6)');
-      grad.addColorStop(0.5, 'rgba(0, 26, 35, 0.0)');
-      grad.addColorStop(1, 'rgba(0, 15, 25, 0.5)');
+      grad.addColorStop(0, 'rgba(255,255,255,0.035)');
+      grad.addColorStop(0.5, 'rgba(0,0,0,0)');
+      grad.addColorStop(1, 'rgba(0,0,0,0.28)');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 
-      // Mərkəzdən incə parıltı hissəsi
       const glow = ctx.createRadialGradient(w * 0.5, h * 0.45, 0, w * 0.5, h * 0.45, w * 0.55);
-      glow.addColorStop(0, 'rgba(42, 157, 143, 0.06)');
-      glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      glow.addColorStop(0, accentWithAlpha(theme.accent, 0.08));
+      glow.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = glow;
       ctx.fillRect(0, 0, w, h);
 
-      // Parıltı nöqtələri
       for (const p of particles) {
         const px = p.x * w;
         const py = p.y * h;
-        const flicker = Math.sin(t * p.speed + p.phase) * 0.5 + 0.5;
+        const flicker = animated ? Math.sin(t * p.speed + p.phase) * 0.5 + 0.5 : 0.55;
         const alpha = p.alpha * flicker;
 
         ctx.beginPath();
         ctx.arc(px, py, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(148, 210, 189, ${alpha})`;
+        ctx.fillStyle = accentWithAlpha(theme.accent, alpha);
         ctx.fill();
       }
     };
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reducedMotion) {
-      // Bir dəfə çək
-      t = 1;
-      const w = canvas.width;
-      const h = canvas.height;
-      ctx.fillStyle = '#001a23';
-      ctx.fillRect(0, 0, w, h);
-    } else {
-      draw();
-    }
+    drawFrame(!reducedMotion && readTheme().animations);
+
+    const observer = new MutationObserver(() => {
+      cancelAnimationFrame(animId);
+      drawFrame(!reducedMotion && readTheme().animations);
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'data-animations'] });
 
     return () => {
       cancelAnimationFrame(animId);
+      observer.disconnect();
       window.removeEventListener('resize', resize);
     };
   }, []);
