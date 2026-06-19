@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import EnergyGlobe from "../components/EnergyGlobe";
 import {
   Zap,
   Sun,
@@ -425,8 +426,12 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="lg:col-span-6 flex justify-center">
-            <TiltCard intensity={15} className="relative w-full max-w-[500px] aspect-square rounded-[40px] border border-white/5 bg-gradient-to-br from-white/5 to-transparent p-8 shadow-2xl backdrop-blur-md flex flex-col justify-between" style={{ transformStyle: "preserve-3d" }}>
+          <div className="lg:col-span-6 flex justify-center relative">
+              {/* Three.js Qlobus */}
+              <div className="absolute inset-0 -z-0 opacity-80">
+            <EnergyGlobe />
+          </div>
+            <TiltCard intensity={15} className="relative z-10 w-full max-w-[500px] aspect-square rounded-[40px] border border-white/5 bg-gradient-to-br from-white/5 to-transparent p-8 shadow-2xl backdrop-blur-md flex flex-col justify-between" style={{ transformStyle: "preserve-3d" }}>
               
               <div className="absolute inset-4 rounded-[32px] border border-[#64ffda]/10 pointer-events-none" style={{ transform: "translateZ(30px)" }} />
               <div className="absolute inset-10 rounded-[24px] border border-[#64ffda]/5 pointer-events-none" style={{ transform: "translateZ(60px)" }} />
