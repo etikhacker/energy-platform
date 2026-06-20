@@ -235,18 +235,17 @@ function DashboardApp() {
         <Sidebar
           activeItem={activeNav}
           onNavigate={setActiveNav}
-        onLogout={() => {
-  supabase.auth.signOut().then(() => {
-    setSession(null);
-  });
-}}
+          onLogout={() => {
+            supabase.auth.signOut().then(() => {
+              setSession(null);
+            });
+          }}
           userEmail={session.user?.email}
           userName={displayName}
         />
 
         <main className="flex-1 flex flex-col h-full" style={{ marginLeft: 240 }}>
           <Header userEmail={session.user?.email} userName={displayName} activeNav={activeNav} />
-
           <div className="flex-1 overflow-y-auto" style={{ padding: 'var(--content-padding)', scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.1) transparent' }}>
             {activeNav === 'dashboard' && (
               <>
@@ -261,17 +260,46 @@ function DashboardApp() {
                 </div>
               </>
             )}
-
-            {activeNav === 'analytics'  && <AnalyticsPage />}
-            {activeNav === 'grid'       && <GridPage />}
-            {activeNav === 'devices'    && <DevicesPage />}
-            {activeNav === 'forecast'   && <ForecastFullPage />}
-            {activeNav === 'settings'   && <SettingsPage />}
-
+            {activeNav === 'analytics' && <AnalyticsPage />}
+            {activeNav === 'grid'      && <GridPage />}
+            {activeNav === 'devices'   && <DevicesPage />}
+            {activeNav === 'forecast'  && <ForecastFullPage />}
+            {activeNav === 'settings'  && <SettingsPage />}
             <div style={{ height: 24 }} />
           </div>
         </main>
       </div>
+
+      {/* Telegram Üzən Düymə */}
+      
+      <a href="https://t.me/EduTrackAssistantBot"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          position: 'fixed',
+          bottom: 28,
+          right: 28,
+          zIndex: 999,
+          width: 52,
+          height: 52,
+          borderRadius: '50%',
+          background: 'rgba(42,157,143,0.85)',
+          border: '1px solid rgba(42,157,143,0.5)',
+          backdropFilter: 'blur(12px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 4px 24px rgba(42,157,143,0.35)',
+          cursor: 'pointer',
+          textDecoration: 'none',
+          transition: 'all 0.2s ease',
+        }}
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+          <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/>
+        </svg>
+      </a>
+
     </div>
   );
 }
