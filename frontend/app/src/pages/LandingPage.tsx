@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import EnergyGlobe from "../components/EnergyGlobe";
+import { FaTelegram } from 'react-icons/fa';
 import {
   Zap,
   Sun,
@@ -756,7 +757,7 @@ export default function LandingPage() {
                   { Icon: Linkedin, href: "https://www.linkedin.com/in/omar-babayev-21888437b" },
                   { Icon: Github, href: "https://github.com/etikhacker" },
                   { Icon: Mail, href: "mailto:babayev.omr.23@gmail.com" },
-                  { Icon: Send, href: "https://t.me/@EduTrackAssistantBot" },
+                  { Icon: Send, href: "https://t.me/EduTrackAssistantBot" },
                   { Icon: Facebook, href: "https://www.facebook.com/share/1BWb7iSsQ9/"}
                 ].map(({ Icon, href }: { Icon: React.ComponentType<{ className?: string }>; href: string }, i: number) => (
                   <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#64ffda]/10 hover:border-[#64ffda]/30 transition duration-300">
