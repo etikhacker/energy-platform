@@ -321,7 +321,7 @@ function DashboardApp() {
   return (
     <div className="relative w-screen h-screen overflow-hidden" style={{ background: 'var(--app-bg)' }}>
       <LivingCanvas />
-      <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 5, background: 'radial-gradient(ellipse at 30% 20%, rgba(0,18,25,0.4) 0%, rgba(0,18,25,0.2) 50%, transparent 100%)' }} />
+      <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 5, background: 'radial-gradient(circle at 50% 0%, rgba(0,230,153,0.08) 0%, rgba(3,13,10,0) 60%), radial-gradient(circle at 80% 100%, rgba(100,255,218,0.05) 0%, rgba(3,13,10,0) 50%)' }} />
 
       <div className="relative flex h-full" style={{ zIndex: 10 }}>
         <Sidebar
@@ -336,9 +336,9 @@ function DashboardApp() {
           userName={displayName}
         />
 
-        <main className="flex-1 flex flex-col h-full" style={{ marginLeft: 240 }}>
+        <main className="flex-1 flex flex-col h-full" style={{ marginLeft: 260 }}>
           <Header userEmail={session.user?.email} userName={displayName} activeNav={activeNav} />
-          <div className="flex-1 overflow-y-auto" style={{ padding: 'var(--content-padding)', scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.1) transparent' }}>
+          <div className="flex-1 overflow-y-auto" style={{ paddingBottom: 'var(--content-padding)', scrollbarWidth: 'thin', scrollbarColor: 'rgba(0,230,153,0.2) transparent' }}>
             {activeNav === 'dashboard' && (
               <>
                 <DashboardCards />
