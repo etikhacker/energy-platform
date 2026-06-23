@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { supabase } from './lib/supabase';
 import { Toaster } from 'sonner';
-import { Mail, Lock, User, Zap, ArrowRight } from 'lucide-react';
+import { Mail, Lock, User, Zap, ArrowRight, Sun, BrainCircuit, Activity, BatteryCharging } from 'lucide-react';
 import LivingCanvas from './components/LivingCanvas';
 import EnergyGlobe from './components/EnergyGlobe';
 import Sidebar from './components/dashboard/Sidebar';
@@ -91,9 +91,18 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center min-h-screen py-12">
         
         {/* LEFT SIDE (Graphics) */}
-        <div className="hidden lg:flex flex-col relative h-[80vh] min-h-[600px] justify-center">
+        <div className="hidden lg:flex flex-col relative h-[80vh] min-h-[600px] justify-between z-20">
+          <style>{`
+            @keyframes strokeDash {
+              to { stroke-dashoffset: -24; }
+            }
+            .animate-dash {
+              animation: strokeDash 2s linear infinite;
+            }
+          `}</style>
+
           {/* Logo & Title */}
-          <div className="absolute top-0 left-0 flex items-center gap-4 z-20">
+          <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#00e699]/20 to-[#64ffda]/5 border border-[#64ffda]/30 flex items-center justify-center shadow-[0_0_30px_rgba(100,255,218,0.2)]">
               <Zap className="w-6 h-6 text-[#64ffda]" />
             </div>
@@ -103,17 +112,68 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
             </div>
           </div>
           
-          {/* Isometric Illustration */}
-          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none -translate-x-12">
-            <img 
-              src="/energy_isometric.png" 
-              alt="Isometric Energy System" 
-              className="w-[110%] max-w-none opacity-90 object-contain mix-blend-screen"
-            />
+          {/* Abstract Nodes Illustration */}
+          <div className="relative flex-1 my-10 w-full flex items-center justify-center">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,230,153,0.1)_0%,transparent_60%)]"></div>
+            
+            {/* SVG Lines */}
+            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
+              <defs>
+                <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#00e699" stopOpacity="0" />
+                  <stop offset="50%" stopColor="#00e699" stopOpacity="0.8" />
+                  <stop offset="100%" stopColor="#00e699" stopOpacity="0" />
+                </linearGradient>
+                <linearGradient id="lineGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#64ffda" stopOpacity="0" />
+                  <stop offset="50%" stopColor="#64ffda" stopOpacity="0.8" />
+                  <stop offset="100%" stopColor="#64ffda" stopOpacity="0" />
+                </linearGradient>
+                <linearGradient id="lineGrad3" x1="0%" y1="100%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#3b82f6" stopOpacity="0" />
+                  <stop offset="50%" stopColor="#00e699" stopOpacity="0.8" />
+                  <stop offset="100%" stopColor="#00e699" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              <line x1="25%" y1="25%" x2="50%" y2="50%" stroke="url(#lineGrad)" strokeWidth="2" strokeDasharray="6 6" className="animate-dash" />
+              <line x1="75%" y1="20%" x2="50%" y2="50%" stroke="url(#lineGrad2)" strokeWidth="2" strokeDasharray="6 6" className="animate-dash" />
+              <line x1="30%" y1="75%" x2="50%" y2="50%" stroke="url(#lineGrad3)" strokeWidth="2" strokeDasharray="6 6" className="animate-dash" />
+            </svg>
+
+            {/* Central Core */}
+            <div className="relative z-10 w-28 h-28 rounded-full border border-[#00e699]/40 bg-black/60 flex items-center justify-center shadow-[0_0_50px_rgba(0,230,153,0.3)] backdrop-blur-xl">
+              <BrainCircuit className="w-12 h-12 text-[#00e699] animate-pulse" />
+              <div className="absolute inset-[-20px] rounded-full border border-dashed border-[#00e699]/30 animate-spin-slow"></div>
+              <div className="absolute inset-[-40px] rounded-full border border-[#00e699]/10" style={{ animation: 'spin 15s linear infinite reverse' }}></div>
+            </div>
+
+            {/* Solar Node (Top Right) */}
+            <div className="absolute top-[10%] right-[15%] flex flex-col items-center">
+              <div className="w-14 h-14 rounded-2xl border border-yellow-500/30 bg-black/50 flex items-center justify-center shadow-[0_0_20px_rgba(234,179,8,0.2)] backdrop-blur-xl">
+                <Sun className="w-6 h-6 text-yellow-400" />
+              </div>
+              <div className="mt-2 text-[10px] text-yellow-400/80 tracking-widest font-bold bg-black/50 px-2 py-1 rounded">SOLAR</div>
+            </div>
+
+            {/* Grid Node (Top Left) */}
+            <div className="absolute top-[15%] left-[15%] flex flex-col items-center">
+              <div className="w-14 h-14 rounded-2xl border border-blue-500/30 bg-black/50 flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.2)] backdrop-blur-xl">
+                <Activity className="w-6 h-6 text-blue-400" />
+              </div>
+              <div className="mt-2 text-[10px] text-blue-400/80 tracking-widest font-bold bg-black/50 px-2 py-1 rounded">ŞƏBƏKƏ</div>
+            </div>
+
+            {/* Battery Node (Bottom Left) */}
+            <div className="absolute bottom-[15%] left-[20%] flex flex-col items-center">
+              <div className="w-14 h-14 rounded-2xl border border-emerald-500/30 bg-black/50 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.2)] backdrop-blur-xl">
+                <BatteryCharging className="w-6 h-6 text-emerald-400" />
+              </div>
+              <div className="mt-2 text-[10px] text-emerald-400/80 tracking-widest font-bold bg-black/50 px-2 py-1 rounded">BATAREYA</div>
+            </div>
           </div>
 
-          <div className="absolute bottom-10 left-0 z-20 max-w-md">
-            <p className="text-sm text-gray-400 leading-relaxed border-l-2 border-[#64ffda]/50 pl-4 bg-gradient-to-r from-black/50 to-transparent py-2">
+          <div className="z-20 max-w-md">
+            <p className="text-sm text-gray-400 leading-relaxed border-l-2 border-[#64ffda]/50 pl-4 py-1">
               Ağıllı şəbəkəyə qoşulun, enerji istehlakınızı optimallaşdırın və karbon izini minimuma endirin. Süni intellekt əsaslı gələcək.
             </p>
           </div>
