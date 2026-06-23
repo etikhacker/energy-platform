@@ -396,7 +396,7 @@ export default function LandingPage() {
       {/* HERO SECTION */}
       <section className="relative pt-44 pb-32 px-6 min-h-screen flex items-center overflow-hidden">
         {/* Tam Ekran Arxa Plan Qlobusu */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] lg:w-[1200px] lg:h-[1200px] -z-0 opacity-40 pointer-events-none">
+        <div className="absolute inset-0 -z-0 opacity-50 pointer-events-none">
           <EnergyGlobe />
         </div>
 
