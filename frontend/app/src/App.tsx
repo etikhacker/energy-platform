@@ -4,6 +4,7 @@ import { supabase } from './lib/supabase';
 import { Toaster } from 'sonner';
 import { Mail, Lock, User, Zap, ArrowRight } from 'lucide-react';
 import LivingCanvas from './components/LivingCanvas';
+import EnergyGlobe from './components/EnergyGlobe';
 import Sidebar from './components/dashboard/Sidebar';
 import Header from './components/dashboard/Header';
 import DashboardCards from './components/dashboard/kimi_DashboardCards';
@@ -82,107 +83,115 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
   };
 
   return (
-    <div className="relative min-h-screen w-full bg-[#030d0a] flex items-center justify-center overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0 z-0">
-        <LivingCanvas />
-      </div>
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top_right,rgba(100,255,218,0.15)_0%,transparent_50%)] pointer-events-none"></div>
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(16,185,129,0.15)_0%,transparent_50%)] pointer-events-none"></div>
+    <div className="relative min-h-screen w-full bg-[#030d0a] flex items-center overflow-hidden">
+      {/* Background gradients */}
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top_right,rgba(100,255,218,0.1)_0%,transparent_50%)] pointer-events-none"></div>
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(16,185,129,0.1)_0%,transparent_50%)] pointer-events-none"></div>
       
-      <div className="relative z-10 w-full max-w-[400px] px-6">
-        {/* Logo */}
-        <div className="flex flex-col items-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#00e699]/20 to-[#64ffda]/5 border border-[#64ffda]/30 flex items-center justify-center mb-4 shadow-[0_0_30px_rgba(100,255,218,0.2)]">
-            <Zap className="w-7 h-7 text-[#64ffda]" />
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center min-h-screen py-12">
+        
+        {/* LEFT SIDE (Graphics) */}
+        <div className="hidden lg:flex flex-col relative h-[80vh] min-h-[600px] justify-center">
+          {/* Logo & Title */}
+          <div className="absolute top-0 left-0 flex items-center gap-4 z-20">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#00e699]/20 to-[#64ffda]/5 border border-[#64ffda]/30 flex items-center justify-center shadow-[0_0_30px_rgba(100,255,218,0.2)]">
+              <Zap className="w-6 h-6 text-[#64ffda]" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-white tracking-tight">EcoAI Platforması</h1>
+              <p className="text-[10px] text-gray-400 tracking-[0.2em] uppercase mt-1">Enerji İdarəetmə Sistemi</p>
+            </div>
           </div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight">EcoAI</h1>
-          <p className="text-sm text-gray-400 mt-2 text-center font-medium">Enerji gələcəyinizə giriş edin</p>
+          
+          {/* 3D Globe Illustration */}
+          <div className="absolute inset-0 -translate-x-12 z-10 opacity-80 pointer-events-none">
+            <EnergyGlobe />
+          </div>
+
+          <div className="absolute bottom-10 left-0 z-20 max-w-md">
+            <p className="text-sm text-gray-400 leading-relaxed border-l-2 border-[#64ffda]/50 pl-4 bg-gradient-to-r from-black/50 to-transparent py-2">
+              Ağıllı şəbəkəyə qoşulun, enerji istehlakınızı optimallaşdırın və karbon izini minimuma endirin. Süni intellekt əsaslı gələcək.
+            </p>
+          </div>
         </div>
 
-        {/* Card */}
-        <div className="rounded-[32px] border border-white/10 bg-black/40 p-8 shadow-2xl backdrop-blur-xl">
-          <h2 className="text-xl font-bold text-white mb-6">
-            {isRegister ? 'Yeni Hesab Yarat' : 'Sistemə Daxil Ol'}
-          </h2>
+        {/* RIGHT SIDE (Login Form) */}
+        <div className="flex justify-center lg:justify-end items-center h-full z-20">
+          <div className="w-full max-w-[400px] relative mt-10 lg:mt-0">
+            
+            {/* The WELCOME badge (like the image) */}
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[#00e699] to-[#64ffda] text-[#030d0a] px-8 py-2 text-[10px] font-extrabold tracking-[0.2em] z-20 shadow-[0_5px_15px_rgba(100,255,218,0.3)]" style={{ clipPath: 'polygon(10% 0, 90% 0, 100% 100%, 0% 100%)' }}>
+              {isRegister ? 'QEYDİYYAT' : 'XOŞ GƏLMİSİNİZ'}
+            </div>
+            
+            <div className="rounded-[24px] border border-white/10 bg-[#071310]/80 p-8 pt-10 shadow-2xl backdrop-blur-xl">
+              <h2 className="text-lg font-medium text-white/90 mb-8 text-center tracking-wide">
+                {isRegister ? 'Yeni hesab yaradın' : 'Sistemə daxil olun'}
+              </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {isRegister && (
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-400 ml-1 uppercase tracking-wider">Ad Soyad</label>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Inputs */}
+                {isRegister && (
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <User className="w-4 h-4 text-[#64ffda]/70" />
+                    </div>
+                    <input
+                      type="text" value={fullName} onChange={(e) => setFullName(e.target.value)}
+                      placeholder="Ad Soyad" required
+                      className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#64ffda]/50 focus:bg-[#64ffda]/5 transition-all"
+                    />
+                  </div>
+                )}
+
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <User className="w-4 h-4 text-gray-500" />
+                    <Mail className="w-4 h-4 text-[#64ffda]/70" />
                   </div>
                   <input
-                    type="text" value={fullName} onChange={(e) => setFullName(e.target.value)}
-                    placeholder="Ömər Babayev" required
-                    className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-[#64ffda]/50 focus:bg-white/10 transition-all"
+                    type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                    placeholder="E-poçt (ID)" required
+                    className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#64ffda]/50 focus:bg-[#64ffda]/5 transition-all"
                   />
                 </div>
-              </div>
-            )}
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-400 ml-1 uppercase tracking-wider">E-poçt Ünvanı</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Mail className="w-4 h-4 text-gray-500" />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Lock className="w-4 h-4 text-[#64ffda]/70" />
+                  </div>
+                  <input
+                    type="password" value={password} onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Şifrə" required minLength={6}
+                    className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#64ffda]/50 focus:bg-[#64ffda]/5 transition-all"
+                  />
                 </div>
-                <input
-                  type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@ecoai.az" required
-                  className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-[#64ffda]/50 focus:bg-white/10 transition-all"
-                />
+
+                {error && (
+                  <div className={`px-4 py-3 rounded-xl text-xs font-medium border ${error.includes('göndərildi') ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'}`}>
+                    {error}
+                  </div>
+                )}
+
+                <button
+                  type="submit" disabled={loading}
+                  className="w-full py-4 rounded-xl bg-gradient-to-r from-[#00e699] to-[#64ffda] hover:opacity-90 text-[#030d0a] font-bold transition-all disabled:opacity-50 mt-4 shadow-[0_0_20px_rgba(0,230,153,0.3)] hover:shadow-[0_0_30px_rgba(0,230,153,0.5)]"
+                >
+                  {loading ? 'Gözləyin...' : (isRegister ? 'Qeydiyyat' : 'Daxil Ol')}
+                </button>
+              </form>
+
+              <div className="mt-8 flex justify-between items-center text-xs">
+                <button
+                  type="button"
+                  onClick={() => { setIsRegister(!isRegister); setError(''); setFullName(''); }}
+                  className="text-gray-400 hover:text-[#64ffda] transition-colors"
+                >
+                  {isRegister ? 'Hesabınız var? Daxil olun' : 'Qeydiyyatdan keçin'}
+                </button>
+                <a href="/" className="text-gray-500 hover:text-white transition-colors">Ana səhifə</a>
               </div>
             </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-400 ml-1 uppercase tracking-wider">Şifrə</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock className="w-4 h-4 text-gray-500" />
-                </div>
-                <input
-                  type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••" required minLength={6}
-                  className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-[#64ffda]/50 focus:bg-white/10 transition-all"
-                />
-              </div>
-            </div>
-
-            {error && (
-              <div className={`px-4 py-3 rounded-xl text-xs font-medium border ${error.includes('göndərildi') ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'}`}>
-                {error}
-              </div>
-            )}
-
-            <button
-              type="submit" disabled={loading}
-              className="w-full group relative flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#00e699] hover:bg-[#00cc88] text-[#030d0a] font-bold transition-all disabled:opacity-70 disabled:cursor-not-allowed mt-2 overflow-hidden shadow-[0_0_20px_rgba(0,230,153,0.2)] hover:shadow-[0_0_30px_rgba(0,230,153,0.4)]"
-            >
-              <span className="relative z-10">{loading ? 'Gözləyin...' : (isRegister ? 'Qeydiyyatdan Keç' : 'Daxil Ol')}</span>
-              {!loading && <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />}
-            </button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <button
-              type="button"
-              onClick={() => { setIsRegister(!isRegister); setError(''); setFullName(''); }}
-              className="text-xs text-gray-400 hover:text-[#64ffda] transition-colors"
-            >
-              {isRegister ? 'Artıq hesabınız var? ' : 'Hesabınız yoxdur? '}
-              <span className="font-semibold underline decoration-white/20 underline-offset-4">{isRegister ? 'Daxil olun' : 'Qeydiyyatdan keçin'}</span>
-            </button>
           </div>
-        </div>
-        
-        {/* Back to Home Link */}
-        <div className="mt-8 text-center">
-          <a href="/" className="inline-flex items-center gap-2 text-xs font-medium text-gray-500 hover:text-white transition-colors">
-            <ArrowRight className="w-3 h-3 rotate-180" /> Ana səhifəyə qayıt
-          </a>
         </div>
       </div>
     </div>
