@@ -1,5 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
-import { Brain, TrendingDown, Sun, Bot, User, Send, Sparkles, Flame, Zap } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Brain, Bot, Send, Sparkles, Sun, User, Zap } from 'lucide-react';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://energy-platform-api.onrender.com';
 
 interface Message {
   id: number;
@@ -13,24 +15,48 @@ interface Recommendation {
   title: string;
   description: string;
   saving: string;
-  priority: 'Yüksək' | 'Orta' | 'Aşağı' | string;
+  priority: string;
   category: string;
 }
 
-const initialMessages: Message[] = [
-  {
-    id: 1,
-    sender: 'ai',
-    text: 'Salam! Sistem məlumatlarınızı analiz etdim. Hazırda 450 kWh istehlak var, bu keçən aydan 8.2% azdır.',
-    timestamp: new Date(),
-  },
-  {
-    id: 2,
-    sender: 'ai',
-    text: 'Kondisioner rejimini 26°C əvəzinə 28°C-yə qoyun — aylıq ~$18 qənaət edə bilərsiniz.',
-    timestamp: new Date(),
-  },
-];
+const welcomeMessage: Message = {
+  id: 1,
+  sender: 'ai',
+  text: 'Hazıram. Enerji, cihaz, işıq və ya qrafik barədə sual ver.',
+  timestamp: new Date(),
+};
+
+const CHAT_STORAGE_KEY = 'ecoai-ai-chat-v1';
+
+type StoredMessage = Omit<Message, 'timestamp'> & { timestamp: string };
+
+const serializeMessages = (items: Message[]): StoredMessage[] =>
+  items.map((item) => ({
+    ...item,
+    timestamp: item.timestamp.toISOString(),
+  }));
+
+const deserializeMessages = (items: StoredMessage[]): Message[] =>
+  items.map((item) => ({
+    ...item,
+    timestamp: new Date(item.timestamp),
+  }));
+
+const loadStoredMessages = (): Message[] => {
+  if (typeof window === 'undefined') return [welcomeMessage];
+
+  try {
+    const raw = localStorage.getItem(CHAT_STORAGE_KEY);
+    if (!raw) return [welcomeMessage];
+
+    const parsed = JSON.parse(raw) as StoredMessage[];
+    if (!Array.isArray(parsed) || parsed.length === 0) return [welcomeMessage];
+
+    return deserializeMessages(parsed);
+  } catch {
+    return [welcomeMessage];
+  }
+};
 
 const fallbackRecommendations: Recommendation[] = [
   {
@@ -51,8 +77,39 @@ const fallbackRecommendations: Recommendation[] = [
   },
 ];
 
+function getRecommendationIcon(category: string) {
+  const value = category.toLowerCase();
+  if (value.includes('işıq') || value.includes('soyutma') || value.includes('isit')) return Sun;
+  if (value.includes('cihaz')) return Bot;
+  return Zap;
+}
+
+function getRecommendationTone(priority: string) {
+  if (priority === 'Yüksək') {
+    return {
+      color: '#00e699',
+      bg: 'rgba(0, 230, 153, 0.08)',
+      border: 'rgba(0, 230, 153, 0.18)',
+    };
+  }
+
+  if (priority === 'Orta') {
+    return {
+      color: '#64ffda',
+      bg: 'rgba(100, 255, 218, 0.08)',
+      border: 'rgba(100, 255, 218, 0.16)',
+    };
+  }
+
+  return {
+    color: '#94d2bd',
+    bg: 'rgba(148, 210, 189, 0.08)',
+    border: 'rgba(148, 210, 189, 0.14)',
+  };
+}
+
 export default function AIAssistant() {
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [messages, setMessages] = useState<Message[]>(loadStoredMessages);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [recommendations, setRecommendations] = useState<Recommendation[]>(fallbackRecommendations);
@@ -61,6 +118,31 @@ export default function AIAssistant() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(serializeMessages(messages)));
+    } catch {
+      // Storage dolu və ya bağlanıbsa, söhbət yenə işləsin
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    const loadRecommendations = async () => {
+      try {
+        const response = await fetch(`${API_BASE}/api/ai/recommendations`);
+        if (!response.ok) return;
+        const data = await response.json();
+        if (Array.isArray(data.recommendations) && data.recommendations.length) {
+          setRecommendations(data.recommendations);
+        }
+      } catch {
+        setRecommendations(fallbackRecommendations);
+      }
+    };
+
+    loadRecommendations();
+  }, []);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -77,22 +159,17 @@ export default function AIAssistant() {
     setInput('');
     setIsTyping(true);
 
-    // AI Mock Logic (Frontend only)
-    setTimeout(() => {
-      let answer = "Sizin sorğunuzu Ağıllı Şəbəkə vasitəsilə analiz edirəm. Enerji istehlakınızı optimallaşdırmaq üçün yeni ssenarilər hazırlanıb tətbiq ediləcək.";
-      
-      const qLower = question.toLowerCase();
-      if (qLower.includes('kondisioner')) {
-        answer = "Kondisionerləri 28°C dərəcəyə təyin etmək enerji sərfiyyatını 15% azalda bilər. Həmçinin, otaqda olmadığınız zaman onları tamamilə söndürməyi unutmayın.";
-      } else if (qLower.includes('işıq') || qLower.includes('isiq')) {
-        answer = "Günəş işığından maksimum istifadə edin. Gündüz vaxtı lampaları söndürmək və koridor işıqlarını sensorlu rejimə keçirmək sizə ayda 5-7% qənaət edəcək.";
-      } else if (qLower.includes('enerji') || qLower.includes('qənaət') || qLower.includes('qenaet')) {
-        answer = "Sizin ümumi enerji sərfiyyatınız bu ay ötən ayla müqayisədə 8% daha azdır. Qənaət rejimini belə davam etdirin! Əlavə olaraq batareyalardan pik saatlarda (19:00-22:00) istifadə etməyi məsləhət görürəm.";
-      } else if (qLower.includes('cihaz') || qLower.includes('kabel')) {
-        answer = "Bəzi cihazlar gözləmə rejimində olanda belə enerji (vampir enerji) çəkir. İstifadədə olmayan cihazların naqillərini cərəyandan ayırın.";
-      } else if (qLower.includes('salam')) {
-        answer = "Salam! Mən sizin şəxsi EcoAI assistanınızam. Sisteminizin məlumatlarını davamlı izləyirəm. Sizə necə kömək edə bilərəm?";
-      }
+    try {
+      const response = await fetch(`${API_BASE}/api/ai/ask`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question }),
+      });
+
+      if (!response.ok) throw new Error('AI backend error');
+
+      const data = await response.json();
+      const answer = data.answer || 'Cavab alınmadı.';
 
       setMessages((prev) => [
         ...prev,
@@ -103,8 +180,28 @@ export default function AIAssistant() {
           timestamp: new Date(),
         },
       ]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now() + 1,
+          sender: 'ai',
+          text: 'Bu anda cavab gəlmədi. Bir az sonra yenidən cəhd edin.',
+          timestamp: new Date(),
+        },
+      ]);
+    } finally {
       setIsTyping(false);
-    }, 1500); // 1.5 seconds mock delay
+    }
+  };
+
+  const handleClearChat = () => {
+    setMessages([welcomeMessage]);
+    try {
+      localStorage.removeItem(CHAT_STORAGE_KEY);
+    } catch {
+      // Ignore storage failures
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -115,123 +212,127 @@ export default function AIAssistant() {
   };
 
   return (
-    <div className="relative group col-span-1 md:col-span-5 flex flex-col p-6 rounded-2xl bg-[#030d0a]/60 border border-white/5 backdrop-blur-xl shadow-lg transition-all duration-300 hover:border-[#64ffda]/30 h-[420px] overflow-hidden">
-      {/* Background Glow */}
-      <div className="absolute -top-10 -right-10 w-40 h-40 bg-gradient-to-br from-[#00e699]/10 to-transparent rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-4 relative z-10 pb-4 border-b border-white/5">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00e699]/20 to-[#64ffda]/5 border border-[#00e699]/30 flex items-center justify-center">
-          <Brain className="w-4 h-4 text-[#00e699] drop-shadow-[0_0_8px_rgba(0,230,153,0.8)]" />
-        </div>
+    <div className="liquid-glass col-span-5 flex flex-col" style={{ padding: 16, height: 360 }}>
+      <div className="flex items-center gap-2 mb-3">
+        <Brain className="w-4 h-4" style={{ color: '#94d2bd' }} />
         <div>
-          <h3 className="text-[15px] font-bold text-white tracking-wide">AI Optimizer</h3>
-          <p className="text-[10px] text-[#64ffda]/70 uppercase tracking-widest font-mono">Real-time təhlil</p>
+          <h3 className="text-[16px] font-medium text-white">AI Optimizer</h3>
+          <p className="text-[10px] uppercase tracking-[0.24em]" style={{ color: 'rgba(148,210,189,0.7)' }}>
+            Real-time təhlil
+          </p>
         </div>
+        <button
+          type="button"
+          onClick={handleClearChat}
+          className="ml-auto text-[10px] uppercase tracking-[0.2em] px-2 py-1 rounded-md transition-colors"
+          style={{ color: 'rgba(148,210,189,0.75)', background: 'rgba(255,255,255,0.04)' }}
+        >
+          Təmizlə
+        </button>
       </div>
 
-      {/* Chat Area */}
       <div
-        className="flex-1 overflow-y-auto mb-4 space-y-4 pr-2 relative z-10"
-        style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(0,230,153,0.2) transparent' }}
+        className="flex-1 overflow-y-auto mb-3 space-y-3 pr-1"
+        style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.1) transparent' }}
       >
         {messages.map((msg) => (
-          <div key={msg.id} className={`flex gap-3 ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}>
-            {msg.sender === 'ai' && (
-              <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-1 bg-gradient-to-br from-[#00e699]/20 to-[#64ffda]/5 border border-[#00e699]/30 shadow-[0_0_10px_rgba(0,230,153,0.1)]">
-                <Bot className="w-3.5 h-3.5 text-[#00e699]" />
+          <div key={msg.id} className={`flex gap-2 ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}>
+            {msg.sender === 'ai' ? (
+              <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: '#0a9396' }}>
+                <Bot className="w-3 h-3 text-white" />
               </div>
-            )}
-            {msg.sender === 'user' && (
-              <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-1 bg-white/5 border border-white/10">
-                <User className="w-3.5 h-3.5 text-gray-400" />
+            ) : (
+              <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: 'rgba(255,255,255,0.15)' }}>
+                <User className="w-3 h-3 text-white" />
               </div>
             )}
             <div
-              className={`px-4 py-2.5 max-w-[85%] text-[13px] leading-relaxed shadow-md backdrop-blur-sm ${
-                msg.sender === 'ai' 
-                  ? 'bg-gradient-to-br from-[#00e699]/10 to-[#64ffda]/5 border border-[#00e699]/20 text-[#e0f2fe] rounded-2xl rounded-tl-sm' 
-                  : 'bg-white/5 border border-white/10 text-gray-300 rounded-2xl rounded-tr-sm'
-              }`}
+              className="px-3 py-2 max-w-[85%]"
+              style={{
+                background: msg.sender === 'ai' ? 'rgba(10, 147, 150, 0.15)' : 'rgba(255,255,255,0.08)',
+                border: msg.sender === 'ai' ? '1px solid rgba(10, 147, 150, 0.2)' : '1px solid rgba(255,255,255,0.1)',
+                borderRadius: msg.sender === 'ai' ? '12px 12px 12px 2px' : '12px 12px 2px 12px',
+              }}
             >
-              {msg.text}
+              <p className="text-[13px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.88)' }}>
+                {msg.text}
+              </p>
             </div>
           </div>
         ))}
 
         {isTyping && (
-          <div className="flex gap-3">
-            <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-1 bg-gradient-to-br from-[#00e699]/20 to-[#64ffda]/5 border border-[#00e699]/30 shadow-[0_0_10px_rgba(0,230,153,0.1)]">
-              <Bot className="w-3.5 h-3.5 text-[#00e699]" />
+          <div className="flex gap-2">
+            <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: '#0a9396' }}>
+              <Bot className="w-3 h-3 text-white" />
             </div>
-            <div className="px-4 py-3 bg-gradient-to-br from-[#00e699]/5 to-transparent border border-[#00e699]/10 rounded-2xl rounded-tl-sm backdrop-blur-sm flex items-center gap-1.5">
-              {[0, 0.15, 0.3].map((delay, i) => (
-                <div 
-                  key={i} 
-                  className="w-1.5 h-1.5 rounded-full bg-[#00e699] animate-bounce" 
-                  style={{ animationDelay: `${delay}s` }} 
-                />
-              ))}
+            <div className="px-4 py-2.5" style={{ background: 'rgba(10, 147, 150, 0.1)', borderRadius: '12px 12px 12px 2px' }}>
+              <div className="flex gap-1">
+                {[0, 0.15, 0.3].map((delay, i) => (
+                  <span
+                    key={i}
+                    className="text-[18px] leading-none animate-pulse"
+                    style={{ color: 'rgba(255,255,255,0.5)', animationDelay: `${delay}s` }}
+                  >
+                    &bull;
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         )}
 
-        {/* Recommendations Section inline */}
-        {messages.length < 3 && !isTyping && recommendations.length > 0 && (
-          <div className="space-y-2 mt-4 pt-4 border-t border-white/5">
-            <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest pl-1 mb-2">Aktiv Tövsiyələr</p>
-            {recommendations.map((rec) => {
-              const isHigh = rec.priority === 'Yüksək';
-              return (
-                <div
-                  key={rec.id}
-                  className={`flex items-start gap-3 p-3 rounded-xl border backdrop-blur-sm ${
-                    isHigh 
-                      ? 'bg-emerald-500/10 border-emerald-500/20 shadow-[inset_0_0_15px_rgba(16,185,129,0.05)]' 
-                      : 'bg-yellow-500/10 border-yellow-500/20 shadow-[inset_0_0_15px_rgba(234,179,8,0.05)]'
-                  }`}
-                >
-                  <Zap className={`w-4 h-4 flex-shrink-0 mt-0.5 ${isHigh ? 'text-emerald-400' : 'text-yellow-400'}`} />
-                  <div className="space-y-1">
-                    <p className={`text-[12px] font-bold ${isHigh ? 'text-emerald-300' : 'text-yellow-300'}`}>
-                      {rec.title}
-                    </p>
-                    <p className="text-[11px] text-gray-400 leading-relaxed">
-                      {rec.description}
-                    </p>
-                  </div>
+        <div className="space-y-2 pt-2">
+          {recommendations.map((rec) => {
+            const Icon = getRecommendationIcon(rec.category);
+            const tone = getRecommendationTone(rec.priority);
+
+            return (
+              <div
+                key={rec.id}
+                className="flex items-start gap-2 p-2.5"
+                style={{ background: tone.bg, border: `1px solid ${tone.border}`, borderRadius: 8 }}
+              >
+                <Icon className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: tone.color }} />
+                <div className="space-y-0.5">
+                  <p className="text-[12px] leading-relaxed font-medium" style={{ color: 'rgba(255,255,255,0.92)' }}>
+                    {rec.title}
+                  </p>
+                  <p className="text-[12px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.74)' }}>
+                    {rec.description}
+                  </p>
+                  <p className="text-[11px] leading-none" style={{ color: tone.color }}>
+                    {rec.saving} · {rec.priority}
+                  </p>
                 </div>
-              );
-            })}
-          </div>
-        )}
+              </div>
+            );
+          })}
+        </div>
 
-        <div ref={messagesEndRef} className="h-2" />
+        <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Area */}
-      <div className="relative z-10 mt-auto pt-2">
-        <div className="flex items-center gap-2 p-1 pl-4 rounded-xl bg-black/40 border border-white/10 focus-within:border-[#64ffda]/40 focus-within:shadow-[0_0_15px_rgba(100,255,218,0.1)] transition-all">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="AI-a sual ver (məs: kondisioner, işıq, enerji)..."
-            className="flex-1 bg-transparent text-[13px] text-white placeholder-gray-500 outline-none"
-          />
-          <button
-            onClick={handleSend}
-            disabled={!input.trim()}
-            className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all ${
-              input.trim() 
-                ? 'bg-gradient-to-br from-[#00e699] to-[#64ffda] text-[#030d0a] shadow-[0_0_10px_rgba(0,230,153,0.3)] hover:opacity-90' 
-                : 'bg-white/5 text-gray-500 cursor-not-allowed'
-            }`}
-          >
-            <Send className="w-3.5 h-3.5" style={{ marginLeft: input.trim() ? '-2px' : '0' }} />
-          </button>
-        </div>
+      <div
+        className="flex items-center gap-2 px-3 py-2"
+        style={{ background: 'rgba(0, 42, 53, 0.5)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8 }}
+      >
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="AI-a sual ver (məs: kondisioner, işıq, enerji)..."
+          className="flex-1 bg-transparent text-[13px] outline-none"
+          style={{ color: 'rgba(255,255,255,0.9)' }}
+        />
+        <button
+          onClick={handleSend}
+          className="w-7 h-7 flex items-center justify-center transition-colors"
+          style={{ borderRadius: 6, background: input.trim() ? 'rgba(10, 147, 150, 0.3)' : 'transparent' }}
+        >
+          <Send className="w-4 h-4" style={{ color: input.trim() ? '#94d2bd' : 'rgba(255,255,255,0.35)' }} />
+        </button>
       </div>
     </div>
   );
