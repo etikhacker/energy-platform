@@ -429,7 +429,7 @@ export default function LandingPage() {
 
           <div className="lg:col-span-6 flex justify-center relative">
               {/* Three.js Qlobus */}
-              <div className="absolute inset-0 -z-0 opacity-80">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] md:w-[1000px] md:h-[1000px] -z-0 opacity-80 pointer-events-none">
             <EnergyGlobe />
           </div>
             <TiltCard intensity={15} className="relative z-10 w-full max-w-[500px] aspect-square rounded-[40px] border border-white/5 bg-gradient-to-br from-white/5 to-transparent p-8 shadow-2xl backdrop-blur-md flex flex-col justify-between" style={{ transformStyle: "preserve-3d" }}>
