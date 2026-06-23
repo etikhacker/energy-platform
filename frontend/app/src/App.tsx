@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { supabase } from './lib/supabase';
 import { Toaster } from 'sonner';
+import { Mail, Lock, User, Zap, ArrowRight } from 'lucide-react';
 import LivingCanvas from './components/LivingCanvas';
 import Sidebar from './components/dashboard/Sidebar';
 import Header from './components/dashboard/Header';
@@ -45,7 +46,8 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (isRegister && !fullName.trim()) {
       setError('Ad Soyad daxil edin');
       return;
@@ -80,90 +82,107 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
   };
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden flex items-center justify-center" style={{ background: 'var(--app-bg)' }}>
-      <LivingCanvas />
-      <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 5, background: 'radial-gradient(ellipse at 30% 20%, rgba(0,18,25,0.4) 0%, rgba(0,18,25,0.2) 50%, transparent 100%)' }} />
-
-      <div className="relative" style={{ zIndex: 10, width: 380 }}>
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(42,157,143,0.2)', border: '1px solid rgba(42,157,143,0.3)' }}>
-              <span style={{ color: '#2a9d8f', fontSize: 18 }}>⚡</span>
-            </div>
-            <span className="text-white text-xl font-semibold">EcoAI</span>
+    <div className="relative min-h-screen w-full bg-[#030d0a] flex items-center justify-center overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0 z-0">
+        <LivingCanvas />
+      </div>
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top_right,rgba(100,255,218,0.15)_0%,transparent_50%)] pointer-events-none"></div>
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(16,185,129,0.15)_0%,transparent_50%)] pointer-events-none"></div>
+      
+      <div className="relative z-10 w-full max-w-[400px] px-6">
+        {/* Logo */}
+        <div className="flex flex-col items-center mb-8">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#00e699]/20 to-[#64ffda]/5 border border-[#64ffda]/30 flex items-center justify-center mb-4 shadow-[0_0_30px_rgba(100,255,218,0.2)]">
+            <Zap className="w-7 h-7 text-[#64ffda]" />
           </div>
-          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>Enerji İdarəetmə Platforması</p>
+          <h1 className="text-3xl font-extrabold text-white tracking-tight">EcoAI</h1>
+          <p className="text-sm text-gray-400 mt-2 text-center font-medium">Enerji gələcəyinizə giriş edin</p>
         </div>
 
-        <div className="liquid-glass" style={{ padding: 28 }}>
-          <h2 className="text-white text-lg font-medium mb-6">
-            {isRegister ? 'Qeydiyyat' : 'Daxil ol'}
+        {/* Card */}
+        <div className="rounded-[32px] border border-white/10 bg-black/40 p-8 shadow-2xl backdrop-blur-xl">
+          <h2 className="text-xl font-bold text-white mb-6">
+            {isRegister ? 'Yeni Hesab Yarat' : 'Sistemə Daxil Ol'}
           </h2>
 
-          {isRegister && (
-            <div className="mb-4">
-              <label className="block text-xs mb-1.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Ad Soyad</label>
-              <input
-                type="text" value={fullName} onChange={(e) => setFullName(e.target.value)}
-                placeholder="Ömər Babayev"
-                className="w-full px-3 py-2.5 text-sm outline-none" style={inputStyle}
-                onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-              />
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {isRegister && (
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-gray-400 ml-1 uppercase tracking-wider">Ad Soyad</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <User className="w-4 h-4 text-gray-500" />
+                  </div>
+                  <input
+                    type="text" value={fullName} onChange={(e) => setFullName(e.target.value)}
+                    placeholder="Ömər Babayev" required
+                    className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-[#64ffda]/50 focus:bg-white/10 transition-all"
+                  />
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-400 ml-1 uppercase tracking-wider">E-poçt Ünvanı</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Mail className="w-4 h-4 text-gray-500" />
+                </div>
+                <input
+                  type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                  placeholder="admin@ecoai.az" required
+                  className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-[#64ffda]/50 focus:bg-white/10 transition-all"
+                />
+              </div>
             </div>
-          )}
 
-          <div className="mb-4">
-            <label className="block text-xs mb-1.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Email</label>
-            <input
-              type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-              placeholder="email@example.com"
-              className="w-full px-3 py-2.5 text-sm outline-none" style={inputStyle}
-              onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-            />
-          </div>
-
-          <div className="mb-5">
-            <label className="block text-xs mb-1.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Şifrə</label>
-            <input
-              type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full px-3 py-2.5 text-sm outline-none" style={inputStyle}
-              onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-            />
-          </div>
-
-          {error && (
-            <div className="mb-4 px-3 py-2 text-xs" style={{
-              background: error.includes('göndərildi') ? 'rgba(42,157,143,0.1)' : 'rgba(230,57,70,0.1)',
-              border: `1px solid ${error.includes('göndərildi') ? 'rgba(42,157,143,0.2)' : 'rgba(230,57,70,0.2)'}`,
-              borderRadius: 6,
-              color: error.includes('göndərildi') ? '#2a9d8f' : '#e63946'
-            }}>
-              {error}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-400 ml-1 uppercase tracking-wider">Şifrə</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Lock className="w-4 h-4 text-gray-500" />
+                </div>
+                <input
+                  type="password" value={password} onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••" required minLength={6}
+                  className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-[#64ffda]/50 focus:bg-white/10 transition-all"
+                />
+              </div>
             </div>
-          )}
 
-          <button
-            onClick={handleSubmit} disabled={loading}
-            className="w-full py-2.5 text-sm font-medium transition-all"
-            style={{
-              background: loading ? 'rgba(42,157,143,0.3)' : 'rgba(42,157,143,0.8)',
-              border: '1px solid rgba(42,157,143,0.4)',
-              borderRadius: 8, color: '#ffffff',
-              cursor: loading ? 'not-allowed' : 'pointer',
-            }}
-          >
-            {loading ? 'Gözləyin...' : isRegister ? 'Qeydiyyat' : 'Daxil ol'}
-          </button>
+            {error && (
+              <div className={`px-4 py-3 rounded-xl text-xs font-medium border ${error.includes('göndərildi') ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'}`}>
+                {error}
+              </div>
+            )}
 
-          <div className="mt-4 text-center">
             <button
-              onClick={() => { setIsRegister(!isRegister); setError(''); setFullName(''); }}
-              className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}
+              type="submit" disabled={loading}
+              className="w-full group relative flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#00e699] hover:bg-[#00cc88] text-[#030d0a] font-bold transition-all disabled:opacity-70 disabled:cursor-not-allowed mt-2 overflow-hidden shadow-[0_0_20px_rgba(0,230,153,0.2)] hover:shadow-[0_0_30px_rgba(0,230,153,0.4)]"
             >
-              {isRegister ? 'Artıq hesabınız var? Daxil olun' : 'Hesabınız yoxdur? Qeydiyyat'}
+              <span className="relative z-10">{loading ? 'Gözləyin...' : (isRegister ? 'Qeydiyyatdan Keç' : 'Daxil Ol')}</span>
+              {!loading && <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <button
+              type="button"
+              onClick={() => { setIsRegister(!isRegister); setError(''); setFullName(''); }}
+              className="text-xs text-gray-400 hover:text-[#64ffda] transition-colors"
+            >
+              {isRegister ? 'Artıq hesabınız var? ' : 'Hesabınız yoxdur? '}
+              <span className="font-semibold underline decoration-white/20 underline-offset-4">{isRegister ? 'Daxil olun' : 'Qeydiyyatdan keçin'}</span>
             </button>
           </div>
+        </div>
+        
+        {/* Back to Home Link */}
+        <div className="mt-8 text-center">
+          <a href="/" className="inline-flex items-center gap-2 text-xs font-medium text-gray-500 hover:text-white transition-colors">
+            <ArrowRight className="w-3 h-3 rotate-180" /> Ana səhifəyə qayıt
+          </a>
         </div>
       </div>
     </div>
