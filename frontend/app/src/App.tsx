@@ -103,9 +103,13 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
             </div>
           </div>
           
-          {/* 3D Globe Illustration */}
-          <div className="absolute inset-0 -translate-x-12 z-10 opacity-80 pointer-events-none">
-            <EnergyGlobe />
+          {/* Isometric Illustration */}
+          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none -translate-x-12">
+            <img 
+              src="/energy_isometric.png" 
+              alt="Isometric Energy System" 
+              className="w-[110%] max-w-none opacity-90 object-contain mix-blend-screen"
+            />
           </div>
 
           <div className="absolute bottom-10 left-0 z-20 max-w-md">
