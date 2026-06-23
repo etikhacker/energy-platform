@@ -394,8 +394,13 @@ export default function LandingPage() {
       </header>
 
       {/* HERO SECTION */}
-      <section className="relative pt-44 pb-32 px-6">
-        <div className="mx-auto max-w-7xl grid lg:grid-cols-12 gap-16 items-center">
+      <section className="relative pt-44 pb-32 px-6 min-h-screen flex items-center">
+        {/* Tam Ekran Arxa Plan Qlobusu */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] lg:w-[1600px] lg:h-[1600px] -z-0 opacity-40 pointer-events-none">
+          <EnergyGlobe />
+        </div>
+
+        <div className="mx-auto w-full max-w-7xl grid lg:grid-cols-12 gap-16 items-center relative z-10">
           
           <div className="lg:col-span-6 space-y-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#64ffda]/20 bg-[#64ffda]/5 text-xs font-semibold tracking-wider text-[#64ffda]">
@@ -428,43 +433,91 @@ export default function LandingPage() {
           </div>
 
           <div className="lg:col-span-6 flex justify-center relative">
-              {/* Three.js Qlobus */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] md:w-[1000px] md:h-[1000px] -z-0 opacity-80 pointer-events-none">
-            <EnergyGlobe />
-          </div>
-            <TiltCard intensity={15} className="relative z-10 w-full max-w-[500px] aspect-square rounded-[40px] border border-white/5 bg-gradient-to-br from-white/5 to-transparent p-8 shadow-2xl backdrop-blur-md flex flex-col justify-between" style={{ transformStyle: "preserve-3d" }}>
+            <TiltCard intensity={15} className="relative z-10 w-full max-w-[500px] rounded-[32px] border border-[#64ffda]/30 bg-[#030d0a]/60 p-6 sm:p-8 shadow-[0_0_50px_rgba(100,255,218,0.1)] backdrop-blur-xl flex flex-col gap-8" style={{ transformStyle: "preserve-3d" }}>
               
-              <div className="absolute inset-4 rounded-[32px] border border-[#64ffda]/10 pointer-events-none" style={{ transform: "translateZ(30px)" }} />
-              <div className="absolute inset-10 rounded-[24px] border border-[#64ffda]/5 pointer-events-none" style={{ transform: "translateZ(60px)" }} />
+              <style>{`
+                @keyframes slideRight {
+                  0% { left: 0%; opacity: 0; }
+                  20% { opacity: 1; }
+                  80% { opacity: 1; }
+                  100% { left: 100%; opacity: 0; }
+                }
+                @keyframes slideLeft {
+                  0% { right: 0%; opacity: 0; }
+                  20% { opacity: 1; }
+                  80% { opacity: 1; }
+                  100% { right: 100%; opacity: 0; }
+                }
+              `}</style>
 
-              <div className="flex justify-between items-start" style={{ transform: "translateZ(80px)" }}>
-                <div>
-                  <span className="text-[10px] tracking-[0.2em] text-[#64ffda] uppercase font-bold">CANLI SİSTEM</span>
-                  <h3 className="text-xl font-bold mt-1">Ağıllı Şəbəkə</h3>
+              {/* Header */}
+              <div className="flex justify-between items-center" style={{ transform: "translateZ(40px)" }}>
+                <div className="flex items-center gap-3">
+                  <div className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00e699] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-[#00e699]"></span>
+                  </div>
+                  <span className="text-xs sm:text-sm font-bold tracking-widest text-white">NEURAL CORE</span>
                 </div>
-                <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold">
-                  AKTİV AI
+                <div className="px-3 py-1.5 rounded-lg bg-[#64ffda]/10 border border-[#64ffda]/30 text-[#64ffda] text-[10px] font-bold tracking-widest">
+                  AKTİV
                 </div>
               </div>
 
-              <div className="my-auto flex flex-col items-center justify-center text-center py-6" style={{ transform: "translateZ(110px)" }}>
-                <div className="relative w-40 h-40 rounded-full border border-[#64ffda]/20 flex items-center justify-center bg-[#64ffda]/5 shadow-[0_0_50px_rgba(100,255,218,0.1)]">
-                  <div className="absolute inset-2 rounded-full border border-dashed border-[#64ffda]/40 animate-spin-slow" />
-                  <div className="space-y-1">
-                    <span className="text-[10px] text-gray-400 uppercase tracking-widest block">EFFEKTİVLİK</span>
-                    <span className="text-4xl font-extrabold text-[#64ffda]">+38.4%</span>
+              {/* Flow Visualizer */}
+              <div className="relative h-48 sm:h-56 rounded-2xl border border-white/10 bg-black/40 overflow-hidden flex items-center justify-center shadow-inner" style={{ transform: "translateZ(80px)" }}>
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(100,255,218,0.15)_0%,transparent_70%)]"></div>
+                
+                <div className="w-full flex items-center justify-between px-4 sm:px-8 relative z-10">
+                  {/* Solar Energy */}
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-full border border-yellow-500/40 bg-yellow-500/10 flex items-center justify-center shadow-[0_0_20px_rgba(234,179,8,0.2)]">
+                      <Sun className="w-5 h-5 sm:w-7 sm:h-7 text-yellow-400" />
+                    </div>
+                    <span className="text-[10px] sm:text-xs font-medium text-gray-400 uppercase tracking-wider">Solar</span>
+                  </div>
+
+                  {/* Flow Line 1 */}
+                  <div className="flex-1 h-px bg-gradient-to-r from-yellow-500/30 via-[#64ffda]/30 to-[#64ffda]/30 mx-2 sm:mx-4 relative">
+                    <div className="absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-yellow-300 shadow-[0_0_8px_yellow]" style={{ animation: 'slideRight 2s linear infinite' }}></div>
+                  </div>
+
+                  {/* AI Brain Center */}
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-[#64ffda] bg-[#64ffda]/10 flex items-center justify-center shadow-[0_0_40px_rgba(100,255,218,0.4)] backdrop-blur-md">
+                      <BrainCircuit className="w-8 h-8 sm:w-10 sm:h-10 text-[#64ffda] animate-pulse" />
+                      <div className="absolute inset-0 rounded-full border border-[#64ffda] animate-ping opacity-20" style={{ animationDuration: '3s' }}></div>
+                    </div>
+                  </div>
+
+                  {/* Flow Line 2 */}
+                  <div className="flex-1 h-px bg-gradient-to-l from-emerald-500/30 via-[#64ffda]/30 to-[#64ffda]/30 mx-2 sm:mx-4 relative">
+                    <div className="absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-emerald-300 shadow-[0_0_8px_#34d399]" style={{ animation: 'slideLeft 2.5s linear infinite' }}></div>
+                  </div>
+
+                  {/* Battery */}
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-full border border-emerald-500/40 bg-emerald-500/10 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+                      <BatteryCharging className="w-5 h-5 sm:w-7 sm:h-7 text-emerald-400" />
+                    </div>
+                    <span className="text-[10px] sm:text-xs font-medium text-gray-400 uppercase tracking-wider">Batareya</span>
                   </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 border-t border-white/5 pt-6" style={{ transform: "translateZ(90px)" }}>
-                <div>
-                  <span className="text-[10px] text-gray-500 block">AYLIQ TƏSƏRRÜFAT</span>
-                  <span className="text-lg font-bold text-white">₼142.00</span>
+              {/* Stats Footer */}
+              <div className="grid grid-cols-3 gap-3 sm:gap-4" style={{ transform: "translateZ(60px)" }}>
+                <div className="p-3 sm:p-4 rounded-xl bg-white/5 border border-white/5 flex flex-col justify-center">
+                  <span className="text-[9px] sm:text-[10px] text-gray-400 block mb-1 tracking-wider uppercase">Ümumi İstehsal</span>
+                  <span className="text-sm sm:text-lg font-bold text-white">4.2 kW</span>
                 </div>
-                <div className="text-right">
-                  <span className="text-[10px] text-gray-500 block">KARBON İZİ AZALMA</span>
-                  <span className="text-lg font-bold text-[#00e699]">2.4 Ton</span>
+                <div className="p-3 sm:p-4 rounded-xl bg-[#64ffda]/10 border border-[#64ffda]/20 flex flex-col justify-center items-center text-center shadow-[0_0_20px_rgba(100,255,218,0.1)]">
+                  <span className="text-[9px] sm:text-[10px] text-[#64ffda] block mb-1 tracking-wider uppercase">Effektivlik</span>
+                  <span className="text-sm sm:text-lg font-extrabold text-[#64ffda]">+38%</span>
+                </div>
+                <div className="p-3 sm:p-4 rounded-xl bg-white/5 border border-white/5 flex flex-col justify-center text-right">
+                  <span className="text-[9px] sm:text-[10px] text-gray-400 block mb-1 tracking-wider uppercase">Ev İstehlakı</span>
+                  <span className="text-sm sm:text-lg font-bold text-white">1.8 kW</span>
                 </div>
               </div>
 
