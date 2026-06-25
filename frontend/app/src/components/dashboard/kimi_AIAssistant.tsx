@@ -212,11 +212,11 @@ export default function AIAssistant() {
   };
 
   return (
-    <div className="liquid-glass col-span-5 flex flex-col" style={{ padding: 16, height: 360 }}>
-      <div className="flex items-center gap-2 mb-3">
+    <div className="liquid-glass col-span-5 flex flex-col" style={{ padding: 14, height: 328 }}>
+      <div className="flex items-center gap-2 mb-2.5">
         <Brain className="w-4 h-4" style={{ color: '#94d2bd' }} />
         <div>
-          <h3 className="text-[16px] font-medium text-white">AI Optimizer</h3>
+          <h3 className="text-[15px] font-medium text-white">AI Optimizer</h3>
           <p className="text-[10px] uppercase tracking-[0.24em]" style={{ color: 'rgba(148,210,189,0.7)' }}>
             Real-time təhlil
           </p>
@@ -232,7 +232,7 @@ export default function AIAssistant() {
       </div>
 
       <div
-        className="flex-1 overflow-y-auto mb-3 space-y-3 pr-1"
+        className="flex-1 overflow-y-auto mb-2.5 space-y-2.5 pr-1"
         style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.1) transparent' }}
       >
         {messages.map((msg) => (
@@ -247,14 +247,14 @@ export default function AIAssistant() {
               </div>
             )}
             <div
-              className="px-3 py-2 max-w-[85%]"
+              className="px-3 py-1.5 max-w-[85%]"
               style={{
                 background: msg.sender === 'ai' ? 'rgba(10, 147, 150, 0.15)' : 'rgba(255,255,255,0.08)',
                 border: msg.sender === 'ai' ? '1px solid rgba(10, 147, 150, 0.2)' : '1px solid rgba(255,255,255,0.1)',
                 borderRadius: msg.sender === 'ai' ? '12px 12px 12px 2px' : '12px 12px 2px 12px',
               }}
             >
-              <p className="text-[13px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.88)' }}>
+              <p className="text-[12px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.88)' }}>
                 {msg.text}
               </p>
             </div>
@@ -266,7 +266,7 @@ export default function AIAssistant() {
             <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: '#0a9396' }}>
               <Bot className="w-3 h-3 text-white" />
             </div>
-            <div className="px-4 py-2.5" style={{ background: 'rgba(10, 147, 150, 0.1)', borderRadius: '12px 12px 12px 2px' }}>
+            <div className="px-3.5 py-2" style={{ background: 'rgba(10, 147, 150, 0.1)', borderRadius: '12px 12px 12px 2px' }}>
               <div className="flex gap-1">
                 {[0, 0.15, 0.3].map((delay, i) => (
                   <span
@@ -290,15 +290,15 @@ export default function AIAssistant() {
             return (
               <div
                 key={rec.id}
-                className="flex items-start gap-2 p-2.5"
+                className="flex items-start gap-2 p-2"
                 style={{ background: tone.bg, border: `1px solid ${tone.border}`, borderRadius: 8 }}
               >
                 <Icon className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: tone.color }} />
                 <div className="space-y-0.5">
-                  <p className="text-[12px] leading-relaxed font-medium" style={{ color: 'rgba(255,255,255,0.92)' }}>
+                  <p className="text-[11px] leading-relaxed font-medium" style={{ color: 'rgba(255,255,255,0.92)' }}>
                     {rec.title}
                   </p>
-                  <p className="text-[12px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.74)' }}>
+                  <p className="text-[11px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.74)' }}>
                     {rec.description}
                   </p>
                   <p className="text-[11px] leading-none" style={{ color: tone.color }}>
@@ -323,7 +323,7 @@ export default function AIAssistant() {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="AI-a sual ver (məs: kondisioner, işıq, enerji)..."
-          className="flex-1 bg-transparent text-[13px] outline-none"
+          className="flex-1 bg-transparent text-[12px] outline-none"
           style={{ color: 'rgba(255,255,255,0.9)' }}
         />
         <button

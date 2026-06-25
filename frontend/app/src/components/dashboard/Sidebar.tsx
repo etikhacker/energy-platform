@@ -35,17 +35,17 @@ export default function Sidebar({ activeItem, onNavigate, onLogout, userEmail, u
 
   return (
     <aside
-      className="fixed left-0 top-0 h-full flex flex-col border-r border-white/5 bg-[#030d0a]/80 backdrop-blur-2xl z-20"
-      style={{ width: 260 }}
+      className="fixed left-0 top-0 h-full hidden lg:flex flex-col border-r border-white/5 bg-[#030d0a]/80 backdrop-blur-2xl z-20"
+      style={{ width: 240 }}
     >
       {/* Logo */}
-      <div className="px-6 pt-8 pb-6">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00e699]/20 to-[#64ffda]/5 border border-[#64ffda]/30 flex items-center justify-center shadow-[0_0_20px_rgba(100,255,218,0.2)]">
-            <Zap className="w-5 h-5 text-[#64ffda]" />
+      <div className="px-5 pt-6 pb-5">
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-xl bg-[color:var(--accent-soft)] border border-[color:var(--accent)]/30 flex items-center justify-center shadow-[0_0_20px_rgba(100,255,218,0.2)]">
+            <Zap className="w-4 h-4 text-[color:var(--accent-strong)]" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">
+            <h1 className="text-[22px] font-bold text-white tracking-tight">
               EcoAI
             </h1>
             <p className="text-[9px] font-mono mt-0.5 text-[#64ffda]/70 tracking-[0.15em] uppercase">
@@ -55,10 +55,10 @@ export default function Sidebar({ activeItem, onNavigate, onLogout, userEmail, u
         </div>
       </div>
 
-      <div className="mx-6 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-4" />
+      <div className="mx-5 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-3" />
 
       {/* Nav */}
-      <nav className="flex-1 px-4 flex flex-col gap-2 overflow-y-auto">
+      <nav className="flex-1 px-3 flex flex-col gap-1.5 overflow-y-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeItem === item.id;
@@ -66,13 +66,13 @@ export default function Sidebar({ activeItem, onNavigate, onLogout, userEmail, u
             <button
               key={item.id}
               onClick={() => onNavigate?.(item.id)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all ${
                 isActive 
                   ? 'bg-gradient-to-r from-[#00e699]/15 to-[#64ffda]/5 text-white shadow-[inset_0_0_20px_rgba(0,230,153,0.1)] border border-[#00e699]/30' 
                   : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
               }`}
             >
-              <Icon className={`w-5 h-5 ${isActive ? 'text-[#64ffda] drop-shadow-[0_0_8px_rgba(100,255,218,0.8)]' : 'opacity-70'}`} />
+              <Icon className={`w-5 h-5 ${isActive ? 'text-[color:var(--accent-strong)] drop-shadow-[0_0_8px_rgba(100,255,218,0.8)]' : 'opacity-70'}`} />
               <span className="font-medium text-sm">{t(item.labelKey)}</span>
             </button>
           );
@@ -80,10 +80,10 @@ export default function Sidebar({ activeItem, onNavigate, onLogout, userEmail, u
       </nav>
 
       {/* User */}
-      <div className="p-6 mt-auto">
-        <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-md">
+      <div className="p-5 mt-auto">
+        <div className="flex items-center gap-2.5 p-2.5 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-md">
           {/* Avatar */}
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00e699]/20 to-[#64ffda]/10 border border-[#00e699]/30 flex items-center justify-center text-sm font-bold text-[#64ffda] shadow-[0_0_15px_rgba(0,230,153,0.15)] flex-shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-[color:var(--accent-soft)] border border-[color:var(--accent)]/30 flex items-center justify-center text-sm font-bold text-[color:var(--accent-strong)] shadow-[0_0_15px_rgba(0,230,153,0.15)] flex-shrink-0">
             {initials}
           </div>
 

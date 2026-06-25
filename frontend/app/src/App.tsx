@@ -336,7 +336,7 @@ function DashboardApp() {
           userName={displayName}
         />
 
-        <main className="flex-1 flex flex-col h-full" style={{ marginLeft: 260 }}>
+        <main className="flex-1 flex flex-col h-full ml-0 lg:ml-[240px]">
           <Header userEmail={session.user?.email} userName={displayName} activeNav={activeNav} />
           <div
             className="flex-1 overflow-y-auto"
@@ -347,8 +347,8 @@ function DashboardApp() {
             }}
           >
             {activeNav === 'dashboard' && (
-              <section className="space-y-6 pt-2">
-                <div className="flex items-end justify-between gap-4">
+              <section className="space-y-4 pt-1.5">
+                <div className="flex items-end justify-between gap-3">
                   <div>
                     <p className="text-[10px] uppercase tracking-[0.28em]" style={{ color: 'rgba(148,210,189,0.7)' }}>
                       Dashboard overview
@@ -364,7 +364,7 @@ function DashboardApp() {
 
                 <DashboardCards />
 
-                <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(12, minmax(0, 1fr))' }}>
+                <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(12, minmax(0, 1fr))' }}>
                   <div className="col-span-12 xl:col-span-7">
                     <EnergyChart />
                   </div>
@@ -373,7 +373,7 @@ function DashboardApp() {
                   </div>
                 </div>
 
-                <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(12, minmax(0, 1fr))' }}>
+                <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(12, minmax(0, 1fr))' }}>
                   <div className="col-span-12 xl:col-span-7">
                     <ForecastPanel />
                   </div>

@@ -57,10 +57,10 @@ export default function DeviceControl() {
   };
 
   return (
-    <div className="liquid-glass col-span-5 flex flex-col" style={{ padding: 16, height: 320 }}>
+    <div className="liquid-glass col-span-5 flex flex-col" style={{ padding: 14, height: 300 }}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-[16px] font-medium text-white">Ağıllı Cihazlar</h3>
+      <div className="flex items-center justify-between mb-2.5">
+        <h3 className="text-[15px] font-medium text-white">Ağıllı Cihazlar</h3>
         <span
           className="text-[11px] font-medium px-2.5 py-0.5"
           style={{ background: 'rgba(42,157,143,0.15)', color: '#2a9d8f', borderRadius: 10 }}
@@ -80,7 +80,7 @@ export default function DeviceControl() {
           return (
             <div
               key={device.id}
-              className="flex items-center justify-between py-3 px-2 transition-colors cursor-pointer"
+              className="flex items-center justify-between py-2.5 px-2 transition-colors cursor-pointer"
               style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', borderRadius: 8 }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.04)'; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
@@ -91,8 +91,8 @@ export default function DeviceControl() {
                   style={{ color: isOn ? device.iconColor : 'rgba(255,255,255,0.25)' }}
                 />
                 <div>
-                  <p className="text-[13px] font-medium text-white">{device.name}</p>
-                  <p className="text-[11px]" style={{ color: isOn ? '#2a9d8f' : 'rgba(255,255,255,0.35)' }}>
+                  <p className="text-[12px] font-medium text-white">{device.name}</p>
+                  <p className="text-[10px]" style={{ color: isOn ? '#2a9d8f' : 'rgba(255,255,255,0.35)' }}>
                     {isOn ? `Açıq · ${device.power}W` : 'Bağlı · 0W'}
                   </p>
                 </div>
@@ -137,7 +137,7 @@ export default function DeviceControl() {
 
       {/* Temperature Slider */}
       <div className="mt-3 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-1.5">
           <span className="label-muted">İstilik temperaturu</span>
           <span className="font-mono-data text-[13px]" style={{ color: '#0a9396' }}>{hvacTemp}°C</span>
         </div>

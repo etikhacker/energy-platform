@@ -91,9 +91,9 @@ export default function EnergyChart() {
   const currentData = timeRangeData[timeRange];
 
   return (
-    <div className="liquid-glass col-span-7" style={{ padding: 16, height: 360 }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-        <h3 style={{ fontSize: 16, fontWeight: 500, color: '#ffffff', margin: 0 }}>
+    <div className="liquid-glass col-span-7" style={{ padding: 14, height: 328 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+        <h3 style={{ fontSize: 15, fontWeight: 500, color: '#ffffff', margin: 0 }}>
           Canlı Enerji Axını
         </h3>
         <div style={{ display: 'flex', gap: 4 }}>
@@ -121,7 +121,7 @@ export default function EnergyChart() {
         </div>
       </div>
 
-      <div style={{ width: '100%', height: 300 }}>
+      <div style={{ width: '100%', height: 278 }}>
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={currentData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
             <defs>
@@ -141,12 +141,12 @@ export default function EnergyChart() {
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
             <XAxis
               dataKey="time"
-              tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
+              tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 10, fontFamily: 'JetBrains Mono' }}
               axisLine={{ stroke: 'rgba(255,255,255,0.06)' }}
               tickLine={false}
             />
             <YAxis
-              tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
+              tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 10, fontFamily: 'JetBrains Mono' }}
               axisLine={false}
               tickLine={false}
               domain={[-5, 5]}

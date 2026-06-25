@@ -42,15 +42,15 @@ export default function Header({ userEmail, userName, activeNav = 'dashboard' }:
   const firstName = displayName.split(' ')[0];
 
   return (
-    <header className="flex items-center justify-between px-6 py-4 mx-6 mt-6 mb-8 rounded-2xl bg-[#030d0a]/60 border border-white/5 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] z-10 sticky top-6">
-      <h2 className="text-xl font-bold text-white tracking-wide">
+    <header className="flex items-center justify-between px-5 py-3.5 mx-5 mt-5 mb-5 rounded-2xl bg-[#030d0a]/60 border border-white/5 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] z-10 sticky top-5">
+      <h2 className="text-lg font-bold text-white tracking-wide">
         {t(pageTitles[activeNav] || 'idarePaneli')}
       </h2>
 
-      <div className="flex items-center gap-6">
-        <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/5">
-          <div className="w-2 h-2 rounded-full animate-pulse bg-[#00e699] shadow-[0_0_10px_rgba(0,230,153,0.8)]" />
-          <span className="font-mono text-xs text-[#00e699] tracking-widest font-medium">
+      <div className="flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/5">
+          <div className="w-2 h-2 rounded-full animate-pulse bg-[color:var(--accent)] shadow-[0_0_10px_rgba(0,230,153,0.8)]" />
+          <span className="font-mono text-xs text-[color:var(--accent)] tracking-widest font-medium">
             {formattedTime} <span className="opacity-50 mx-1">/</span> {formattedDate}
           </span>
         </div>
@@ -58,7 +58,7 @@ export default function Header({ userEmail, userName, activeNav = 'dashboard' }:
         <div className="h-8 w-px bg-white/10 hidden md:block"></div>
 
         <p className="text-sm font-medium text-gray-400">
-          {t(greetingKey)}, <span className="text-[#64ffda]">{firstName}</span>
+          {t(greetingKey)}, <span className="text-[color:var(--accent-strong)]">{firstName}</span>
         </p>
       </div>
     </header>

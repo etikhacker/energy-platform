@@ -126,25 +126,25 @@ export default function DashboardCards() {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
       {kpiData.map((item, i) => {
         const Icon = item.icon;
         return (
           <div
             key={i}
             ref={(el) => { if (el) cardsRef.current[i] = el; }}
-            className="relative group p-5 rounded-2xl bg-white/[0.03] border border-white/5 backdrop-blur-xl shadow-lg transition-all duration-300 hover:border-[#64ffda]/30 hover:shadow-[0_8px_30px_rgba(100,255,218,0.12)] overflow-hidden"
+            className="relative group p-4 rounded-2xl bg-white/[0.03] border border-white/5 backdrop-blur-xl shadow-lg transition-all duration-300 hover:border-[#64ffda]/30 hover:shadow-[0_8px_30px_rgba(100,255,218,0.12)] overflow-hidden"
           >
             {/* Background Glow */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
             
             <div className="flex items-start justify-between relative z-10">
               <div>
-                <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
                   {item.label}
                 </p>
                 <div className="flex items-baseline gap-1">
-                  <h3 className="text-[28px] font-extrabold text-white tracking-tight">
+                  <h3 className="text-[26px] font-extrabold text-white tracking-tight">
                     {item.value}
                   </h3>
                   {item.unit && (
@@ -153,14 +153,14 @@ export default function DashboardCards() {
                 </div>
               </div>
 
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center border ${item.iconBg} ${item.iconBorder}`}>
-                <Icon className={`w-6 h-6 ${item.iconColor} drop-shadow-md`} />
+              <div className={`w-11 h-11 rounded-xl flex items-center justify-center border ${item.iconBg} ${item.iconBorder}`}>
+                <Icon className={`w-[22px] h-[22px] ${item.iconColor} drop-shadow-md`} />
               </div>
             </div>
 
-            <div className="mt-6 flex items-center justify-between border-t border-white/5 pt-4 relative z-10">
+            <div className="mt-4 flex items-center justify-between border-t border-white/5 pt-3 relative z-10">
               <TrendIndicator direction={item.trendDirection} value={item.trend} />
-              <div className="w-16 h-1 rounded-full bg-white/5 overflow-hidden">
+              <div className="w-14 h-1 rounded-full bg-white/5 overflow-hidden">
                 <div className="h-full bg-gradient-to-r from-[#00e699] to-[#64ffda] rounded-full w-2/3" />
               </div>
             </div>

@@ -223,7 +223,7 @@ export default function SettingsPage() {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 8 }}>
-              <button onClick={saveProfil} disabled={saving} style={{ padding: '10px 24px', fontSize: 13, fontWeight: 500, background: saving ? 'rgba(42,157,143,0.4)' : '#2a9d8f', color: '#fff', border: 'none', borderRadius: 8, cursor: saving ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <button onClick={saveProfil} disabled={saving} style={{ padding: '10px 24px', fontSize: 13, fontWeight: 500, background: saving ? 'color-mix(in srgb, var(--accent) 50%, transparent)' : 'var(--accent)', color: '#fff', border: 'none', borderRadius: 8, cursor: saving ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
                 <Save style={{ width: 14, height: 14 }} />
                 {saving ? t('saxlanilir') : t('yaddaSaxla')}
               </button>
@@ -291,10 +291,10 @@ export default function SettingsPage() {
                   { ad: t('gece'), reng: '#0d1117', kod: 'gece' },
                   { ad: t('tundYasil'), reng: '#001a1a', kod: 'yasil' },
                 ].map(r => (
-                  <div key={r.kod} onClick={() => changeTheme(r.kod)} style={{ padding: '10px 14px', borderRadius: 8, cursor: 'pointer', background: rengSxemi === r.kod ? 'rgba(42,157,143,0.15)' : 'rgba(255,255,255,0.05)', border: `1px solid ${rengSxemi === r.kod ? 'rgba(42,157,143,0.4)' : 'rgba(255,255,255,0.08)'}`, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div key={r.kod} onClick={() => changeTheme(r.kod)} style={{ padding: '10px 14px', borderRadius: 8, cursor: 'pointer', background: rengSxemi === r.kod ? 'var(--accent-soft)' : 'rgba(255,255,255,0.05)', border: `1px solid ${rengSxemi === r.kod ? 'color-mix(in srgb, var(--accent) 40%, transparent)' : 'rgba(255,255,255,0.08)'}`, display: 'flex', alignItems: 'center', gap: 8 }}>
                     <div style={{ width: 16, height: 16, borderRadius: 4, background: r.reng, border: '1px solid rgba(255,255,255,0.2)' }} />
                     <span style={{ fontSize: 12, color: rengSxemi === r.kod ? '#fff' : 'rgba(255,255,255,0.5)' }}>{r.ad}</span>
-                    {rengSxemi === r.kod && <Check style={{ width: 12, height: 12, color: '#2a9d8f' }} />}
+                    {rengSxemi === r.kod && <Check style={{ width: 12, height: 12, color: 'var(--accent)' }} />}
                   </div>
                 ))}
               </div>
@@ -329,7 +329,7 @@ export default function SettingsPage() {
               <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 8 }}>{t('valyuta')}</label>
               <div style={{ display: 'flex', gap: 8 }}>
                 {['USD', 'EUR', 'AZN'].map(v => (
-                  <div key={v} onClick={() => setValyuta(v)} style={{ padding: '8px 16px', borderRadius: 8, cursor: 'pointer', background: valyuta === v ? 'rgba(42,157,143,0.12)' : 'rgba(255,255,255,0.04)', border: `1px solid ${valyuta === v ? 'rgba(42,157,143,0.3)' : 'rgba(255,255,255,0.07)'}`, fontSize: 13, color: valyuta === v ? '#fff' : 'rgba(255,255,255,0.5)' }}>{v}</div>
+                  <div key={v} onClick={() => setValyuta(v)} style={{ padding: '8px 16px', borderRadius: 8, cursor: 'pointer', background: valyuta === v ? 'var(--accent-soft)' : 'rgba(255,255,255,0.04)', border: `1px solid ${valyuta === v ? 'color-mix(in srgb, var(--accent) 40%, transparent)' : 'rgba(255,255,255,0.07)'}`, fontSize: 13, color: valyuta === v ? '#fff' : 'rgba(255,255,255,0.5)' }}>{v}</div>
                 ))}
               </div>
             </div>
@@ -382,22 +382,24 @@ export default function SettingsPage() {
   };
 
   return (
-    <div style={{ display: 'flex', gap: 20 }}>
-      <div className="liquid-glass" style={{ padding: 8, width: 200, flexShrink: 0, alignSelf: 'flex-start' }}>
+    <div className="flex flex-col gap-4 lg:flex-row lg:gap-5">
+      <div className="liquid-glass w-full lg:w-[200px]" style={{ padding: 8, flexShrink: 0, alignSelf: 'flex-start' }}>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 gap-2">
         {bolmeler.map(b => {
           const Icon = b.icon;
           return (
-            <div key={b.id} onClick={() => setAktivBolme(b.id)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', borderRadius: 8, cursor: 'pointer', background: aktivBolme === b.id ? 'rgba(42,157,143,0.12)' : 'transparent', marginBottom: 2, transition: 'background 0.2s' }}>
+            <div key={b.id} onClick={() => setAktivBolme(b.id)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', borderRadius: 8, cursor: 'pointer', background: aktivBolme === b.id ? 'var(--accent-soft)' : 'transparent', border: aktivBolme === b.id ? '1px solid color-mix(in srgb, var(--accent) 30%, transparent)' : '1px solid transparent', marginBottom: 0, transition: 'background 0.2s' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <Icon style={{ width: 15, height: 15, color: aktivBolme === b.id ? '#2a9d8f' : 'rgba(255,255,255,0.45)' }} />
+                <Icon style={{ width: 15, height: 15, color: aktivBolme === b.id ? 'var(--accent)' : 'rgba(255,255,255,0.45)' }} />
                 <span style={{ fontSize: 13, color: aktivBolme === b.id ? '#fff' : 'rgba(255,255,255,0.6)' }}>{t(b.adKey)}</span>
               </div>
-              {aktivBolme === b.id && <ChevronRight style={{ width: 12, height: 12, color: '#2a9d8f' }} />}
+              {aktivBolme === b.id && <ChevronRight style={{ width: 12, height: 12, color: 'var(--accent)' }} />}
             </div>
           );
         })}
+        </div>
       </div>
-      <div className="liquid-glass" style={{ padding: 20, flex: 1 }}>
+      <div className="liquid-glass w-full" style={{ padding: 16, flex: 1 }}>
         {renderMezmun()}
       </div>
     </div>

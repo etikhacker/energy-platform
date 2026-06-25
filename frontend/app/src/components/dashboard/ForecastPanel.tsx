@@ -54,18 +54,18 @@ function SavingsBar({ height, color }: { height: number; color: string }) {
 
 export default function ForecastPanel() {
   return (
-    <div className="liquid-glass col-span-7" style={{ padding: 16, height: 320 }}>
+    <div className="liquid-glass col-span-7" style={{ padding: 14, height: 300 }}>
       {/* Başlıq */}
-      <div className="flex items-center gap-2 mb-4">
+      <div className="flex items-center gap-2 mb-3">
         <CloudSun className="w-4 h-4" style={{ color: '#94d2bd' }} />
-        <h3 className="text-[16px] font-medium text-white">24 Saatlıq Enerji Proqnozu</h3>
+        <h3 className="text-[15px] font-medium text-white">24 Saatlıq Enerji Proqnozu</h3>
       </div>
 
       {/* Üç sütunlu layout */}
-      <div className="flex gap-4" style={{ height: 240 }}>
+      <div className="flex gap-3.5" style={{ height: 220 }}>
         {/* Sol - Qrafik */}
         <div style={{ width: '40%' }}>
-          <ResponsiveContainer width="100%" height={160}>
+          <ResponsiveContainer width="100%" height={148}>
             <AreaChart data={forecastData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
               <defs>
                 <linearGradient id="forecastSolar" x1="0" y1="0" x2="0" y2="1">
@@ -104,7 +104,7 @@ export default function ForecastPanel() {
               />
             </AreaChart>
           </ResponsiveContainer>
-          <div className="flex items-center gap-3 mt-2">
+          <div className="flex items-center gap-3 mt-1.5">
             <div className="flex items-center gap-1.5">
               <div className="w-2 h-2 rounded-full" style={{ background: '#e9d8a6' }} />
               <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Günəş</span>
@@ -119,12 +119,12 @@ export default function ForecastPanel() {
         {/* Orta - Sabah xülasəsi */}
         <div
           className="flex flex-col justify-center"
-          style={{ width: '30%', paddingLeft: 8 }}
+          style={{ width: '30%', paddingLeft: 4 }}
         >
           <span className="label-muted mb-3">Sabah</span>
           <div className="flex items-center gap-2 mb-2">
             <Sunrise className="w-4 h-4" style={{ color: '#e9d8a6' }} />
-            <span className="font-mono-data text-[22px]" style={{ color: '#e9d8a6' }}>
+            <span className="font-mono-data text-[20px]" style={{ color: '#e9d8a6' }}>
               28.5 kWh
             </span>
           </div>
@@ -142,16 +142,16 @@ export default function ForecastPanel() {
         {/* Sağ - Qənaət */}
         <div
           className="flex flex-col justify-center"
-          style={{ width: '30%', paddingLeft: 8 }}
+          style={{ width: '30%', paddingLeft: 4 }}
         >
           <span className="label-muted mb-3">Proqnozlaşdırılan Qənaət</span>
-          <span className="font-mono-data text-[32px]" style={{ color: '#2a9d8f' }}>
+          <span className="font-mono-data text-[28px]" style={{ color: '#2a9d8f' }}>
             $3.42
           </span>
           <p className="text-[11px] mt-1" style={{ color: 'rgba(255,255,255,0.5)' }}>
             şəbəkəyə nisbətən
           </p>
-          <div className="flex items-end mt-4" style={{ height: 60 }}>
+          <div className="flex items-end mt-3" style={{ height: 52 }}>
             {savingsData.map((val, i) => {
               const colors = ['#2a9d8f', '#2a9d8f', '#e9d8a6', '#2a9d8f', '#2a9d8f', '#e9d8a6', '#2a9d8f'];
               return (
