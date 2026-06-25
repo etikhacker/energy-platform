@@ -338,19 +338,50 @@ function DashboardApp() {
 
         <main className="flex-1 flex flex-col h-full" style={{ marginLeft: 260 }}>
           <Header userEmail={session.user?.email} userName={displayName} activeNav={activeNav} />
-          <div className="flex-1 overflow-y-auto" style={{ paddingBottom: 'var(--content-padding)', scrollbarWidth: 'thin', scrollbarColor: 'rgba(0,230,153,0.2) transparent' }}>
+          <div
+            className="flex-1 overflow-y-auto"
+            style={{
+              padding: '0 var(--content-padding) var(--content-padding)',
+              scrollbarWidth: 'thin',
+              scrollbarColor: 'rgba(0,230,153,0.2) transparent',
+            }}
+          >
             {activeNav === 'dashboard' && (
-              <>
+              <section className="space-y-6 pt-2">
+                <div className="flex items-end justify-between gap-4">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-[0.28em]" style={{ color: 'rgba(148,210,189,0.7)' }}>
+                      Dashboard overview
+                    </p>
+                    <h2 className="text-2xl font-bold text-white mt-2">Enerji nəzarət paneli</h2>
+                  </div>
+                  <div className="hidden lg:flex items-center gap-2 text-[11px]" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                    <span className="px-3 py-1 rounded-full bg-white/5 border border-white/5">Real-time</span>
+                    <span className="px-3 py-1 rounded-full bg-white/5 border border-white/5">AI assist</span>
+                    <span className="px-3 py-1 rounded-full bg-white/5 border border-white/5">Grid status</span>
+                  </div>
+                </div>
+
                 <DashboardCards />
-                <div className="grid gap-6 mt-6" style={{ gridTemplateColumns: 'repeat(12, 1fr)' }}>
-                  <EnergyChart />
-                  <AIAssistant />
+
+                <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(12, minmax(0, 1fr))' }}>
+                  <div className="col-span-12 xl:col-span-7">
+                    <EnergyChart />
+                  </div>
+                  <div className="col-span-12 xl:col-span-5">
+                    <AIAssistant />
+                  </div>
                 </div>
-                <div className="grid gap-6 mt-6" style={{ gridTemplateColumns: 'repeat(12, 1fr)' }}>
-                  <DeviceControl />
-                  <ForecastPanel />
+
+                <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(12, minmax(0, 1fr))' }}>
+                  <div className="col-span-12 xl:col-span-7">
+                    <ForecastPanel />
+                  </div>
+                  <div className="col-span-12 xl:col-span-5">
+                    <DeviceControl />
+                  </div>
                 </div>
-              </>
+              </section>
             )}
             {activeNav === 'analytics' && <AnalyticsPage />}
             {activeNav === 'grid'      && <GridPage />}

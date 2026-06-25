@@ -112,17 +112,28 @@ export default function DashboardCards() {
       trend: '12%',
       trendDirection: 'up',
     },
+    {
+      label: t('karbonAzalmasi'),
+      value: `${(stats.current_kwh * 0.41 / 1000).toFixed(1)}t`,
+      unit: '',
+      icon: TrendingDown,
+      iconColor: 'text-[#94d2bd]',
+      iconBg: 'bg-[#94d2bd]/10',
+      iconBorder: 'border-[#94d2bd]/30',
+      trend: 'CO₂',
+      trendDirection: 'up',
+    },
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
       {kpiData.map((item, i) => {
         const Icon = item.icon;
         return (
           <div
             key={i}
             ref={(el) => { if (el) cardsRef.current[i] = el; }}
-            className="relative group p-6 rounded-2xl bg-[#030d0a]/60 border border-white/5 backdrop-blur-xl shadow-lg transition-all duration-300 hover:border-[#64ffda]/30 hover:shadow-[0_8px_30px_rgba(100,255,218,0.15)] overflow-hidden"
+            className="relative group p-5 rounded-2xl bg-white/[0.03] border border-white/5 backdrop-blur-xl shadow-lg transition-all duration-300 hover:border-[#64ffda]/30 hover:shadow-[0_8px_30px_rgba(100,255,218,0.12)] overflow-hidden"
           >
             {/* Background Glow */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -133,7 +144,7 @@ export default function DashboardCards() {
                   {item.label}
                 </p>
                 <div className="flex items-baseline gap-1">
-                  <h3 className="text-3xl font-extrabold text-white tracking-tight">
+                  <h3 className="text-[28px] font-extrabold text-white tracking-tight">
                     {item.value}
                   </h3>
                   {item.unit && (
