@@ -28,8 +28,8 @@ export default function Navigation() {
     <nav
       className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between transition-colors duration-500"
       style={{
-        height: 80,
-        padding: '0 5vw',
+        height: 72,
+        padding: '0 4vw',
         backgroundColor: scrolled ? 'rgba(10, 10, 10, 0.95)' : 'transparent',
         backdropFilter: scrolled ? 'blur(8px)' : 'none',
         borderBottom: scrolled ? '1px solid rgba(255, 255, 255, 0.05)' : 'none',
@@ -41,7 +41,7 @@ export default function Navigation() {
         className="text-white no-underline"
         style={{
           fontFamily: "'GeistMono', monospace",
-          fontSize: 18,
+          fontSize: 16,
           fontWeight: 400,
           letterSpacing: '-0.5px',
         }}
@@ -49,7 +49,7 @@ export default function Navigation() {
         {siteConfig.brandName}
       </a>
 
-      <div className="hidden md:flex items-center" style={{ gap: 40 }}>
+      <div className="hidden md:flex items-center" style={{ gap: 32 }}>
         {navigationConfig.links.map((link) => (
           <a
             key={link.label}

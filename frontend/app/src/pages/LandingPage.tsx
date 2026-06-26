@@ -360,7 +360,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#030d0a] text-white selection:bg-[#64ffda]/30 selection:text-white overflow-hidden">
+    <div className="relative min-h-[100dvh] bg-[#030d0a] text-white selection:bg-[#64ffda]/30 selection:text-white overflow-hidden">
       
       <Interactive3DGrid />
 
@@ -371,8 +371,8 @@ export default function LandingPage() {
       </div>
 
       {/* HEADER */}
-      <header className="fixed top-0 inset-x-0 z-50 px-6 pt-6">
-        <nav className="mx-auto max-w-7xl backdrop-blur-xl bg-black/20 border border-white/5 rounded-2xl px-6 py-4 flex items-center justify-between">
+      <header className="fixed top-0 inset-x-0 z-50 px-4 sm:px-6 pt-4 sm:pt-6">
+        <nav className="mx-auto max-w-7xl backdrop-blur-xl bg-black/20 border border-white/5 rounded-2xl px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
           <Logo />
           <ul className="hidden md:flex items-center gap-10 text-sm font-medium text-gray-400">
             {nav.map((n: NavItem) => (
@@ -394,34 +394,34 @@ export default function LandingPage() {
       </header>
 
       {/* HERO SECTION */}
-      <section className="relative pt-44 pb-32 px-6 min-h-screen flex items-center overflow-hidden">
+      <section className="relative pt-28 sm:pt-36 lg:pt-44 pb-20 sm:pb-28 lg:pb-32 px-4 sm:px-6 min-h-[100dvh] flex items-center overflow-hidden">
         {/* Tam Ekran Arxa Plan Qlobusu */}
         <div className="absolute inset-0 -z-0 opacity-50 pointer-events-none">
           <EnergyGlobe />
         </div>
 
-        <div className="mx-auto w-full max-w-7xl grid lg:grid-cols-12 gap-16 items-center relative z-10">
+        <div className="mx-auto w-full max-w-7xl grid lg:grid-cols-12 gap-10 lg:gap-16 items-center relative z-10">
           
-          <div className="lg:col-span-6 space-y-8">
+          <div className="lg:col-span-6 space-y-6 sm:space-y-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#64ffda]/20 bg-[#64ffda]/5 text-xs font-semibold tracking-wider text-[#64ffda]">
               <Cpu className="w-3.5 h-3.5" />
               ECO-ENERGY REVOLUTION · BETA V2.4
             </div>
             
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.05] bg-gradient-to-b from-white via-white to-gray-500 bg-clip-text text-transparent">
+            <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.05] bg-gradient-to-b from-white via-white to-gray-500 bg-clip-text text-transparent">
               Enerji Gələcəyini <br />
               <span className="text-shimmer bg-gradient-to-r from-[#64ffda] via-[#00e699] to-[#64ffda]">AI İlə Qur</span>
             </h1>
 
-            <p className="text-lg text-gray-400 max-w-xl leading-relaxed">
+            <p className="text-base sm:text-lg text-gray-400 max-w-xl leading-relaxed">
               Mürəkkəb enerji axınlarını avtomatlaşdırın. Süni intellekt əsaslı EcoAI platforması evinizi ağıllı şəbəkəyə inteqrasiya edərək karbon izini minimuma endirir.
             </p>
 
-            <div className="flex flex-wrap gap-4 pt-4">
-              <a href="#contact" className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl bg-[#00e699] text-[#030d0a] font-bold hover:bg-[#00cc88] shadow-[0_0_30px_rgba(0,230,153,0.3)] hover:shadow-[0_0_40px_rgba(0,230,153,0.5)] transition-all duration-300">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 pt-4">
+              <a href="#contact" className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-[#00e699] text-[#030d0a] font-bold hover:bg-[#00cc88] shadow-[0_0_30px_rgba(0,230,153,0.3)] hover:shadow-[0_0_40px_rgba(0,230,153,0.5)] transition-all duration-300">
                 Sistemi Sına <ArrowRight className="w-5 h-5" />
               </a>
-              <a href="#how" className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl backdrop-blur-md bg-white/5 border border-white/10 text-white font-semibold hover:bg-white/10 transition-all">
+              <a href="#how" className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl backdrop-blur-md bg-white/5 border border-white/10 text-white font-semibold hover:bg-white/10 transition-all">
                 <PlayCircle className="w-5 h-5 text-[#64ffda]" /> İşləmə Mexanizmi
               </a>
             </div>
@@ -432,8 +432,8 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="lg:col-span-6 flex justify-center relative">
-            <TiltCard intensity={15} className="relative z-10 w-full max-w-[500px] rounded-[32px] border border-[#64ffda]/30 bg-[#030d0a]/60 p-6 sm:p-8 shadow-[0_0_50px_rgba(100,255,218,0.1)] backdrop-blur-xl flex flex-col gap-8" style={{ transformStyle: "preserve-3d" }}>
+          <div className="lg:col-span-6 flex justify-center relative mt-2 lg:mt-0">
+            <TiltCard intensity={15} className="relative z-10 w-full max-w-[500px] rounded-[32px] border border-[#64ffda]/30 bg-[#030d0a]/60 p-5 sm:p-8 shadow-[0_0_50px_rgba(100,255,218,0.1)] backdrop-blur-xl flex flex-col gap-6 sm:gap-8" style={{ transformStyle: "preserve-3d" }}>
               
               <style>{`
                 @keyframes slideRight {
@@ -451,7 +451,7 @@ export default function LandingPage() {
               `}</style>
 
               {/* Header */}
-              <div className="flex justify-between items-center" style={{ transform: "translateZ(40px)" }}>
+              <div className="flex justify-between items-center gap-3" style={{ transform: "translateZ(40px)" }}>
                 <div className="flex items-center gap-3">
                   <div className="relative flex h-3 w-3">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00e699] opacity-75"></span>
@@ -465,10 +465,10 @@ export default function LandingPage() {
               </div>
 
               {/* Flow Visualizer */}
-              <div className="relative h-48 sm:h-56 rounded-2xl border border-white/10 bg-black/40 overflow-hidden flex items-center justify-center shadow-inner" style={{ transform: "translateZ(80px)" }}>
+              <div className="relative h-44 sm:h-56 rounded-2xl border border-white/10 bg-black/40 overflow-hidden flex items-center justify-center shadow-inner" style={{ transform: "translateZ(80px)" }}>
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(100,255,218,0.15)_0%,transparent_70%)]"></div>
                 
-                <div className="w-full flex items-center justify-between px-4 sm:px-8 relative z-10">
+                <div className="w-full flex items-center justify-between px-3 sm:px-8 relative z-10">
                   {/* Solar Energy */}
                   <div className="flex flex-col items-center gap-2">
                     <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-full border border-yellow-500/40 bg-yellow-500/10 flex items-center justify-center shadow-[0_0_20px_rgba(234,179,8,0.2)]">
@@ -506,7 +506,7 @@ export default function LandingPage() {
               </div>
 
               {/* Stats Footer */}
-              <div className="grid grid-cols-3 gap-3 sm:gap-4" style={{ transform: "translateZ(60px)" }}>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4" style={{ transform: "translateZ(60px)" }}>
                 <div className="p-3 sm:p-4 rounded-xl bg-white/5 border border-white/5 flex flex-col justify-center">
                   <span className="text-[9px] sm:text-[10px] text-gray-400 block mb-1 tracking-wider uppercase">Ümumi İstehsal</span>
                   <span className="text-sm sm:text-lg font-bold text-white">4.2 kW</span>
