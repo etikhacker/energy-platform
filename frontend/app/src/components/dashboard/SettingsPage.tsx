@@ -15,12 +15,19 @@ const bolmeler = [
   { id: 'tehlukesiz', icon: Shield,  adKey: 'tehlukesizlik' },
 ];
 
-function Toggle({ aktiv, onChange }: { aktiv: boolean; onChange: () => void }) {
+function Toggle({ aktiv, onChange, disabled = false }: { aktiv: boolean; onChange: () => void; disabled?: boolean }) {
   return (
-    <div onClick={onChange} style={{
+    <button
+      type="button"
+      role="switch"
+      aria-checked={aktiv}
+      onClick={onChange}
+      disabled={disabled}
+      style={{
       width: 40, height: 22, borderRadius: 11, cursor: 'pointer',
       background: aktiv ? '#2a9d8f' : 'rgba(255,255,255,0.12)',
       position: 'relative', transition: 'background 0.2s', flexShrink: 0,
+      border: 0, padding: 0, opacity: disabled ? 0.55 : 1,
     }}>
       <div style={{
         position: 'absolute', top: 3,
@@ -28,7 +35,7 @@ function Toggle({ aktiv, onChange }: { aktiv: boolean; onChange: () => void }) {
         width: 16, height: 16, borderRadius: '50%',
         background: '#fff', transition: 'left 0.2s',
       }} />
-    </div>
+    </button>
   );
 }
 
@@ -64,6 +71,46 @@ const applyAppearance = (theme: string, animations: boolean, compact: boolean) =
   localStorage.setItem('density', compact ? 'compact' : 'comfortable');
 };
 
+type BildirishSettings = {
+  emailBildirish: boolean;
+  pikXeberdar: boolean;
+  batareyaXeberdar: boolean;
+  heftelikHesabat: boolean;
+  sistemXeberdar: boolean;
+};
+
+type EnerjiSettings = {
+  avtomatikOptimizasiya: boolean;
+  pikSaatlarindenQacin: boolean;
+  batareyaOncelik: boolean;
+  geceSaatlariSarj: boolean;
+};
+
+const DEFAULT_BILDIRISH: BildirishSettings = {
+  emailBildirish: true,
+  pikXeberdar: true,
+  batareyaXeberdar: false,
+  heftelikHesabat: true,
+  sistemXeberdar: false,
+};
+
+const DEFAULT_ENERJI: EnerjiSettings = {
+  avtomatikOptimizasiya: true,
+  pikSaatlarindenQacin: true,
+  batareyaOncelik: false,
+  geceSaatlariSarj: true,
+};
+
+const readStoredObject = <T extends Record<string, boolean>>(key: string, defaults: T): T => {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return defaults;
+    return { ...defaults, ...JSON.parse(raw) };
+  } catch {
+    return defaults;
+  }
+};
+
 export default function SettingsPage() {
   const { t, i18n } = useTranslation();
   const [aktivBolme, setAktivBolme] = useState('profil');
@@ -74,7 +121,7 @@ export default function SettingsPage() {
     applyAppearance(kod, gorunus.animasiyalar, gorunus.kompaktGoruntuq);
   };
 
-  const [valyuta, setValyuta] = useState('USD');
+  const [valyuta, setValyuta] = useState(() => localStorage.getItem('ecoai_currency') || 'USD');
   const [saveMsg, setSaveMsg] = useState('');
   const [saving, setSaving] = useState(false);
 
@@ -87,16 +134,14 @@ export default function SettingsPage() {
   const [confPass, setConfPass] = useState('');
 
   // Bildiriş
-  const [bildirish, setBildirish] = useState({
-    emailBildirish: true, pikXeberdar: true,
-    batareyaXeberdar: false, heftəlikHesabat: true, sistemXeberdar: false,
-  });
+  const [bildirish, setBildirish] = useState<BildirishSettings>(() => (
+    readStoredObject('ecoai_notification_settings', DEFAULT_BILDIRISH)
+  ));
 
   // Enerji
-  const [enerji, setEnerji] = useState({
-    avtomatikOptimizasiya: true, pikSaatlarindenQacin: true,
-    batareyaOncelik: false, geceSaatlariSarj: true,
-  });
+  const [enerji, setEnerji] = useState<EnerjiSettings>(() => (
+    readStoredObject('ecoai_energy_settings', DEFAULT_ENERJI)
+  ));
 
   // Görünüş
   const [gorunus, setGorunus] = useState(() => ({
@@ -123,6 +168,41 @@ export default function SettingsPage() {
   const changeLanguage = (kod: string) => {
     i18n.changeLanguage(kod);
     localStorage.setItem('ecoai_lang', kod);
+  };
+
+  const requestNotificationAccess = async () => {
+    if (!('Notification' in window) || Notification.permission !== 'default') return;
+    await Notification.requestPermission();
+  };
+
+  const updateBildirish = async (key: keyof BildirishSettings) => {
+    if (key !== 'emailBildirish' && !bildirish[key]) {
+      await requestNotificationAccess();
+    }
+
+    setBildirish(prev => {
+      const next = { ...prev, [key]: !prev[key] };
+      localStorage.setItem('ecoai_notification_settings', JSON.stringify(next));
+      window.dispatchEvent(new CustomEvent('ecoai:notification-settings-changed', { detail: next }));
+      showMsg(t('yaddaSaxlandi'));
+      return next;
+    });
+  };
+
+  const updateEnerji = (key: keyof EnerjiSettings) => {
+    setEnerji(prev => {
+      const next = { ...prev, [key]: !prev[key] };
+      localStorage.setItem('ecoai_energy_settings', JSON.stringify(next));
+      window.dispatchEvent(new CustomEvent('ecoai:energy-settings-changed', { detail: next }));
+      showMsg(t('yaddaSaxlandi'));
+      return next;
+    });
+  };
+
+  const changeCurrency = (kod: string) => {
+    setValyuta(kod);
+    localStorage.setItem('ecoai_currency', kod);
+    showMsg(t('yaddaSaxlandi'));
   };
 
   useEffect(() => {
@@ -237,19 +317,19 @@ export default function SettingsPage() {
           <div>
             <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: '0 0 20px 0' }}>{t('bildirisiParametrleri')}</h3>
             <SectionRow label={t('ePochtBildirisleri')} desc={t('ePochtBildirisleriDesc')}>
-              <Toggle aktiv={bildirish.emailBildirish} onChange={() => setBildirish(p => ({ ...p, emailBildirish: !p.emailBildirish }))} />
+              <Toggle aktiv={bildirish.emailBildirish} onChange={() => updateBildirish('emailBildirish')} />
             </SectionRow>
             <SectionRow label={t('pikSaatXeberdarligi')} desc={t('pikSaatXeberdarligiDesc')}>
-              <Toggle aktiv={bildirish.pikXeberdar} onChange={() => setBildirish(p => ({ ...p, pikXeberdar: !p.pikXeberdar }))} />
+              <Toggle aktiv={bildirish.pikXeberdar} onChange={() => updateBildirish('pikXeberdar')} />
             </SectionRow>
             <SectionRow label={t('batareyaXeberdarligi')} desc={t('batareyaXeberdarligiDesc')}>
-              <Toggle aktiv={bildirish.batareyaXeberdar} onChange={() => setBildirish(p => ({ ...p, batareyaXeberdar: !p.batareyaXeberdar }))} />
+              <Toggle aktiv={bildirish.batareyaXeberdar} onChange={() => updateBildirish('batareyaXeberdar')} />
             </SectionRow>
             <SectionRow label={t('heftelikHesabat')} desc={t('heftelikHesabatDesc')}>
-              <Toggle aktiv={bildirish.heftəlikHesabat} onChange={() => setBildirish(p => ({ ...p, heftəlikHesabat: !p.heftəlikHesabat }))} />
+              <Toggle aktiv={bildirish.heftelikHesabat} onChange={() => updateBildirish('heftelikHesabat')} />
             </SectionRow>
             <SectionRow label={t('sistemXeberdarliqlar')} desc={t('sistemXeberdarliqlarDesc')}>
-              <Toggle aktiv={bildirish.sistemXeberdar} onChange={() => setBildirish(p => ({ ...p, sistemXeberdar: !p.sistemXeberdar }))} />
+              <Toggle aktiv={bildirish.sistemXeberdar} onChange={() => updateBildirish('sistemXeberdar')} />
             </SectionRow>
           </div>
         );
@@ -259,16 +339,16 @@ export default function SettingsPage() {
           <div>
             <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: '0 0 20px 0' }}>{t('energiIdareetmesi')}</h3>
             <SectionRow label={t('avtomatikOptimallashdirma')} desc={t('avtomatikOptimallashdirmaDesc')}>
-              <Toggle aktiv={enerji.avtomatikOptimizasiya} onChange={() => setEnerji(p => ({ ...p, avtomatikOptimizasiya: !p.avtomatikOptimizasiya }))} />
+              <Toggle aktiv={enerji.avtomatikOptimizasiya} onChange={() => updateEnerji('avtomatikOptimizasiya')} />
             </SectionRow>
             <SectionRow label={t('pikSaatlarindenQac')} desc={t('pikSaatlarindenQacDesc')}>
-              <Toggle aktiv={enerji.pikSaatlarindenQacin} onChange={() => setEnerji(p => ({ ...p, pikSaatlarindenQacin: !p.pikSaatlarindenQacin }))} />
+              <Toggle aktiv={enerji.pikSaatlarindenQacin} onChange={() => updateEnerji('pikSaatlarindenQacin')} />
             </SectionRow>
             <SectionRow label={t('batareyaPrioriteti')} desc={t('batareyaPrioritetiDesc')}>
-              <Toggle aktiv={enerji.batareyaOncelik} onChange={() => setEnerji(p => ({ ...p, batareyaOncelik: !p.batareyaOncelik }))} />
+              <Toggle aktiv={enerji.batareyaOncelik} onChange={() => updateEnerji('batareyaOncelik')} />
             </SectionRow>
             <SectionRow label={t('geceSaatlarindaSarj')} desc={t('geceSaatlarindaSarjDesc')}>
-              <Toggle aktiv={enerji.geceSaatlariSarj} onChange={() => setEnerji(p => ({ ...p, geceSaatlariSarj: !p.geceSaatlariSarj }))} />
+              <Toggle aktiv={enerji.geceSaatlariSarj} onChange={() => updateEnerji('geceSaatlariSarj')} />
             </SectionRow>
           </div>
         );
@@ -329,7 +409,7 @@ export default function SettingsPage() {
               <label style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 8 }}>{t('valyuta')}</label>
               <div style={{ display: 'flex', gap: 8 }}>
                 {['USD', 'EUR', 'AZN'].map(v => (
-                  <div key={v} onClick={() => setValyuta(v)} style={{ padding: '8px 16px', borderRadius: 8, cursor: 'pointer', background: valyuta === v ? 'var(--accent-soft)' : 'rgba(255,255,255,0.04)', border: `1px solid ${valyuta === v ? 'color-mix(in srgb, var(--accent) 40%, transparent)' : 'rgba(255,255,255,0.07)'}`, fontSize: 13, color: valyuta === v ? '#fff' : 'rgba(255,255,255,0.5)' }}>{v}</div>
+                  <div key={v} onClick={() => changeCurrency(v)} style={{ padding: '8px 16px', borderRadius: 8, cursor: 'pointer', background: valyuta === v ? 'var(--accent-soft)' : 'rgba(255,255,255,0.04)', border: `1px solid ${valyuta === v ? 'color-mix(in srgb, var(--accent) 40%, transparent)' : 'rgba(255,255,255,0.07)'}`, fontSize: 13, color: valyuta === v ? '#fff' : 'rgba(255,255,255,0.5)' }}>{v}</div>
                 ))}
               </div>
             </div>
@@ -401,6 +481,9 @@ export default function SettingsPage() {
       </div>
       <div className="liquid-glass w-full" style={{ padding: 16, flex: 1 }}>
         {renderMezmun()}
+        {saveMsg && aktivBolme !== 'profil' && aktivBolme !== 'tehlukesiz' && (
+          <p style={{ fontSize: 12, color: '#2a9d8f', margin: '14px 0 0 0' }}>{saveMsg}</p>
+        )}
       </div>
     </div>
   );

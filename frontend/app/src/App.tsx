@@ -267,6 +267,7 @@ function DashboardApp() {
   const [session, setSession] = useState<Session>(null);
   const [loading, setLoading] = useState(true);
   const [fullName, setFullName] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -319,11 +320,11 @@ function DashboardApp() {
   const displayName = fullName || session.user?.email?.split('@')[0] || 'İstifadəçi';
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden" style={{ background: 'var(--app-bg)' }}>
+    <div className="relative w-screen min-h-screen lg:h-screen lg:overflow-hidden" style={{ background: 'var(--app-bg)' }}>
       <LivingCanvas />
       <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 5, background: 'radial-gradient(circle at 50% 0%, rgba(0,230,153,0.08) 0%, rgba(3,13,10,0) 60%), radial-gradient(circle at 80% 100%, rgba(100,255,218,0.05) 0%, rgba(3,13,10,0) 50%)' }} />
 
-      <div className="relative flex h-full" style={{ zIndex: 10 }}>
+      <div className="relative flex flex-col lg:flex-row lg:h-full" style={{ zIndex: 10 }}>
         <Sidebar
           activeItem={activeNav}
           onNavigate={setActiveNav}
@@ -334,10 +335,17 @@ function DashboardApp() {
           }}
           userEmail={session.user?.email}
           userName={displayName}
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
         />
 
-        <main className="flex-1 flex flex-col h-full ml-0 lg:ml-[240px]">
-          <Header userEmail={session.user?.email} userName={displayName} activeNav={activeNav} />
+        <main className="flex-1 flex flex-col lg:h-full lg:ml-[240px] min-w-0">
+          <Header
+            userEmail={session.user?.email}
+            userName={displayName}
+            activeNav={activeNav}
+            onMenuClick={() => setSidebarOpen(true)}
+          />
           <div
             className="flex-1 overflow-y-auto"
             style={{
