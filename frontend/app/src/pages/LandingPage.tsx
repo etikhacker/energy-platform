@@ -22,7 +22,9 @@ import {
   Check,
   Cpu,
   Globe,
-  Activity
+  Activity,
+  Menu,
+  X
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -328,6 +330,9 @@ export default function LandingPage() {
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"production" | "consumption">("production");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const closeMobileMenu = () => setMobileMenuOpen(false);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -381,17 +386,90 @@ export default function LandingPage() {
               </li>
             ))}
           </ul>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
+            {/* Daxil Ol — desktop və tabletdə görünür */}
             <a href="/login" className="hidden sm:inline-flex text-sm text-gray-300 hover:text-white font-medium transition">
               Daxil Ol
             </a>
-            <a href="#contact" className="relative group overflow-hidden px-5 py-2.5 rounded-xl text-sm font-semibold bg-[#00e699]/10 border border-[#00e699]/30 text-[#00e699] hover:text-white transition-all duration-300">
+            <a href="#contact" className="relative group overflow-hidden px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-[#00e699]/10 border border-[#00e699]/30 text-[#00e699] hover:text-white transition-all duration-300">
               <span className="absolute inset-0 bg-[#00e699] translate-y-full group-hover:translate-y-0 transition-transform duration-300 -z-10" />
-              Müraciət et
+              <span className="hidden sm:inline">Müraciət et</span>
+              <span className="sm:hidden">Müraciət</span>
             </a>
+
+            {/* Hamburger — yalnız mobil */}
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-white hover:bg-white/10 transition"
+              aria-label="Menyunu aç"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
           </div>
         </nav>
       </header>
+
+      {/* MOBILE MENU DRAWER */}
+      <div
+        className={`fixed inset-0 z-[60] md:hidden transition-opacity duration-200 ${
+          mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        aria-hidden={!mobileMenuOpen}
+      >
+        {/* Backdrop */}
+        <div
+          onClick={closeMobileMenu}
+          className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        />
+
+        {/* Panel */}
+        <div
+          className={`absolute right-0 top-0 h-full w-[280px] max-w-[85vw] bg-[#030d0a]/95 backdrop-blur-xl border-l border-white/10 shadow-2xl flex flex-col transition-transform duration-200 ease-out ${
+            mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
+        >
+          <div className="flex items-center justify-between p-4 border-b border-white/10">
+            <Logo />
+            <button
+              onClick={closeMobileMenu}
+              className="w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-white hover:bg-white/10 transition"
+              aria-label="Menyunu bağla"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <nav className="flex-1 overflow-y-auto p-4 space-y-1">
+            {nav.map((n: NavItem) => (
+              <a
+                key={n.href}
+                href={n.href}
+                onClick={closeMobileMenu}
+                className="block px-4 py-3 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition"
+              >
+                {n.label}
+              </a>
+            ))}
+
+            <div className="pt-4 mt-4 border-t border-white/10 space-y-2">
+              <a
+                href="/login"
+                onClick={closeMobileMenu}
+                className="block px-4 py-3 rounded-xl text-sm font-semibold text-white bg-white/5 border border-white/10 hover:bg-white/10 transition text-center"
+              >
+                Daxil Ol
+              </a>
+              <a
+                href="#contact"
+                onClick={closeMobileMenu}
+                className="block px-4 py-3 rounded-xl text-sm font-semibold bg-[#00e699]/10 border border-[#00e699]/30 text-[#00e699] hover:bg-[#00e699]/20 transition text-center"
+              >
+                Müraciət et
+              </a>
+            </div>
+          </nav>
+        </div>
+      </div>
 
       {/* HERO SECTION */}
       <section className="relative pt-28 sm:pt-36 lg:pt-44 pb-20 sm:pb-28 lg:pb-32 px-4 sm:px-6 min-h-[100dvh] flex items-center overflow-hidden">
