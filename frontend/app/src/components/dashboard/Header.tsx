@@ -18,7 +18,12 @@ const pageTitles: Record<string, string> = {
   settings: 'parametrler',
 };
 
-export default function Header({ userEmail, userName, activeNav = 'dashboard', onMenuClick }: HeaderProps) {
+export default function Header({
+  userEmail,
+  userName,
+  activeNav = 'dashboard',
+  onMenuClick,
+}: HeaderProps) {
   const { t, i18n } = useTranslation();
   const [time, setTime] = useState(new Date());
 
@@ -27,13 +32,15 @@ export default function Header({ userEmail, userName, activeNav = 'dashboard', o
     return () => clearInterval(timer);
   }, []);
 
-  const formattedTime = time.toLocaleTimeString(i18n.language === 'az' ? 'az-AZ' : i18n.language === 'ru' ? 'ru-RU' : 'en-US', {
-    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
-  });
+  const formattedTime = time.toLocaleTimeString(
+    i18n.language === 'az' ? 'az-AZ' : i18n.language === 'ru' ? 'ru-RU' : 'en-US',
+    { hour: '2-digit', minute: '2-digit', hour12: false }
+  );
 
-  const formattedDate = time.toLocaleDateString(i18n.language === 'az' ? 'az-AZ' : i18n.language === 'ru' ? 'ru-RU' : 'en-US', {
-    day: 'numeric', month: 'long', year: 'numeric',
-  });
+  const formattedDate = time.toLocaleDateString(
+    i18n.language === 'az' ? 'az-AZ' : i18n.language === 'ru' ? 'ru-RU' : 'en-US',
+    { day: 'numeric', month: 'short', year: 'numeric' }
+  );
 
   const hour = time.getHours();
   let greetingKey = 'axsaminiz';
@@ -44,37 +51,47 @@ export default function Header({ userEmail, userName, activeNav = 'dashboard', o
   const firstName = displayName.split(' ')[0];
 
   return (
-    <header className="flex items-center justify-between gap-2 px-3 sm:px-5 py-3 sm:py-3.5 mx-3 sm:mx-5 mt-3 sm:mt-5 mb-3 sm:mb-5 rounded-2xl bg-[#030d0a]/60 border border-white/5 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] z-10 sticky top-3 sm:top-5">
+    <header
+      className="flex items-center justify-between gap-2 px-3 lg:px-6"
+      style={{
+        height: 56,
+        background: 'var(--app-bg-soft)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
+      }}
+    >
+      {/* Sol: hamburger (yalnız mobil) + səhifə başlığı */}
       <div className="flex items-center gap-2 min-w-0">
-        {/* Hamburger — only mobile */}
         <button
           onClick={onMenuClick}
-          className="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg hover:bg-white/10 text-white/80 flex-shrink-0"
+          className="lg:hidden w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
+          style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.85)' }}
           aria-label="Menyunu aç"
         >
           <Menu className="w-5 h-5" />
         </button>
-
-        <h2 className="text-base sm:text-lg font-bold text-white tracking-wide truncate">
+        <h2 className="text-[16px] sm:text-[18px] lg:text-[20px] font-medium text-white truncate">
           {t(pageTitles[activeNav] || 'idarePaneli')}
         </h2>
       </div>
 
-      <div className="flex items-center gap-2 sm:gap-4 min-w-0">
-        <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/5">
-          <div className="w-2 h-2 rounded-full animate-pulse bg-[color:var(--accent)] shadow-[0_0_10px_rgba(0,230,153,0.8)]" />
-          <span className="font-mono text-xs text-[color:var(--accent)] tracking-widest font-medium">
-            {formattedTime} <span className="opacity-50 mx-1">/</span> {formattedDate}
-          </span>
-        </div>
-
-        <div className="h-8 w-px bg-white/10 hidden md:block"></div>
-
-        <p className="text-xs sm:text-sm font-medium text-gray-400 truncate max-w-[140px] sm:max-w-none">
-          <span className="hidden sm:inline">{t(greetingKey)}, </span>
-          <span className="text-[color:var(--accent-strong)]">{firstName}</span>
-        </p>
+      {/* Orta: vaxt (yalnız md+) */}
+      <div className="hidden md:flex items-center gap-2 flex-shrink-0">
+        <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--accent)' }} />
+        <span className="font-mono-data text-[13px]" style={{ color: 'var(--accent)' }}>
+          {formattedTime} — {formattedDate}
+        </span>
       </div>
+
+      {/* Sağ: salam (mobil-də qısaldılmış) */}
+      <p
+        className="text-[12px] sm:text-[13px] font-normal flex-shrink-0 truncate max-w-[120px] sm:max-w-none"
+        style={{ color: 'rgba(255,255,255,0.65)' }}
+      >
+        {t(greetingKey)},{' '}
+        <span style={{ color: 'var(--accent)', fontWeight: 500 }}>{firstName}</span>
+      </p>
     </header>
   );
 }

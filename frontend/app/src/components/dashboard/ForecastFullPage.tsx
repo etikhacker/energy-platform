@@ -4,6 +4,7 @@ import {
   Tooltip, ResponsiveContainer, BarChart, Bar,
 } from 'recharts';
 import { Sun, CloudSun, Cloud, CloudRain, Wind, Droplets, TrendingUp, Battery, MapPin } from 'lucide-react';
+import { useIsMobile } from '../../lib/useIsMobile';
 
 const WEATHER_API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 
@@ -76,6 +77,7 @@ export default function ForecastFullPage() {
   const [cityName, setCityName] = useState('');
   const [loading, setLoading] = useState(true);
   const [locationError, setLocationError] = useState('');
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const fetchWithCoords = async (lat: number, lon: number) => {

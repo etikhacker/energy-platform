@@ -322,7 +322,7 @@ function DashboardApp() {
   return (
     <div className="relative w-screen min-h-screen lg:h-screen lg:overflow-hidden" style={{ background: 'var(--app-bg)' }}>
       <LivingCanvas />
-      <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 5, background: 'radial-gradient(circle at 50% 0%, rgba(0,230,153,0.08) 0%, rgba(3,13,10,0) 60%), radial-gradient(circle at 80% 100%, rgba(100,255,218,0.05) 0%, rgba(3,13,10,0) 50%)' }} />
+      <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 5, background: 'radial-gradient(ellipse at 30% 20%, rgba(0,18,25,0.4) 0%, rgba(0,18,25,0.2) 50%, transparent 100%)' }} />
 
       <div className="relative flex flex-col lg:flex-row lg:h-full" style={{ zIndex: 10 }}>
         <Sidebar
@@ -351,7 +351,7 @@ function DashboardApp() {
             style={{
               padding: '0 var(--content-padding) var(--content-padding)',
               scrollbarWidth: 'thin',
-              scrollbarColor: 'rgba(0,230,153,0.2) transparent',
+              scrollbarColor: 'rgba(255,255,255,0.1) transparent',
             }}
           >
             {activeNav === 'dashboard' && (

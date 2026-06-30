@@ -7,6 +7,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { CloudSun, Sunrise } from 'lucide-react';
+import { useIsMobile } from '../../lib/useIsMobile';
 
 const forecastData = [
   { hour: '16:00', solar: 3.2, consumption: 3.5 },
@@ -53,20 +54,25 @@ function SavingsBar({ height, color }: { height: number; color: string }) {
 }
 
 export default function ForecastPanel() {
+  const isMobile = useIsMobile();
+
   return (
-    <div className="liquid-glass col-span-7" style={{ padding: 14, height: 300 }}>
+    <div className="liquid-glass" style={{ padding: isMobile ? 12 : 14 }}>
       {/* Başlıq */}
       <div className="flex items-center gap-2 mb-3">
         <CloudSun className="w-4 h-4" style={{ color: '#94d2bd' }} />
-        <h3 className="text-[15px] font-medium text-white">24 Saatlıq Enerji Proqnozu</h3>
+        <h3 className="text-[14px] sm:text-[15px] font-medium text-white">24 Saatlıq Enerji Proqnozu</h3>
       </div>
 
-      {/* Üç sütunlu layout */}
-      <div className="flex gap-3.5" style={{ height: 220 }}>
+      {/* Layout: mobil = stack, desktop = 3 sütun */}
+      <div
+        className={isMobile ? 'flex flex-col gap-4' : 'flex gap-3.5'}
+        style={isMobile ? undefined : { height: 220 }}
+      >
         {/* Sol - Qrafik */}
-        <div style={{ width: '40%' }}>
-          <ResponsiveContainer width="100%" height={148}>
-            <AreaChart data={forecastData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
+        <div style={{ width: isMobile ? '100%' : '40%' }}>
+          <ResponsiveContainer width="100%" height={isMobile ? 180 : 148}>
+            <AreaChart data={forecastData} margin={{ top: 5, right: 5, left: isMobile ? -28 : -20, bottom: 5 }}>
               <defs>
                 <linearGradient id="forecastSolar" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#e9d8a6" stopOpacity={0.4} />
@@ -83,7 +89,7 @@ export default function ForecastPanel() {
                 tick={{ fill: 'rgba(255,255,255,0.35)', fontSize: 9, fontFamily: 'JetBrains Mono' }}
                 axisLine={false}
                 tickLine={false}
-                interval={4}
+                interval={isMobile ? 2 : 4}
               />
               <YAxis hide />
               <Area
@@ -118,40 +124,52 @@ export default function ForecastPanel() {
 
         {/* Orta - Sabah xülasəsi */}
         <div
-          className="flex flex-col justify-center"
-          style={{ width: '30%', paddingLeft: 4 }}
+          className={isMobile ? 'flex flex-row items-center justify-between gap-3 pt-3 border-t border-white/5' : 'flex flex-col justify-center'}
+          style={isMobile ? undefined : { width: '30%', paddingLeft: 4 }}
         >
-          <span className="label-muted mb-3">Sabah</span>
-          <div className="flex items-center gap-2 mb-2">
+          <span className="label-muted">Sabah</span>
+          <div className="flex items-center gap-2">
             <Sunrise className="w-4 h-4" style={{ color: '#e9d8a6' }} />
-            <span className="font-mono-data text-[20px]" style={{ color: '#e9d8a6' }}>
+            <span className="font-mono-data text-[18px] sm:text-[20px]" style={{ color: '#e9d8a6' }}>
               28.5 kWh
             </span>
           </div>
-          <p className="text-[11px] mb-1" style={{ color: 'rgba(255,255,255,0.65)' }}>
-            Günəş enerjisi proqnozu
-          </p>
-          <div className="flex items-center gap-2 mt-3">
-            <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Pik:</span>
-            <span className="font-mono-data text-[13px]" style={{ color: '#94d2bd' }}>
-              11:00 - 14:00
+          {isMobile ? (
+            <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
+              Pik: <span className="font-mono-data" style={{ color: '#94d2bd' }}>11-14</span>
             </span>
-          </div>
+          ) : (
+            <>
+              <p className="text-[11px] mb-1" style={{ color: 'rgba(255,255,255,0.65)' }}>
+                Günəş enerjisi proqnozu
+              </p>
+              <div className="flex items-center gap-2 mt-3">
+                <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Pik:</span>
+                <span className="font-mono-data text-[13px]" style={{ color: '#94d2bd' }}>
+                  11:00 - 14:00
+                </span>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Sağ - Qənaət */}
         <div
-          className="flex flex-col justify-center"
-          style={{ width: '30%', paddingLeft: 4 }}
+          className={isMobile ? 'flex flex-row items-center justify-between gap-3 pt-3 border-t border-white/5' : 'flex flex-col justify-center'}
+          style={isMobile ? undefined : { width: '30%', paddingLeft: 4 }}
         >
-          <span className="label-muted mb-3">Proqnozlaşdırılan Qənaət</span>
-          <span className="font-mono-data text-[28px]" style={{ color: '#2a9d8f' }}>
-            $3.42
-          </span>
-          <p className="text-[11px] mt-1" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            şəbəkəyə nisbətən
-          </p>
-          <div className="flex items-end mt-3" style={{ height: 52 }}>
+          <div>
+            <span className="label-muted">Proqnoz Qənaət</span>
+            <div className="font-mono-data text-[20px] sm:text-[28px] mt-1" style={{ color: '#2a9d8f' }}>
+              $3.42
+            </div>
+            {isMobile && (
+              <p className="text-[10px] mt-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                şəbəkəyə nisbətən
+              </p>
+            )}
+          </div>
+          <div className="flex items-end" style={{ height: isMobile ? 40 : 52, flex: isMobile ? 1 : undefined, maxWidth: isMobile ? 140 : undefined }}>
             {savingsData.map((val, i) => {
               const colors = ['#2a9d8f', '#2a9d8f', '#e9d8a6', '#2a9d8f', '#2a9d8f', '#e9d8a6', '#2a9d8f'];
               return (
@@ -159,10 +177,17 @@ export default function ForecastPanel() {
               );
             })}
           </div>
-          <div className="flex justify-between mt-1">
-            <span className="text-[9px]" style={{ color: 'rgba(255,255,255,0.35)' }}>Baz</span>
-            <span className="text-[9px]" style={{ color: 'rgba(255,255,255,0.35)' }}>Baz</span>
-          </div>
+          {!isMobile && (
+            <>
+              <p className="text-[11px] mt-1" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                şəbəkəyə nisbətən
+              </p>
+              <div className="flex justify-between mt-1">
+                <span className="text-[9px]" style={{ color: 'rgba(255,255,255,0.35)' }}>Baz</span>
+                <span className="text-[9px]" style={{ color: 'rgba(255,255,255,0.35)' }}>Baz</span>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

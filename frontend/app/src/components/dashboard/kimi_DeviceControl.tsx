@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Cpu, Wind, Lightbulb, Refrigerator, Tv, Zap } from 'lucide-react';
+import { useIsMobile } from '../../lib/useIsMobile';
 
 const API = 'https://energy-platform-api.onrender.com';
 
@@ -27,6 +28,7 @@ export default function DeviceControl() {
     deviceConfig.map(d => ({ ...d, status: false }))
   );
   const [hvacTemp, setHvacTemp] = useState(24);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     fetch(`${API}/api/energy/devices`)
@@ -56,11 +58,11 @@ export default function DeviceControl() {
     }).catch(console.error);
   };
 
-  return (
-    <div className="liquid-glass col-span-5 flex flex-col" style={{ padding: 14, height: 300 }}>
+return (
+    <div className="liquid-glass flex flex-col" style={{ padding: isMobile ? 12 : 14 }}>
       {/* Header */}
       <div className="flex items-center justify-between mb-2.5">
-        <h3 className="text-[15px] font-medium text-white">Ağıllı Cihazlar</h3>
+        <h3 className="text-[14px] sm:text-[15px] font-medium text-white">Ağıllı Cihazlar</h3>
         <span
           className="text-[11px] font-medium px-2.5 py-0.5"
           style={{ background: 'rgba(42,157,143,0.15)', color: '#2a9d8f', borderRadius: 10 }}
@@ -72,7 +74,7 @@ export default function DeviceControl() {
       {/* Device List */}
       <div
         className="flex-1 overflow-y-auto pr-1"
-        style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.1) transparent' }}
+        style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.1) transparent', maxHeight: isMobile ? 280 : 'none' }}
       >
         {devices.map((device) => {
           const Icon = device.icon;

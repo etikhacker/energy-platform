@@ -8,6 +8,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import { useIsMobile } from '../../lib/useIsMobile';
 
 const data24h = [
   { time: '12:00', solar: 4.2, consumption: 3.1, battery: 0.8 },
@@ -89,20 +90,30 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
 export default function EnergyChart() {
   const [timeRange, setTimeRange] = useState<TimeRange>('24S');
   const currentData = timeRangeData[timeRange];
+  const isMobile = useIsMobile();
 
   return (
-    <div className="liquid-glass col-span-7" style={{ padding: 14, height: 328 }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-        <h3 style={{ fontSize: 15, fontWeight: 500, color: '#ffffff', margin: 0 }}>
+    <div className="liquid-glass" style={{ padding: isMobile ? 12 : 14 }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 8,
+          marginBottom: 12,
+          flexWrap: 'wrap',
+        }}
+      >
+        <h3 style={{ fontSize: 14, fontWeight: 500, color: '#ffffff', margin: 0 }}>
           Canlı Enerji Axını
         </h3>
-        <div style={{ display: 'flex', gap: 4 }}>
+        <div style={{ display: 'flex', gap: 2 }}>
           {(['1S', '6S', '24S', '7G'] as TimeRange[]).map((range) => (
             <button
               key={range}
               onClick={() => setTimeRange(range)}
               style={{
-                padding: '4px 12px',
+                padding: '4px 10px',
                 fontSize: 11,
                 fontWeight: 500,
                 textTransform: 'uppercase',
@@ -121,9 +132,9 @@ export default function EnergyChart() {
         </div>
       </div>
 
-      <div style={{ width: '100%', height: 278 }}>
+      <div style={{ width: '100%', height: isMobile ? 240 : 278 }}>
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={currentData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
+          <AreaChart data={currentData} margin={{ top: 5, right: 5, left: isMobile ? -28 : -20, bottom: 5 }}>
             <defs>
               <linearGradient id="solarFill" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#e9d8a6" stopOpacity={0.4} />
@@ -139,17 +150,19 @@ export default function EnergyChart() {
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
-            <XAxis
+<XAxis
               dataKey="time"
               tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 10, fontFamily: 'JetBrains Mono' }}
               axisLine={{ stroke: 'rgba(255,255,255,0.06)' }}
               tickLine={false}
+              interval={isMobile ? 2 : 0}
             />
             <YAxis
               tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 10, fontFamily: 'JetBrains Mono' }}
               axisLine={false}
               tickLine={false}
               domain={[-5, 5]}
+              width={isMobile ? 28 : 40}
             />
             <Tooltip content={<CustomTooltip />} />
             <Area

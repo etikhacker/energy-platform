@@ -3,6 +3,7 @@ import {
   Tooltip, ResponsiveContainer, BarChart, Bar,
 } from 'recharts';
 import { Activity, Wifi, Zap, TrendingUp, AlertTriangle } from 'lucide-react';
+import { useIsMobile } from '../../lib/useIsMobile';
 
 const gridFlowData = [
   { time: '12:00', verilir: 2.1, alinir: 0.0 },
@@ -59,62 +60,70 @@ function CustomTooltip({ active, payload, label }: any) {
 }
 
 export default function GridPage() {
+  const isMobile = useIsMobile();
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 12 : 20 }}>
 
       {/* Status kartları */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 16 }}>
-        <div className="liquid-glass" style={{ padding: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(5, 1fr)',
+          gap: isMobile ? 10 : 16,
+        }}
+      >
+        <div className="liquid-glass" style={{ padding: isMobile ? 12 : 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: isMobile ? 8 : 12 }}>
             <Wifi style={{ width: 16, height: 16, color: '#2a9d8f' }} />
-            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>Şəbəkə Statusu</span>
+            <span style={{ fontSize: isMobile ? 11 : 12, color: 'rgba(255,255,255,0.5)' }}>Şəbəkə Statusu</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
             <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#2a9d8f', boxShadow: '0 0 8px #2a9d8f' }} />
-            <span style={{ fontSize: 20, fontWeight: 600, color: '#fff' }}>Bağlı</span>
+            <span style={{ fontSize: isMobile ? 16 : 20, fontWeight: 600, color: '#fff' }}>Bağlı</span>
           </div>
           <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>Son yenilənmə: 17:32</span>
         </div>
 
-        <div className="liquid-glass" style={{ padding: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+        <div className="liquid-glass" style={{ padding: isMobile ? 12 : 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: isMobile ? 8 : 12 }}>
             <Zap style={{ width: 16, height: 16, color: '#e9d8a6' }} />
-            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>Gərginlik</span>
+            <span style={{ fontSize: isMobile ? 11 : 12, color: 'rgba(255,255,255,0.5)' }}>Gərginlik</span>
           </div>
-          <div style={{ fontSize: 26, fontWeight: 600, color: '#e9d8a6', fontFamily: 'JetBrains Mono', marginBottom: 4 }}>
+          <div style={{ fontSize: isMobile ? 20 : 26, fontWeight: 600, color: '#e9d8a6', fontFamily: 'JetBrains Mono', marginBottom: 4 }}>
             229.4 <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)' }}>V</span>
           </div>
           <span style={{ fontSize: 11, color: '#2a9d8f' }}>Normal hədd</span>
         </div>
 
-        <div className="liquid-glass" style={{ padding: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+        <div className="liquid-glass" style={{ padding: isMobile ? 12 : 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: isMobile ? 8 : 12 }}>
             <Activity style={{ width: 16, height: 16, color: '#94d2bd' }} />
-            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>Tezlik</span>
+            <span style={{ fontSize: isMobile ? 11 : 12, color: 'rgba(255,255,255,0.5)' }}>Tezlik</span>
           </div>
-          <div style={{ fontSize: 26, fontWeight: 600, color: '#94d2bd', fontFamily: 'JetBrains Mono', marginBottom: 4 }}>
+          <div style={{ fontSize: isMobile ? 20 : 26, fontWeight: 600, color: '#94d2bd', fontFamily: 'JetBrains Mono', marginBottom: 4 }}>
             49.98 <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)' }}>Hz</span>
           </div>
           <span style={{ fontSize: 11, color: '#2a9d8f' }}>Sabit</span>
         </div>
 
-        <div className="liquid-glass" style={{ padding: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+        <div className="liquid-glass" style={{ padding: isMobile ? 12 : 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: isMobile ? 8 : 12 }}>
             <TrendingUp style={{ width: 16, height: 16, color: '#2a9d8f' }} />
-            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>Şəbəkəyə verilən</span>
+            <span style={{ fontSize: isMobile ? 11 : 12, color: 'rgba(255,255,255,0.5)' }}>Verilən</span>
           </div>
-          <div style={{ fontSize: 26, fontWeight: 600, color: '#2a9d8f', fontFamily: 'JetBrains Mono', marginBottom: 4 }}>
+          <div style={{ fontSize: isMobile ? 20 : 26, fontWeight: 600, color: '#2a9d8f', fontFamily: 'JetBrains Mono', marginBottom: 4 }}>
             18.7 <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)' }}>kWh</span>
           </div>
           <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>Bu gün</span>
         </div>
 
-        <div className="liquid-glass" style={{ padding: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+        <div className="liquid-glass" style={{ padding: isMobile ? 12 : 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: isMobile ? 8 : 12 }}>
             <AlertTriangle style={{ width: 16, height: 16, color: '#e63946' }} />
-            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>Şəbəkədən alınan</span>
+            <span style={{ fontSize: isMobile ? 11 : 12, color: 'rgba(255,255,255,0.5)' }}>Alınan</span>
           </div>
-          <div style={{ fontSize: 26, fontWeight: 600, color: '#e63946', fontFamily: 'JetBrains Mono', marginBottom: 4 }}>
+          <div style={{ fontSize: isMobile ? 20 : 26, fontWeight: 600, color: '#e63946', fontFamily: 'JetBrains Mono', marginBottom: 4 }}>
             4.2 <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)' }}>kWh</span>
           </div>
           <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>Bu gün</span>
@@ -122,11 +131,11 @@ export default function GridPage() {
       </div>
 
       {/* Axın qrafiği + Keyfiyyət */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 16 }}>
-        <div className="liquid-glass" style={{ padding: 16 }}>
-          <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: '0 0 16px 0' }}>Şəbəkə Enerji Axını</h3>
-          <ResponsiveContainer width="100%" height={220}>
-            <AreaChart data={gridFlowData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 320px', gap: isMobile ? 10 : 16 }}>
+        <div className="liquid-glass" style={{ padding: isMobile ? 12 : 16 }}>
+          <h3 style={{ fontSize: isMobile ? 14 : 15, fontWeight: 500, color: '#fff', margin: '0 0 12px 0' }}>Şəbəkə Enerji Axını</h3>
+          <ResponsiveContainer width="100%" height={isMobile ? 200 : 220}>
+            <AreaChart data={gridFlowData} margin={{ top: 5, right: 5, left: isMobile ? -28 : -20, bottom: 5 }}>
               <defs>
                 <linearGradient id="verilirGrad" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#2a9d8f" stopOpacity={0.4} />
@@ -138,8 +147,8 @@ export default function GridPage() {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
-              <XAxis dataKey="time" tick={{ fill: 'rgba(255,255,255,0.45)', fontSize: 11, fontFamily: 'JetBrains Mono' }} axisLine={{ stroke: 'rgba(255,255,255,0.06)' }} tickLine={false} />
-              <YAxis tick={{ fill: 'rgba(255,255,255,0.45)', fontSize: 11, fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
+              <XAxis dataKey="time" tick={{ fill: 'rgba(255,255,255,0.45)', fontSize: isMobile ? 10 : 11, fontFamily: 'JetBrains Mono' }} axisLine={{ stroke: 'rgba(255,255,255,0.06)' }} tickLine={false} interval={isMobile ? 1 : 0} />
+              <YAxis tick={{ fill: 'rgba(255,255,255,0.45)', fontSize: isMobile ? 10 : 11, fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} width={isMobile ? 28 : 40} />
               <Tooltip content={<CustomTooltip />} />
               <Area type="monotone" dataKey="verilir" name="Verilən (kW)" stroke="#2a9d8f" strokeWidth={1.5} fill="url(#verilirGrad)" dot={false} activeDot={{ r: 4, fill: '#2a9d8f', stroke: 'transparent' }} />
               <Area type="monotone" dataKey="alinir" name="Alınan (kW)" stroke="#e63946" strokeWidth={1.5} fill="url(#alinirGrad)" dot={false} activeDot={{ r: 4, fill: '#e63946', stroke: 'transparent' }} />
@@ -147,10 +156,10 @@ export default function GridPage() {
           </ResponsiveContainer>
         </div>
 
-        <div className="liquid-glass" style={{ padding: 16 }}>
-          <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: '0 0 16px 0' }}>Şəbəkə Keyfiyyəti</h3>
+        <div className="liquid-glass" style={{ padding: isMobile ? 12 : 16 }}>
+          <h3 style={{ fontSize: isMobile ? 14 : 15, fontWeight: 500, color: '#fff', margin: '0 0 12px 0' }}>Şəbəkə Keyfiyyəti</h3>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
-            <div style={{ position: 'relative', width: 100, height: 100 }}>
+            <div style={{ position: 'relative', width: isMobile ? 80 : 100, height: isMobile ? 80 : 100 }}>
               <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}>
                 <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
                 <circle cx="50" cy="50" r="40" fill="none" stroke="#2a9d8f" strokeWidth="8"
@@ -158,13 +167,13 @@ export default function GridPage() {
                   strokeLinecap="round" />
               </svg>
               <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ fontSize: 22, fontWeight: 700, color: '#fff', fontFamily: 'JetBrains Mono' }}>94%</span>
+                <span style={{ fontSize: isMobile ? 18 : 22, fontWeight: 700, color: '#fff', fontFamily: 'JetBrains Mono' }}>94%</span>
                 <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)' }}>keyfiyyət</span>
               </div>
             </div>
           </div>
-          <ResponsiveContainer width="100%" height={100}>
-            <BarChart data={qualityData} margin={{ top: 0, right: 0, left: -30, bottom: 0 }}>
+          <ResponsiveContainer width="100%" height={isMobile ? 80 : 100}>
+            <BarChart data={qualityData} margin={{ top: 0, right: 0, left: isMobile ? -20 : -30, bottom: 0 }}>
               <XAxis dataKey="saat" tick={{ fill: 'rgba(255,255,255,0.35)', fontSize: 9 }} axisLine={false} tickLine={false} />
               <YAxis domain={[85, 100]} hide />
               <Bar dataKey="keyfiyyət" fill="#2a9d8f" opacity={0.7} radius={[2, 2, 0, 0]} />
@@ -174,19 +183,25 @@ export default function GridPage() {
       </div>
 
       {/* Faza balansı */}
-      <div className="liquid-glass" style={{ padding: 16 }}>
-        <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: '0 0 16px 0' }}>Faza Balansı</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+      <div className="liquid-glass" style={{ padding: isMobile ? 12 : 16 }}>
+        <h3 style={{ fontSize: isMobile ? 14 : 15, fontWeight: 500, color: '#fff', margin: '0 0 12px 0' }}>Faza Balansı</h3>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+            gap: isMobile ? 10 : 16,
+          }}
+        >
           {fazaData.map((f, i) => {
             const colors = ['#e9d8a6', '#94d2bd', '#2a9d8f'];
             return (
               <div key={i} style={{
-                padding: 16,
+                padding: isMobile ? 12 : 16,
                 background: 'rgba(255,255,255,0.04)',
                 borderRadius: 12,
                 border: '1px solid rgba(255,255,255,0.07)',
               }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: isMobile ? 8 : 12 }}>
                   <span style={{ fontSize: 14, fontWeight: 600, color: colors[i], fontFamily: 'JetBrains Mono' }}>{f.faza}</span>
                   <div style={{ width: 8, height: 8, borderRadius: '50%', background: colors[i], boxShadow: `0 0 6px ${colors[i]}` }} />
                 </div>

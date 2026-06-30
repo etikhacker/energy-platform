@@ -9,6 +9,7 @@ import {
   Tv, Refrigerator, WashingMachine, Microwave,
   Power, TrendingUp, Clock, Zap, Plus, Trash2,
 } from 'lucide-react';
+import { useIsMobile } from '../../lib/useIsMobile';
 
 const ikonlar: Record<string, React.ElementType> = {
   Thermometer, Lightbulb, Droplets, Wind,
@@ -49,6 +50,7 @@ export default function DevicesPage() {
   const [secilmisOda, setSecilmisOda] = useState('Hamısı');
   const [modalAciq, setModalAciq] = useState(false);
   const [yeniCihaz, setYeniCihaz] = useState({ ad: '', ikonAd: 'Zap', oda: 'Qonaq otağı', guc: 100, avtomatik: false });
+  const isMobile = useIsMobile();
 
   const trans = {
     all: i18n.language === 'az' ? 'Hamısı' : i18n.language === 'en' ? 'All' : 'Все',
@@ -113,10 +115,16 @@ export default function DevicesPage() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 12 : 20 }}>
 
       {/* Stat kartları */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
+          gap: isMobile ? 10 : 16,
+        }}
+      >
         {[
           { label: i18n.language === 'az' ? 'Aktiv Cihazlar' : i18n.language === 'en' ? 'Active Devices' : 'Активные приборы', value: `${aktivSayi} / ${cihazliste.length}`, color: '#2a9d8f', icon: Power, alt: i18n.language === 'az' ? 'İşləyir' : i18n.language === 'en' ? 'Running' : 'Работает' },
           { label: i18n.language === 'az' ? 'Cari Güc' : i18n.language === 'en' ? 'Current Power' : 'Текущая мощность', value: `${(umumiGuc/1000).toFixed(1)} kW`, color: '#e9d8a6', icon: Zap, alt: i18n.language === 'az' ? 'Anlıq istehlak' : i18n.language === 'en' ? 'Real-time usage' : 'Мгн. потребление' },
@@ -125,12 +133,12 @@ export default function DevicesPage() {
         ].map(s => {
           const Icon = s.icon;
           return (
-            <div key={s.label} className="liquid-glass" style={{ padding: 16 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+            <div key={s.label} className="liquid-glass" style={{ padding: isMobile ? 12 : 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: isMobile ? 8 : 12 }}>
                 <Icon style={{ width: 16, height: 16, color: s.color }} />
-                <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>{s.label}</span>
+                <span style={{ fontSize: isMobile ? 11 : 12, color: 'rgba(255,255,255,0.5)' }}>{s.label}</span>
               </div>
-              <div style={{ fontSize: 24, fontWeight: 600, color: s.color, fontFamily: 'JetBrains Mono', marginBottom: 4 }}>{s.value}</div>
+              <div style={{ fontSize: isMobile ? 18 : 24, fontWeight: 600, color: s.color, fontFamily: 'JetBrains Mono', marginBottom: 4 }}>{s.value}</div>
               <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>{s.alt}</span>
             </div>
           );
@@ -138,21 +146,40 @@ export default function DevicesPage() {
       </div>
 
       {/* Cihazlar + Qrafik */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 16 }}>
-        <div className="liquid-glass" style={{ padding: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-            <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: 0 }}>{t('cihazlar')}</h3>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                {odalar.map(oda => (
-                  <button key={oda} onClick={() => setSecilmisOda(oda)} style={{
-                    padding: '3px 10px', fontSize: 10, borderRadius: 6, border: 'none', cursor: 'pointer',
-                    background: secilmisOda === oda ? 'rgba(255,255,255,0.14)' : 'transparent',
-                    color: secilmisOda === oda ? '#fff' : 'rgba(255,255,255,0.4)',
-                    transition: 'all 0.2s',
-                  }}>{odaTercumeMap[oda]}</button>
-                ))}
-              </div>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 300px', gap: isMobile ? 10 : 16 }}>
+        <div className="liquid-glass" style={{ padding: isMobile ? 12 : 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: isMobile ? 12 : 16, gap: 8, flexWrap: 'wrap' }}>
+            <h3 style={{ fontSize: isMobile ? 14 : 15, fontWeight: 500, color: '#fff', margin: 0 }}>{t('cihazlar')}</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+              {!isMobile && (
+                <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                  {odalar.map(oda => (
+                    <button key={oda} onClick={() => setSecilmisOda(oda)} style={{
+                      padding: '3px 10px', fontSize: 10, borderRadius: 6, border: 'none', cursor: 'pointer',
+                      background: secilmisOda === oda ? 'rgba(255,255,255,0.14)' : 'transparent',
+                      color: secilmisOda === oda ? '#fff' : 'rgba(255,255,255,0.4)',
+                      transition: 'all 0.2s',
+                    }}>{odaTercumeMap[oda]}</button>
+                  ))}
+                </div>
+              )}
+              {isMobile && (
+                <select
+                  value={secilmisOda}
+                  onChange={(e) => setSecilmisOda(e.target.value)}
+                  style={{
+                    padding: '4px 8px', fontSize: 11, borderRadius: 6,
+                    background: 'rgba(255,255,255,0.06)',
+                    color: '#fff', border: '1px solid rgba(255,255,255,0.1)',
+                  }}
+                >
+                  {odalar.map(oda => (
+                    <option key={oda} value={oda} style={{ background: '#001219' }}>
+                      {odaTercumeMap[oda]}
+                    </option>
+                  ))}
+                </select>
+              )}
               <button
                 onClick={() => setModalAciq(true)}
                 style={{
@@ -161,7 +188,7 @@ export default function DevicesPage() {
                   background: 'rgba(42,157,143,0.2)', color: '#2a9d8f', fontWeight: 500,
                 }}
               >
-                <Plus style={{ width: 13, height: 13 }} /> {i18n.language === 'az' ? 'Əlavə et' : i18n.language === 'en' ? 'Add' : 'Добавить'}
+                <Plus style={{ width: 13, height: 13 }} /> {isMobile ? '' : (i18n.language === 'az' ? 'Əlavə et' : i18n.language === 'en' ? 'Add' : 'Добавить')}
               </button>
             </div>
           </div>
@@ -170,53 +197,58 @@ export default function DevicesPage() {
             {filteredCihazlar.map(c => {
               const Icon = ikonlar[c.ikonAd] || Zap;
               const cihazAdi = i18n.language === 'az' ? c.adDef : i18n.language === 'en' ? (c.adKey === 'Kondisioner' ? 'Air Conditioner' : c.adKey === 'İstilik Sistemi' ? 'Heating System' : c.adKey === 'Soyuducu' ? 'Refrigerator' : c.adKey === 'Televizor' ? 'TV' : c.adKey === 'Su Qızdırıcı' ? 'Water Heater' : c.adKey === 'İşıqlandırma' ? 'Lighting' : c.adKey) : (c.adKey === 'Kondisioner' ? 'Кондиционер' : c.adKey === 'İstilik Sistemi' ? 'Система отопления' : c.adKey === 'Soyuducu' ? 'Холодильник' : c.adKey === 'Телевизор' ? 'Телевизор' : c.adKey === 'Su Qızdırıcı' ? 'Водонагреватель' : c.adKey === 'İşıqlandırma' ? 'Освещение' : c.adKey);
-              
+
               return (
                 <div key={c.id} style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  padding: '12px 14px',
+                  padding: isMobile ? '10px 12px' : '12px 14px',
                   background: c.aktiv ? 'rgba(42,157,143,0.08)' : 'rgba(255,255,255,0.03)',
                   borderRadius: 10,
                   border: `1px solid ${c.aktiv ? 'rgba(42,157,143,0.2)' : 'rgba(255,255,255,0.06)'}`,
                   transition: 'all 0.2s',
+                  gap: 8,
+                  flexWrap: isMobile ? 'wrap' : 'nowrap',
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0 }}>
                     <div style={{
-                      width: 36, height: 36, borderRadius: 8,
+                      width: isMobile ? 32 : 36, height: isMobile ? 32 : 36, borderRadius: 8,
                       background: c.aktiv ? 'rgba(42,157,143,0.15)' : 'rgba(255,255,255,0.06)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', // <-- düzəldildi
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      flexShrink: 0,
                     }}>
                       <Icon style={{ width: 18, height: 18, color: c.aktiv ? '#2a9d8f' : 'rgba(255,255,255,0.4)' }} />
                     </div>
-                    <div>
-                      {/* Düzəldildi: fontWeight */}
-                      <p style={{ fontSize: 13, fontWeight: 500, color: '#fff', margin: 0 }}>{cihazAdi}</p> 
-                      <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', margin: 0 }}>{odaTercumeMap[c.odaKey] || c.odaKey} · {c.guc} W</p>
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <p style={{ fontSize: isMobile ? 12 : 13, fontWeight: 500, color: '#fff', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {cihazAdi}
+                      </p>
+                      <p style={{ fontSize: isMobile ? 10 : 11, color: 'rgba(255,255,255,0.4)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {odaTercumeMap[c.odaKey] || c.odaKey} · {c.guc} W{!isMobile && ` · ${c.gunlukIstifade} kWh`}
+                      </p>
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    {c.avtomatik && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 12, flexShrink: 0 }}>
+                    {c.avtomatik && !isMobile && (
                       <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 4, background: 'rgba(233,216,166,0.12)', color: '#e9d8a6' }}>{trans.auto}</span>
                     )}
-                    <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontFamily: 'JetBrains Mono' }}>{c.gunlukIstifade} kWh</span>
                     <div onClick={() => toggle(c.id)} style={{
-                      width: 40, height: 22, borderRadius: 11, cursor: 'pointer',
+                      width: 36, height: 20, borderRadius: 10, cursor: 'pointer',
                       background: c.aktiv ? '#2a9d8f' : 'rgba(255,255,255,0.12)',
                       position: 'relative', transition: 'background 0.2s',
                     }}>
                       <div style={{
-                        position: 'absolute', top: 3,
-                        left: c.aktiv ? 21 : 3,
+                        position: 'absolute', top: 2,
+                        left: c.aktiv ? 18 : 2,
                         width: 16, height: 16, borderRadius: '50%',
                         background: '#fff', transition: 'left 0.2s',
                       }} />
                     </div>
                     <button onClick={() => sil(c.id)} style={{
                       background: 'rgba(230,57,70,0.1)', border: '1px solid rgba(230,57,70,0.2)',
-                      borderRadius: 6, padding: '5px 7px', cursor: 'pointer', display: 'flex', alignItems: 'center',
+                      borderRadius: 6, padding: '4px 6px', cursor: 'pointer', display: 'flex', alignItems: 'center',
                     }}>
-                      <Trash2 style={{ width: 13, height: 13, color: '#e63946' }} />
+                      <Trash2 style={{ width: 12, height: 12, color: '#e63946' }} />
                     </button>
                   </div>
                 </div>
@@ -226,16 +258,15 @@ export default function DevicesPage() {
         </div>
 
         {/* Qrafik */}
-        <div className="liquid-glass" style={{ padding: 16 }}>
-          {/* Düzəldildi: fontWeight */}
-          <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: '0 0 16px 0' }}> 
+        <div className="liquid-glass" style={{ padding: isMobile ? 12 : 16 }}>
+          <h3 style={{ fontSize: isMobile ? 14 : 15, fontWeight: 500, color: '#fff', margin: '0 0 12px 0' }}>
             {i18n.language === 'az' ? 'Saatlıq İstifadə' : i18n.language === 'en' ? 'Hourly Usage' : 'Почасовое использование'}
           </h3>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={saatlikIstifade} margin={{ top: 5, right: 5, left: -25, bottom: 5 }}>
+          <ResponsiveContainer width="100%" height={isMobile ? 200 : 220}>
+            <BarChart data={saatlikIstifade} margin={{ top: 5, right: 5, left: isMobile ? -28 : -25, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
               <XAxis dataKey="saat" tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 10, fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 10, fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 10, fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} width={isMobile ? 28 : 35} />
               <Tooltip content={<CustomTooltip />} />
               <Bar dataKey="guc" fill="#94d2bd" opacity={0.8} radius={[3, 3, 0, 0]} />
             </BarChart>
@@ -265,9 +296,20 @@ export default function DevicesPage() {
         <div style={{
           position: 'fixed', inset: 0, zIndex: 100,
           background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          display: 'flex', alignItems: isMobile ? 'flex-end' : 'center', justifyContent: 'center',
         }} onClick={() => setModalAciq(false)}>
-          <div className="liquid-glass" style={{ width: 400, padding: 24 }} onClick={e => e.stopPropagation()}>
+          <div
+            className="liquid-glass"
+            style={{
+              width: isMobile ? '100%' : 400,
+              maxWidth: isMobile ? '100%' : 400,
+              padding: isMobile ? 20 : 24,
+              borderRadius: isMobile ? '20px 20px 0 0' : 16,
+              maxHeight: isMobile ? '90vh' : undefined,
+              overflowY: isMobile ? 'auto' : undefined,
+            }}
+            onClick={e => e.stopPropagation()}
+          >
             <h3 style={{ fontSize: 16, fontWeight: 500, color: '#fff', margin: '0 0 20px 0' }}>
               {i18n.language === 'az' ? 'Yeni Cihaz Əlavə Et' : i18n.language === 'en' ? 'Add New Device' : 'Добавить новый прибор'}
             </h3>

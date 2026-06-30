@@ -6,6 +6,7 @@ import {
   ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
 import { TrendingUp, TrendingDown, Zap, Sun, Battery, DollarSign } from 'lucide-react';
+import { useIsMobile } from '../../lib/useIsMobile';
 
 function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload) return null;
@@ -32,6 +33,7 @@ function CustomTooltip({ active, payload, label }: any) {
 export default function AnalyticsPage() {
   const { t, i18n } = useTranslation();
   const [period, setPeriod] = useState<'Həftəlik' | 'Aylıq'>('Aylıq');
+  const isMobile = useIsMobile();
 
   const monthlyData = [
     { ay: t('months.0', { defaultValue: 'Yan' }), gunesh: 420, sebeke: 180 },
@@ -81,25 +83,32 @@ export default function AnalyticsPage() {
   const xKey = period === 'Aylıq' ? 'ay' : 'gun';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 12 : 20 }}>
 
       {/* Stat kartları */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
+          gap: isMobile ? 10 : 16,
+        }}
+      >
         {statCards.map((s, i) => {
           const Icon = s.icon;
           return (
-            <div key={i} className="liquid-glass" style={{ padding: 16 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+            <div key={i} className="liquid-glass" style={{ padding: isMobile ? 12 : 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: isMobile ? 8 : 12 }}>
                 <div style={{
                   width: 32, height: 32, borderRadius: 8,
                   background: `${s.color}22`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  flexShrink: 0,
                 }}>
                   <Icon style={{ width: 16, height: 16, color: s.color }} />
                 </div>
-                <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>{s.label}</span>
+                <span style={{ fontSize: isMobile ? 11 : 12, color: 'rgba(255,255,255,0.5)' }}>{s.label}</span>
               </div>
-              <div style={{ fontSize: 26, fontWeight: 600, color: '#fff', fontFamily: 'JetBrains Mono', marginBottom: 6 }}>
+              <div style={{ fontSize: isMobile ? 20 : 26, fontWeight: 600, color: '#fff', fontFamily: 'JetBrains Mono', marginBottom: 6 }}>
                 {s.value}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -107,7 +116,7 @@ export default function AnalyticsPage() {
                   ? <TrendingUp style={{ width: 12, height: 12, color: '#2a9d8f' }} />
                   : <TrendingDown style={{ width: 12, height: 12, color: '#e63946' }} />
                 }
-                <span style={{ fontSize: 11, color: s.up ? '#2a9d8f' : '#e63946' }}>
+                <span style={{ fontSize: isMobile ? 10 : 11, color: s.up ? '#2a9d8f' : '#e63946' }}>
                   {s.change} {i18n.language === 'az' ? 'ötən aya nisbət' : i18n.language === 'en' ? 'vs last month' : 'к прош. месяцу'}
                 </span>
               </div>
@@ -117,10 +126,10 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Bar qrafik + Pie */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: 16 }}>
-        <div className="liquid-glass" style={{ padding: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-            <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: 0 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 280px', gap: isMobile ? 10 : 16 }}>
+        <div className="liquid-glass" style={{ padding: isMobile ? 12 : 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, gap: 8, flexWrap: 'wrap' }}>
+            <h3 style={{ fontSize: isMobile ? 14 : 15, fontWeight: 500, color: '#fff', margin: 0 }}>
               {i18n.language === 'az' ? 'Enerji Müqayisəsi' : i18n.language === 'en' ? 'Energy Comparison' : 'Сравнение энергии'}
             </h3>
             <div style={{ display: 'flex', gap: 4 }}>
@@ -129,7 +138,7 @@ export default function AnalyticsPage() {
                 { kod: 'Aylıq', ad: i18n.language === 'az' ? 'Aylıq' : i18n.language === 'en' ? 'Monthly' : 'Ежемесячно' }
               ].map((p) => (
                 <button key={p.kod} onClick={() => setPeriod(p.kod as any)} style={{
-                  padding: '4px 12px', fontSize: 11, borderRadius: 6, border: 'none', cursor: 'pointer',
+                  padding: '4px 10px', fontSize: 11, borderRadius: 6, border: 'none', cursor: 'pointer',
                   background: (period === 'Aylıq' && p.kod === 'Aylıq') || (period === 'Həftəlik' && p.kod === 'Həftəlik') ? 'rgba(255,255,255,0.12)' : 'transparent',
                   color: (period === 'Aylıq' && p.kod === 'Aylıq') || (period === 'Həftəlik' && p.kod === 'Həftəlik') ? '#fff' : 'rgba(255,255,255,0.45)',
                   transition: 'all 0.2s',
@@ -137,11 +146,11 @@ export default function AnalyticsPage() {
               ))}
             </div>
           </div>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={currentData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
+          <ResponsiveContainer width="100%" height={isMobile ? 200 : 220}>
+            <BarChart data={currentData} margin={{ top: 5, right: 5, left: isMobile ? -28 : -20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
-              <XAxis dataKey="xKey" tick={{ fill: 'rgba(255,255,255,0.45)', fontSize: 11, fontFamily: 'JetBrains Mono' }} axisLine={{ stroke: 'rgba(255,255,255,0.06)' }} tickLine={false} />
-              <YAxis tick={{ fill: 'rgba(255,255,255,0.45)', fontSize: 11, fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
+              <XAxis dataKey="xKey" tick={{ fill: 'rgba(255,255,255,0.45)', fontSize: isMobile ? 10 : 11, fontFamily: 'JetBrains Mono' }} axisLine={{ stroke: 'rgba(255,255,255,0.06)' }} tickLine={false} interval={isMobile ? 1 : 0} />
+              <YAxis tick={{ fill: 'rgba(255,255,255,0.45)', fontSize: isMobile ? 10 : 11, fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} width={isMobile ? 28 : 40} />
               <Tooltip content={<CustomTooltip />} />
               <Bar dataKey="gunesh" name={energyLabels.solar} fill="#e9d8a6" opacity={0.85} radius={[3,3,0,0]} />
               <Bar dataKey="sebeke" name={energyLabels.grid} fill="#0a9396" opacity={0.85} radius={[3,3,0,0]} />
@@ -152,44 +161,46 @@ export default function AnalyticsPage() {
           </ResponsiveContainer>
         </div>
 
-        <div className="liquid-glass" style={{ padding: 16 }}>
-          <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: '0 0 8px 0' }}>
+        <div className="liquid-glass" style={{ padding: isMobile ? 12 : 16 }}>
+          <h3 style={{ fontSize: isMobile ? 14 : 15, fontWeight: 500, color: '#fff', margin: '0 0 8px 0' }}>
             {i18n.language === 'az' ? 'Enerji Mənbəyi' : i18n.language === 'en' ? 'Energy Source' : 'Источник энергии'}
           </h3>
-          <ResponsiveContainer width="100%" height={160}>
-            <PieChart>
-              <Pie data={enerjiPay} cx="50%" cy="50%" innerRadius={45} outerRadius={70} paddingAngle={3} dataKey="value">
-                {enerjiPay.map((entry, i) => (
-                  <Cell key={i} fill={entry.color} opacity={0.9} />
-                ))}
-              </Pie>
-              <Tooltip
-                formatter={(v: any) => [`${v}%`, '']}
-                contentStyle={{ background: 'rgba(0,42,53,0.95)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8, fontSize: 12, color: '#fff' }}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 4 }}>
-            {enerjiPay.map((e, i) => (
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: e.color }} />
-                  <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)' }}>{e.name}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 12 : 0, flexDirection: isMobile ? 'row' : 'column' }}>
+            <ResponsiveContainer width={isMobile ? 140 : '100%'} height={isMobile ? 140 : 160}>
+              <PieChart>
+                <Pie data={enerjiPay} cx="50%" cy="50%" innerRadius={isMobile ? 32 : 45} outerRadius={isMobile ? 55 : 70} paddingAngle={3} dataKey="value">
+                  {enerjiPay.map((entry, i) => (
+                    <Cell key={i} fill={entry.color} opacity={0.9} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  formatter={(v: any) => [`${v}%`, '']}
+                  contentStyle={{ background: 'rgba(0,42,53,0.95)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8, fontSize: 12, color: '#fff' }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: isMobile ? 0 : 4, flex: isMobile ? 1 : undefined }}>
+              {enerjiPay.map((e, i) => (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: e.color }} />
+                    <span style={{ fontSize: isMobile ? 11 : 12, color: 'rgba(255,255,255,0.65)' }}>{e.name}</span>
+                  </div>
+                  <span style={{ fontSize: isMobile ? 11 : 12, color: '#fff', fontFamily: 'JetBrains Mono' }}>{e.value}%</span>
                 </div>
-                <span style={{ fontSize: 12, color: '#fff', fontFamily: 'JetBrains Mono' }}>{e.value}%</span>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Area qrafik — trend */}
-      <div className="liquid-glass" style={{ padding: 16 }}>
-        <h3 style={{ fontSize: 15, fontWeight: 500, color: '#fff', margin: '0 0 16px 0' }}>
+      <div className="liquid-glass" style={{ padding: isMobile ? 12 : 16 }}>
+        <h3 style={{ fontSize: isMobile ? 14 : 15, fontWeight: 500, color: '#fff', margin: '0 0 12px 0' }}>
           {i18n.language === 'az' ? 'İllik Günəş Enerjisi Trendi' : i18n.language === 'en' ? 'Annual Solar Energy Trend' : 'Годовой тренд солнечной энергии'}
         </h3>
-        <ResponsiveContainer width="100%" height={180}>
-          <AreaChart data={monthlyData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
+        <ResponsiveContainer width="100%" height={isMobile ? 180 : 200}>
+          <AreaChart data={monthlyData} margin={{ top: 5, right: 5, left: isMobile ? -28 : -20, bottom: 5 }}>
             <defs>
               <linearGradient id="trendGunesh" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#e9d8a6" stopOpacity={0.4} />
@@ -201,8 +212,8 @@ export default function AnalyticsPage() {
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
-            <XAxis dataKey="ay" tick={{ fill: 'rgba(255,255,255,0.45)', fontSize: 11, fontFamily: 'JetBrains Mono' }} axisLine={{ stroke: 'rgba(255,255,255,0.06)' }} tickLine={false} />
-            <YAxis tick={{ fill: 'rgba(255,255,255,0.45)', fontSize: 11, fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
+            <XAxis dataKey="ay" tick={{ fill: 'rgba(255,255,255,0.45)', fontSize: isMobile ? 10 : 11, fontFamily: 'JetBrains Mono' }} axisLine={{ stroke: 'rgba(255,255,255,0.06)' }} tickLine={false} interval={isMobile ? 1 : 0} />
+            <YAxis tick={{ fill: 'rgba(255,255,255,0.45)', fontSize: isMobile ? 10 : 11, fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} width={isMobile ? 28 : 40} />
             <Tooltip content={<CustomTooltip />} />
             <Area type="monotone" dataKey="gunesh" name={`${energyLabels.solar} (kWh)`} stroke="#e9d8a6" strokeWidth={1.5} fill="url(#trendGunesh)" dot={false} activeDot={{ r: 4, fill: '#e9d8a6', stroke: 'transparent' }} />
             <Area type="monotone" dataKey="sebeke" name={`${energyLabels.grid} (kWh)`} stroke="#0a9396" strokeWidth={1.5} fill="url(#trendSebeke)" dot={false} activeDot={{ r: 4, fill: '#0a9396', stroke: 'transparent' }} />

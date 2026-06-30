@@ -8,13 +8,13 @@
 }
 
 :root {
-  --app-bg: #030d0a;
-  --app-bg-soft: rgba(3, 13, 10, 0.85);
-  --glass-bg: rgba(0, 0, 0, 0.4);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --accent: #00e699;
-  --accent-strong: #64ffda;
-  --accent-soft: rgba(0, 230, 153, 0.15);
+  --app-bg: #001219;
+  --app-bg-soft: rgba(0, 26, 35, 0.88);
+  --glass-bg: rgba(0, 20, 25, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --accent: #2a9d8f;
+  --accent-strong: #0a9396;
+  --accent-soft: rgba(42, 157, 143, 0.15);
   --content-padding: 24px;
   --panel-padding: 16px;
   --row-padding: 14px 0;
@@ -67,16 +67,10 @@ body {
 .liquid-glass {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  border-radius: 16px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   padding: var(--panel-padding);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
-}
-.liquid-glass:hover {
-  border-color: rgba(100, 255, 218, 0.3);
-  box-shadow: 0 8px 32px rgba(0, 230, 153, 0.15);
 }
 
 /* ── Toggle ── */
@@ -95,6 +89,7 @@ body {
 .toggle-track.on {
   background: var(--accent);
 }
+
 .toggle-thumb {
   position: absolute;
   top: 2px;
