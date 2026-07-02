@@ -1,6 +1,7 @@
 import { supabase } from '../../lib/supabase';
 import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
+import { useIsMobile } from '../../lib/useIsMobile';
 import {
   LayoutDashboard,
   BarChart3,
@@ -42,6 +43,7 @@ export default function Sidebar({
   onClose,
 }: SidebarProps) {
   const { t, i18n } = useTranslation();
+  const isMobile = useIsMobile();
   const displayName = userName || userEmail?.split('@')[0] || 'İstifadəçi';
   const initials = displayName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
 
@@ -105,9 +107,11 @@ export default function Sidebar({
         style={{
           ...asideBase,
           zIndex: 30,
-          // Desktop: həmişə görsən. Mobil: soldan sürüşür.
-          transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
-          transition: 'transform 0.28s cubic-bezier(0.22, 1, 0.36, 1)',
+          // Desktop: həmişə görsən (animasiyasız). Mobil: soldan sürüşür.
+          transform: isMobile
+            ? (isOpen ? 'translateX(0)' : 'translateX(-100%)')
+            : 'translateX(0)',
+          transition: isMobile ? 'transform 0.28s cubic-bezier(0.22, 1, 0.36, 1)' : 'none',
         }}
       >
         {/* Logo + bağla düyməsi (bağla yalnız mobil) */}
