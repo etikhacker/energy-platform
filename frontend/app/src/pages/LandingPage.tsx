@@ -27,6 +27,7 @@ import {
   X
 } from "lucide-react";
 import { toast } from "sonner";
+import { animate, createScope, createTimeline, stagger, utils } from "animejs";
 
 // --- STRUCTURAL DATA & TYPES ---
 interface NavItem {
@@ -124,6 +125,67 @@ const footerCols: FooterCol[] = [
   { title: "Resurslar", links: ["Sənədlər", "API", "Bloq", "Dəstək"] },
   { title: "Hüquqi", links: ["Məxfilik", "İstifadə Şərtləri", "Cookies", "GDPR"] },
 ];
+
+// --- ANIME.JS KÖMƏKÇİ KOMPONENTLƏR ---
+
+// Başlığı hərf-hərf animasiya üçün span-lara bölür
+function SplitChars({ text, charClass = "" }: { text: string; charClass?: string }) {
+  return (
+    <>
+      {text.split("").map((ch: string, i: number) =>
+        ch === " " ? (
+          <span key={i} className="inline-block">&nbsp;</span>
+        ) : (
+          <span key={i} className={`hero-char inline-block ${charClass}`}>{ch}</span>
+        )
+      )}
+    </>
+  );
+}
+
+// Görünüş sahəsinə daxil olanda rəqəmi 0-dan hədəfə sayan komponent
+function CountUp({ value, duration = 1800 }: { value: string; duration?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const match = value.match(/-?\d[\d.]*/);
+    if (!match) return;
+
+    const target = parseFloat(match[0]);
+    const decimals = (match[0].split(".")[1] || "").length;
+    const counter = { n: 0 };
+    let anim: ReturnType<typeof animate> | null = null;
+
+    el.textContent = value.replace(match[0], (0).toFixed(decimals));
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          anim = animate(counter, {
+            n: target,
+            duration,
+            ease: "out(4)",
+            onUpdate: () => {
+              el.textContent = value.replace(match[0], counter.n.toFixed(decimals));
+            },
+          });
+          io.disconnect();
+        }
+      },
+      { threshold: 0.6 }
+    );
+    io.observe(el);
+
+    return () => {
+      io.disconnect();
+      anim?.pause();
+    };
+  }, [value, duration]);
+
+  return <span ref={ref}>{value}</span>;
+}
 
 // --- LOGO KOMPONENTİ ---
 function Logo() {
@@ -331,8 +393,94 @@ export default function LandingPage() {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"production" | "consumption">("production");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<HTMLDivElement>(null);
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
+
+  // Hero giriş animasiyası — anime.js timeline
+  useEffect(() => {
+    const scope = createScope({ root: rootRef }).add(() => {
+      utils.set(
+        [".hero-nav", ".hero-badge", ".hero-char", ".hero-shimmer", ".hero-sub", ".hero-cta", ".hero-trust", ".hero-card"],
+        { opacity: 0 }
+      );
+
+      createTimeline({ defaults: { ease: "out(3)", duration: 800 } })
+        .add(".hero-nav", { opacity: [0, 1], translateY: [-24, 0], duration: 700 })
+        .add(".hero-badge", { opacity: [0, 1], translateY: [24, 0] }, "-=450")
+        .add(".hero-char", { opacity: [0, 1], translateY: [70, 0], delay: stagger(26) }, "-=500")
+        .add(".hero-shimmer", { opacity: [0, 1], translateY: [50, 0] }, "-=600")
+        .add(".hero-sub", { opacity: [0, 1], translateY: [24, 0] }, "-=550")
+        .add(".hero-cta", { opacity: [0, 1], translateY: [24, 0], delay: stagger(120), duration: 650 }, "-=500")
+        .add(".hero-trust", { opacity: [0, 1], duration: 600 }, "-=400")
+        .add(".hero-card", { opacity: [0, 1], scale: [0.92, 1], duration: 1100 }, "-=1000");
+
+      // Giriş bitdikdən sonra kartın sonsuz yumşaq üzmə effekti
+      animate(".hero-card", {
+        translateY: [0, -10],
+        alternate: true,
+        loop: true,
+        duration: 3000,
+        ease: "inOutSine",
+        delay: 2400,
+      });
+    });
+
+    return () => {
+      scope.revert();
+    };
+  }, []);
+
+  // Scroll ilə açılan bölmələr — .reveal-group daxilindəki .reveal-item-lər stagger ilə görünür
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const groups = Array.from(root.querySelectorAll<HTMLElement>(".reveal-group"));
+    const observers: IntersectionObserver[] = [];
+
+    groups.forEach((group) => {
+      const items = Array.from(group.querySelectorAll<HTMLElement>(".reveal-item"));
+      const targets = items.length ? items : [group];
+      utils.set(targets, { opacity: 0, translateY: 48 });
+
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            animate(targets, {
+              opacity: 1,
+              translateY: 0,
+              delay: stagger(110),
+              duration: 850,
+              ease: "out(3)",
+            });
+            io.disconnect();
+          }
+        },
+        { threshold: 0.15 }
+      );
+      io.observe(group);
+      observers.push(io);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
+
+  // Qrafik barları — tab dəyişəndə anime.js stagger ilə yenidən qalxır
+  useEffect(() => {
+    const bars = chartRef.current?.querySelectorAll(".chart-bar");
+    if (!bars || bars.length === 0) return;
+    const anim = animate(bars, {
+      scaleY: [0, 1],
+      opacity: [0.4, 1],
+      delay: stagger(45),
+      duration: 750,
+      ease: "out(3)",
+    });
+    return () => {
+      anim.pause();
+    };
+  }, [activeTab]);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -365,7 +513,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="relative min-h-[100dvh] bg-[#030d0a] text-white selection:bg-[#64ffda]/30 selection:text-white overflow-hidden">
+    <div ref={rootRef} className="relative min-h-[100dvh] bg-[#030d0a] text-white selection:bg-[#64ffda]/30 selection:text-white overflow-hidden">
       
       <Interactive3DGrid />
 
@@ -377,7 +525,7 @@ export default function LandingPage() {
 
       {/* HEADER */}
       <header className="fixed top-0 inset-x-0 z-50 px-4 sm:px-6 pt-4 sm:pt-6">
-        <nav className="mx-auto max-w-7xl backdrop-blur-xl bg-black/20 border border-white/5 rounded-2xl px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
+        <nav className="hero-nav mx-auto max-w-7xl backdrop-blur-xl bg-black/20 border border-white/5 rounded-2xl px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
           <Logo />
           <ul className="hidden md:flex items-center gap-10 text-sm font-medium text-gray-400">
             {nav.map((n: NavItem) => (
@@ -481,37 +629,39 @@ export default function LandingPage() {
         <div className="mx-auto w-full max-w-7xl grid lg:grid-cols-12 gap-10 lg:gap-16 items-center relative z-10">
           
           <div className="lg:col-span-6 space-y-6 sm:space-y-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#64ffda]/20 bg-[#64ffda]/5 text-xs font-semibold tracking-wider text-[#64ffda]">
+            <div className="hero-badge inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#64ffda]/20 bg-[#64ffda]/5 text-xs font-semibold tracking-wider text-[#64ffda]">
               <Cpu className="w-3.5 h-3.5" />
               ECO-ENERGY REVOLUTION · BETA V2.4
             </div>
             
-            <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.05] bg-gradient-to-b from-white via-white to-gray-500 bg-clip-text text-transparent">
-              Enerji Gələcəyini <br />
-              <span className="text-shimmer bg-gradient-to-r from-[#64ffda] via-[#00e699] to-[#64ffda]">AI İlə Qur</span>
+            <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.05]">
+              <SplitChars text="Enerji Gələcəyini" charClass="bg-gradient-to-b from-white via-white to-gray-500 bg-clip-text text-transparent" />
+              <br />
+              <span className="hero-shimmer inline-block text-shimmer bg-gradient-to-r from-[#64ffda] via-[#00e699] to-[#64ffda]">AI İlə Qur</span>
             </h1>
 
-            <p className="text-base sm:text-lg text-gray-400 max-w-xl leading-relaxed">
+            <p className="hero-sub text-base sm:text-lg text-gray-400 max-w-xl leading-relaxed">
               Mürəkkəb enerji axınlarını avtomatlaşdırın. Süni intellekt əsaslı EcoAI platforması evinizi ağıllı şəbəkəyə inteqrasiya edərək karbon izini minimuma endirir.
             </p>
 
             <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 pt-4">
-              <a href="#contact" className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-[#00e699] text-[#030d0a] font-bold hover:bg-[#00cc88] shadow-[0_0_30px_rgba(0,230,153,0.3)] hover:shadow-[0_0_40px_rgba(0,230,153,0.5)] transition-all duration-300">
+              <a href="#contact" className="hero-cta inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-[#00e699] text-[#030d0a] font-bold hover:bg-[#00cc88] shadow-[0_0_30px_rgba(0,230,153,0.3)] hover:shadow-[0_0_40px_rgba(0,230,153,0.5)] transition-all duration-300">
                 Sistemi Sına <ArrowRight className="w-5 h-5" />
               </a>
-              <a href="#how" className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl backdrop-blur-md bg-white/5 border border-white/10 text-white font-semibold hover:bg-white/10 transition-all">
+              <a href="#how" className="hero-cta inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl backdrop-blur-md bg-white/5 border border-white/10 text-white font-semibold hover:bg-white/10 transition-all">
                 <PlayCircle className="w-5 h-5 text-[#64ffda]" /> İşləmə Mexanizmi
               </a>
             </div>
 
-            <div className="flex flex-wrap items-center gap-8 pt-6 text-xs text-gray-500 font-medium">
+            <div className="hero-trust flex flex-wrap items-center gap-8 pt-6 text-xs text-gray-500 font-medium">
               <div className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-[#64ffda]" /> GDPR UYĞUN SİSTEM</div>
               <div className="flex items-center gap-2"><Globe className="w-4 h-4 text-[#64ffda]" /> CANLI BULUD İDARƏSİ</div>
             </div>
           </div>
 
           <div className="lg:col-span-6 flex justify-center relative mt-2 lg:mt-0">
-            <TiltCard intensity={15} className="relative z-10 w-full max-w-[500px] rounded-[32px] border border-[#64ffda]/30 bg-[#030d0a]/60 p-5 sm:p-8 shadow-[0_0_50px_rgba(100,255,218,0.1)] backdrop-blur-xl flex flex-col gap-6 sm:gap-8" style={{ transformStyle: "preserve-3d" }}>
+            <div className="hero-card relative z-10 w-full max-w-[500px]">
+            <TiltCard intensity={15} className="w-full rounded-[32px] border border-[#64ffda]/30 bg-[#030d0a]/60 p-5 sm:p-8 shadow-[0_0_50px_rgba(100,255,218,0.1)] backdrop-blur-xl flex flex-col gap-6 sm:gap-8" style={{ transformStyle: "preserve-3d" }}>
               
               <style>{`
                 @keyframes slideRight {
@@ -600,6 +750,7 @@ export default function LandingPage() {
               </div>
 
             </TiltCard>
+            </div>
           </div>
 
         </div>
@@ -607,9 +758,9 @@ export default function LandingPage() {
 
       {/* FEATURES */}
       <section id="features" className="relative py-32 px-6 border-t border-white/5">
-        <div className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-7xl reveal-group">
           
-          <div className="text-center max-w-2xl mx-auto mb-20 space-y-4">
+          <div className="reveal-item text-center max-w-2xl mx-auto mb-20 space-y-4">
             <span className="text-[#64ffda] text-xs font-bold tracking-[0.3em] uppercase">MÖHTƏŞƏM FUNKSİONALLIQ</span>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight">EcoAI Nə Edir?</h2>
             <p className="text-gray-400">Tamamilə avtomatlaşdırılmış idarəetmə ilə enerjinizi ağıllı şəkildə bölüşdürün.</p>
@@ -617,7 +768,7 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {features.map((f: FeatureItem, i: number) => (
-              <TiltCard key={i} intensity={8} className="relative group rounded-3xl border border-white/5 bg-gradient-to-b from-white/5 to-transparent p-8 hover:border-[#64ffda]/20 transition-all duration-500" style={{ transformStyle: "preserve-3d" }}>
+              <TiltCard key={i} intensity={8} className="reveal-item relative group rounded-3xl border border-white/5 bg-gradient-to-b from-white/5 to-transparent p-8 hover:border-[#64ffda]/20 transition-all duration-500" style={{ transformStyle: "preserve-3d" }}>
                 
                 <div 
                   className="absolute inset-0 rounded-3xl pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-500"
@@ -647,9 +798,9 @@ export default function LandingPage() {
 
       {/* DİNAMİK VƏ İNTERAKTİV 3D STATİSTİKA BÖLMƏSİ */}
       <section id="stats" className="relative py-32 px-6 border-t border-white/5">
-        <div className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-7xl reveal-group">
           
-          <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+          <div className="reveal-item text-center max-w-2xl mx-auto mb-16 space-y-4">
             <span className="text-[#64ffda] text-xs font-bold tracking-[0.3em] uppercase">CANLI GÖSTƏRİCİLƏR</span>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Ölçülə Bilən <span className="text-shimmer bg-gradient-to-r from-[#64ffda] to-[#00e699]">Nəticələr</span></h2>
             <p className="text-gray-400">Süni intellekt tərəfindən idarə olunan sisteminizin real vaxt qənaət balansı.</p>
@@ -658,7 +809,7 @@ export default function LandingPage() {
           {/* 3D Göstərici Kartları */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
             {statsData.map((s: StatItem, i: number) => (
-              <TiltCard key={i} intensity={8} className="relative group rounded-2xl border border-white/5 bg-gradient-to-br from-white/5 to-transparent p-6 hover:border-[#64ffda]/20 transition-all" style={{ transformStyle: "preserve-3d" }}>
+              <TiltCard key={i} intensity={8} className="reveal-item relative group rounded-2xl border border-white/5 bg-gradient-to-br from-white/5 to-transparent p-6 hover:border-[#64ffda]/20 transition-all" style={{ transformStyle: "preserve-3d" }}>
                 <div 
                   className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-500 pointer-events-none"
                   style={{ background: s.glow, filter: "blur(30px)", transform: "translateZ(-10px)" }}
@@ -674,7 +825,7 @@ export default function LandingPage() {
                 </div>
 
                 <div className="mt-6 space-y-1" style={{ transform: "translateZ(70px)" }}>
-                  <h4 className="text-3xl font-black text-white">{s.value}</h4>
+                  <h4 className="text-3xl font-black text-white"><CountUp value={s.value} /></h4>
                   <p className="text-sm font-bold text-gray-300">{s.label}</p>
                   <p className="text-[10px] text-gray-500">{s.desc}</p>
                 </div>
@@ -683,7 +834,7 @@ export default function LandingPage() {
           </div>
 
           {/* İnteraktiv Qrafik Paneli */}
-          <div className="rounded-3xl border border-white/5 bg-gradient-to-b from-white/5 to-transparent p-6 md:p-10 backdrop-blur-md">
+          <div className="reveal-item rounded-3xl border border-white/5 bg-gradient-to-b from-white/5 to-transparent p-6 md:p-10 backdrop-blur-md">
             
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-8">
               <div className="space-y-1">
@@ -728,7 +879,7 @@ export default function LandingPage() {
             </div>
 
             {/* Dinamik Bar Qrafiki */}
-            <div className="flex items-end h-64 gap-2 md:gap-4 border-b border-white/5 pb-2 relative">
+            <div ref={chartRef} className="flex items-end h-64 gap-2 md:gap-4 border-b border-white/5 pb-2 relative">
               {chartData[activeTab].map((v: number, i: number) => (
                 <div key={i} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer h-full justify-end relative">
                   
@@ -739,7 +890,7 @@ export default function LandingPage() {
 
                   {/* Dinamik Bar */}
                   <div 
-                    className="w-full rounded-t-lg transition-all duration-1000 ease-out"
+                    className="chart-bar w-full rounded-t-lg origin-bottom"
                     style={{
                       height: `${v}%`,
                       background: activeTab === "production" 
@@ -763,16 +914,16 @@ export default function LandingPage() {
 
       {/* HOW IT WORKS */}
       <section id="how" className="relative py-24 px-4 border-t border-white/5 bg-black/10">
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-6xl reveal-group">
           
-          <div className="text-center max-w-2xl mx-auto mb-20 space-y-4">
+          <div className="reveal-item text-center max-w-2xl mx-auto mb-20 space-y-4">
             <span className="text-[#64ffda] text-xs font-bold tracking-[0.3em] uppercase">SADƏ VƏ SÜRLƏTLİ</span>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Cəmi 3 Addımda Qoşulma</h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-10 relative">
             {steps.map((s: StepItem, i: number) => (
-              <TiltCard key={i} intensity={5} className="relative rounded-3xl border border-white/5 bg-white/5 p-8 flex flex-col justify-between min-h-[300px]" style={{ transformStyle: "preserve-3d" }}>
+              <TiltCard key={i} intensity={5} className="reveal-item relative rounded-3xl border border-white/5 bg-white/5 p-8 flex flex-col justify-between min-h-[300px]" style={{ transformStyle: "preserve-3d" }}>
                 <div className="flex justify-between items-start" style={{ transform: "translateZ(40px)" }}>
                   <span className="text-5xl font-extrabold text-[#64ffda]/10">{s.n}</span>
                   <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-[#64ffda]">
@@ -793,12 +944,12 @@ export default function LandingPage() {
 
       {/* CONTACT FORM */}
       <section id="contact" className="relative py-32 px-6 border-t border-white/5">
-        <div className="mx-auto max-w-5xl">
+        <div className="mx-auto max-w-5xl reveal-group">
           <div className="rounded-[40px] border border-white/5 bg-gradient-to-br from-white/5 to-transparent p-10 md:p-16 relative overflow-hidden grid md:grid-cols-2 gap-12 items-center">
             
             <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-[#64ffda]/3 blur-[120px] -z-10" />
 
-            <div className="space-y-6">
+            <div className="reveal-item space-y-6">
               <span className="text-xs font-bold tracking-widest text-[#64ffda] uppercase">PULSUZ ENERJİ AUDİTİ</span>
               <h3 className="text-4xl font-bold leading-tight">Gələcəyin Enerjisini Bu Gün Sınayın</h3>
               <p className="text-gray-400 text-sm leading-relaxed">
@@ -817,7 +968,7 @@ export default function LandingPage() {
               </ul>
             </div>
 
-            <form onSubmit={onSubmit} className="space-y-4 backdrop-blur-md bg-black/20 border border-white/5 rounded-2xl p-6 md:p-8">
+            <form onSubmit={onSubmit} className="reveal-item space-y-4 backdrop-blur-md bg-black/20 border border-white/5 rounded-2xl p-6 md:p-8">
               <label className="block space-y-2">
                 <span className="text-xs text-gray-400">Ad Soyad</span>
                 <input
