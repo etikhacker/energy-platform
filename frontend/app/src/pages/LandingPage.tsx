@@ -27,6 +27,7 @@ import {
   X
 } from "lucide-react";
 import { toast } from "sonner";
+import i18n from "../i18n";
 import { animate, createScope, createTimeline, stagger, utils } from "animejs";
 
 // --- STRUCTURAL DATA & TYPES ---
@@ -67,51 +68,51 @@ interface StatItem {
 }
 
 const nav: NavItem[] = [
-  { label: "Xüsusiyyətlər", href: "#features" },
-  { label: "Statistika", href: "#stats" },
-  { label: "Necə İşləyir", href: "#how" },
-  { label: "Əlaqə", href: "#contact" },
+  { label: "Features", href: "#features" },
+  { label: "Analytics", href: "#stats" },
+  { label: "How It Works", href: "#how" },
+  { label: "Contact", href: "#contact" },
 ];
 
 const features: FeatureItem[] = [
   {
     icon: Sun,
-    title: "Ağıllı Solar İnteqrasiya",
-    desc: "Süni intellekt günəş panellərinizin istehsal gücünü hava proqnozu alqoritmləri ilə saniyəbəsaniyə analiz edir.",
+    title: "Smart Solar Integration",
+    desc: "AI analyzes your solar production in real time using advanced weather forecasting algorithms.",
     tag: "SOLAR AI",
     glow: "rgba(234, 179, 8, 0.15)"
   },
   {
     icon: BatteryCharging,
-    title: "Dinamik Batareya Balansı",
-    desc: "Enerji tariflərinin baha olduğu saatlarda sistem avtomatik olaraq batareyadan istifadəyə keçir.",
+    title: "Dynamic Battery Balancing",
+    desc: "Automatically switch to battery power during peak tariff hours and keep your energy costs under control.",
     tag: "SMART GRID",
     glow: "rgba(16, 185, 129, 0.15)"
   },
   {
     icon: BrainCircuit,
-    title: "Neyron İstehlak Analizi",
-    desc: "Evinizin gündəlik enerji vərdişləri neyron şəbəkələr tərəfindən öyrənilir və israfın qarşısı alınır.",
+    title: "Neural Consumption Analysis",
+    desc: "Your daily energy habits are learned by neural networks so waste can be detected and reduced.",
     tag: "NEURAL OPT",
     glow: "rgba(6, 182, 212, 0.15)"
   },
 ];
 
 const steps: StepItem[] = [
-  { n: "01", icon: Plug, title: "Saniyələr İçində Qoşulma", desc: "Mövcud invertor və ağıllı sayğacınıza heç bir əlavə fiziki müdaxilə olmadan, rəqəmsal olaraq inteqrasiya olunur." },
-  { n: "02", icon: Sparkles, title: "Süni İntellekt Analizi", desc: "Sistem evinizin enerji profilini çıxarır, anomal yüklənmələri təyin edir və şəxsi strategiya hazırlayır." },
-  { n: "03", icon: PiggyBank, title: "Avtomatlaşdırılmış Qənaət", desc: "EcoAI sizin yerinizə qərarlar qəbul edərək aylıq enerji xərclərini 40%-ə qədər aşağı salır." },
+  { n: "01", icon: Plug, title: "Connect in Seconds", desc: "Connect digitally to your existing inverter and smart meter without additional hardware changes." },
+  { n: "02", icon: Sparkles, title: "AI-Powered Analysis", desc: "The system maps your energy profile, detects anomalies, and creates a strategy for your home." },
+  { n: "03", icon: PiggyBank, title: "Automated Savings", desc: "EcoAI makes smart decisions for you and can reduce monthly energy costs by up to 40%." },
 ];
 
-// Statistika Bölməsi üçün Göstəricilər
+// Analytics Bölməsi üçün Göstəricilər
 const statsData: StatItem[] = [
-  { label: "Solar İstehsal", value: "720 kWh", desc: "Aylıq ümumi istehsal", pct: "+14.8%", pctUp: true, color: "#fbbf24", glow: "rgba(250,204,21,0.2)", icon: Sun },
-  { label: "Ağıllı Qənaət", value: "₼184.50", desc: "Tarif fərqindən qənaət", pct: "+28.2%", pctUp: true, color: "#10b981", glow: "rgba(16,185,129,0.2)", icon: PiggyBank },
-  { label: "Azaldılmış CO₂", value: "1.2 Ton", desc: "Atmosferə buraxılmayan karbon", pct: "-18.5%", pctUp: true, color: "#64ffda", glow: "rgba(100,255,218,0.2)", icon: Leaf },
-  { label: "Şəbəkə Asılılığı", value: "14.2%", desc: "Dövlət xəttindən asılılıq", pct: "-45.0%", pctUp: false, color: "#ef4444", glow: "rgba(239,68,68,0.2)", icon: Zap }
+  { label: "Solar Production", value: "720 kWh", desc: "Total monthly production", pct: "+14.8%", pctUp: true, color: "#fbbf24", glow: "rgba(250,204,21,0.2)", icon: Sun },
+  { label: "Smart Savings", value: "₼184.50", desc: "Savings from tariff optimization", pct: "+28.2%", pctUp: true, color: "#10b981", glow: "rgba(16,185,129,0.2)", icon: PiggyBank },
+  { label: "CO₂ Reduced", value: "1.2 Ton", desc: "Carbon prevented from entering the atmosphere", pct: "-18.5%", pctUp: true, color: "#64ffda", glow: "rgba(100,255,218,0.2)", icon: Leaf },
+  { label: "Grid Dependency", value: "14.2%", desc: "Dependence on the public grid", pct: "-45.0%", pctUp: false, color: "#ef4444", glow: "rgba(239,68,68,0.2)", icon: Zap }
 ];
 
-const months = ["Yan", "Fev", "Mar", "Apr", "May", "İyn", "İyl", "Avq", "Sen", "Okt", "Noy", "Dek"];
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 // Dinamik Qrafik Məlumatları (Production vs Consumption)
 const chartData = {
@@ -120,10 +121,10 @@ const chartData = {
 };
 
 const footerCols: FooterCol[] = [
-  { title: "Məhsul", links: ["Dashboard", "Analitika", "AI Optimizer", "Grid İdarəsi"] },
-  { title: "Şirkət", links: ["Haqqımızda", "Komanda", "Karyera", "Press"] },
-  { title: "Resurslar", links: ["Sənədlər", "API", "Bloq", "Dəstək"] },
-  { title: "Hüquqi", links: ["Məxfilik", "İstifadə Şərtləri", "Cookies", "GDPR"] },
+  { title: "Product", links: ["Dashboard", "Analytics", "AI Optimizer", "Grid Control"] },
+  { title: "Company", links: ["About Us", "Team", "Careers", "Press"] },
+  { title: "Resources", links: ["Documentation", "API", "Blog", "Support"] },
+  { title: "Legal", links: ["Privacy", "Terms of Service", "Cookies", "GDPR"] },
 ];
 
 // --- ANIME.JS KÖMƏKÇİ KOMPONENTLƏR ---
@@ -201,7 +202,7 @@ function Logo() {
   );
 }
 
-// --- İNTERAKTİV 3D ENERJİ ŞƏBƏKƏSİ ---
+// --- İNTERACTIVE 3D ENERJİ ŞƏBƏKƏSİ ---
 function Interactive3DGrid() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 });
@@ -393,6 +394,13 @@ export default function LandingPage() {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"production" | "consumption">("production");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [language, setLanguage] = useState<"en" | "az">(i18n.language === "az" ? "az" : "en");
+
+  const switchLanguage = (nextLanguage: "en" | "az") => {
+    setLanguage(nextLanguage);
+    void i18n.changeLanguage(nextLanguage);
+    localStorage.setItem("ecoai_lang", nextLanguage);
+  };
   const rootRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<HTMLDivElement>(null);
 
@@ -485,7 +493,7 @@ export default function LandingPage() {
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!form.name || !form.email) {
-      toast.error("Zəhmət olmasa ad və e-mail daxil edin");
+      toast.error("Please enter your name and email");
       return;
     }
     setLoading(true);
@@ -501,12 +509,12 @@ export default function LandingPage() {
         mobil: form.phone || null,
         oxunub: false,
       });
-      toast.success("Müraciətiniz qəbul edildi", {
-        description: "Komandamız tezliklə sizinlə əlaqə saxlayacaq."
+      toast.success("Your request has been received", {
+        description: "Our team will contact you shortly."
       });
       setForm({ name: "", email: "", phone: "" });
     } catch {
-      toast.error("Xəta baş verdi, yenidən cəhd edin");
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -535,21 +543,25 @@ export default function LandingPage() {
             ))}
           </ul>
           <div className="flex items-center gap-2 sm:gap-4">
-            {/* Daxil Ol — desktop və tabletdə görünür */}
+            <div className="hidden sm:flex items-center rounded-lg border border-white/10 bg-white/5 p-1 text-[11px] font-bold tracking-wider" aria-label="Language selector">
+              <button type="button" onClick={() => switchLanguage("en")} className={`rounded-md px-2 py-1 transition ${language === "en" ? "bg-[#64ffda] text-[#030d0a]" : "text-gray-400 hover:text-white"}`}>EN</button>
+              <button type="button" onClick={() => switchLanguage("az")} className={`rounded-md px-2 py-1 transition ${language === "az" ? "bg-[#64ffda] text-[#030d0a]" : "text-gray-400 hover:text-white"}`}>AZ</button>
+            </div>
+            {/* Log in — desktop və tabletdə görünür */}
             <a href="/login" className="hidden sm:inline-flex text-sm text-gray-300 hover:text-white font-medium transition">
-              Daxil Ol
+              Log in
             </a>
             <a href="#contact" className="relative group overflow-hidden px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-[#00e699]/10 border border-[#00e699]/30 text-[#00e699] hover:text-white transition-all duration-300">
               <span className="absolute inset-0 bg-[#00e699] translate-y-full group-hover:translate-y-0 transition-transform duration-300 -z-10" />
-              <span className="hidden sm:inline">Müraciət et</span>
-              <span className="sm:hidden">Müraciət</span>
+              <span className="hidden sm:inline">Get started</span>
+              <span className="sm:hidden">Start</span>
             </a>
 
             {/* Hamburger — yalnız mobil */}
             <button
               onClick={() => setMobileMenuOpen(true)}
               className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-white hover:bg-white/10 transition"
-              aria-label="Menyunu aç"
+              aria-label="Open menu"
             >
               <Menu className="w-5 h-5" />
             </button>
@@ -581,7 +593,7 @@ export default function LandingPage() {
             <button
               onClick={closeMobileMenu}
               className="w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-white hover:bg-white/10 transition"
-              aria-label="Menyunu bağla"
+              aria-label="Close menu"
             >
               <X className="w-5 h-5" />
             </button>
@@ -605,14 +617,14 @@ export default function LandingPage() {
                 onClick={closeMobileMenu}
                 className="block px-4 py-3 rounded-xl text-sm font-semibold text-white bg-white/5 border border-white/10 hover:bg-white/10 transition text-center"
               >
-                Daxil Ol
+                Log in
               </a>
               <a
                 href="#contact"
                 onClick={closeMobileMenu}
                 className="block px-4 py-3 rounded-xl text-sm font-semibold bg-[#00e699]/10 border border-[#00e699]/30 text-[#00e699] hover:bg-[#00e699]/20 transition text-center"
               >
-                Müraciət et
+                Get started
               </a>
             </div>
           </nav>
@@ -635,27 +647,27 @@ export default function LandingPage() {
             </div>
             
             <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.05]">
-              <SplitChars text="Enerji Gələcəyini" charClass="bg-gradient-to-b from-white via-white to-gray-500 bg-clip-text text-transparent" />
+              <SplitChars text="Build the Future of Energy" charClass="bg-gradient-to-b from-white via-white to-gray-500 bg-clip-text text-transparent" />
               <br />
-              <span className="hero-shimmer inline-block text-shimmer bg-gradient-to-r from-[#64ffda] via-[#00e699] to-[#64ffda]">AI İlə Qur</span>
+              <span className="hero-shimmer inline-block text-shimmer bg-gradient-to-r from-[#64ffda] via-[#00e699] to-[#64ffda]">with AI</span>
             </h1>
 
             <p className="hero-sub text-base sm:text-lg text-gray-400 max-w-xl leading-relaxed">
-              Mürəkkəb enerji axınlarını avtomatlaşdırın. Süni intellekt əsaslı EcoAI platforması evinizi ağıllı şəbəkəyə inteqrasiya edərək karbon izini minimuma endirir.
+              Automate complex energy flows. EcoAI integrates your home into a smarter grid, using artificial intelligence to reduce costs and minimize your carbon footprint.
             </p>
 
             <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 pt-4">
               <a href="#contact" className="hero-cta inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-[#00e699] text-[#030d0a] font-bold hover:bg-[#00cc88] shadow-[0_0_30px_rgba(0,230,153,0.3)] hover:shadow-[0_0_40px_rgba(0,230,153,0.5)] transition-all duration-300">
-                Sistemi Sına <ArrowRight className="w-5 h-5" />
+                Try the Platform <ArrowRight className="w-5 h-5" />
               </a>
               <a href="#how" className="hero-cta inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl backdrop-blur-md bg-white/5 border border-white/10 text-white font-semibold hover:bg-white/10 transition-all">
-                <PlayCircle className="w-5 h-5 text-[#64ffda]" /> İşləmə Mexanizmi
+                <PlayCircle className="w-5 h-5 text-[#64ffda]" /> See How It Works
               </a>
             </div>
 
             <div className="hero-trust flex flex-wrap items-center gap-8 pt-6 text-xs text-gray-500 font-medium">
-              <div className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-[#64ffda]" /> GDPR UYĞUN SİSTEM</div>
-              <div className="flex items-center gap-2"><Globe className="w-4 h-4 text-[#64ffda]" /> CANLI BULUD İDARƏSİ</div>
+              <div className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-[#64ffda]" /> GDPR-READY SYSTEM</div>
+              <div className="flex items-center gap-2"><Globe className="w-4 h-4 text-[#64ffda]" /> LIVE CLOUD CONTROL</div>
             </div>
           </div>
 
@@ -688,7 +700,7 @@ export default function LandingPage() {
                   <span className="text-xs sm:text-sm font-bold tracking-widest text-white">NEURAL CORE</span>
                 </div>
                 <div className="px-3 py-1.5 rounded-lg bg-[#64ffda]/10 border border-[#64ffda]/30 text-[#64ffda] text-[10px] font-bold tracking-widest">
-                  AKTİV
+                  ACTIVE
                 </div>
               </div>
 
@@ -728,7 +740,7 @@ export default function LandingPage() {
                     <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-full border border-emerald-500/40 bg-emerald-500/10 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.2)]">
                       <BatteryCharging className="w-5 h-5 sm:w-7 sm:h-7 text-emerald-400" />
                     </div>
-                    <span className="text-[10px] sm:text-xs font-medium text-gray-400 uppercase tracking-wider">Batareya</span>
+                    <span className="text-[10px] sm:text-xs font-medium text-gray-400 uppercase tracking-wider">Battery</span>
                   </div>
                 </div>
               </div>
@@ -736,15 +748,15 @@ export default function LandingPage() {
               {/* Stats Footer */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4" style={{ transform: "translateZ(60px)" }}>
                 <div className="p-3 sm:p-4 rounded-xl bg-white/5 border border-white/5 flex flex-col justify-center">
-                  <span className="text-[9px] sm:text-[10px] text-gray-400 block mb-1 tracking-wider uppercase">Ümumi İstehsal</span>
+                  <span className="text-[9px] sm:text-[10px] text-gray-400 block mb-1 tracking-wider uppercase">Total Production</span>
                   <span className="text-sm sm:text-lg font-bold text-white">4.2 kW</span>
                 </div>
                 <div className="p-3 sm:p-4 rounded-xl bg-[#64ffda]/10 border border-[#64ffda]/20 flex flex-col justify-center items-center text-center shadow-[0_0_20px_rgba(100,255,218,0.1)]">
-                  <span className="text-[9px] sm:text-[10px] text-[#64ffda] block mb-1 tracking-wider uppercase">Effektivlik</span>
+                  <span className="text-[9px] sm:text-[10px] text-[#64ffda] block mb-1 tracking-wider uppercase">Efficiency</span>
                   <span className="text-sm sm:text-lg font-extrabold text-[#64ffda]">+38%</span>
                 </div>
                 <div className="p-3 sm:p-4 rounded-xl bg-white/5 border border-white/5 flex flex-col justify-center text-right">
-                  <span className="text-[9px] sm:text-[10px] text-gray-400 block mb-1 tracking-wider uppercase">Ev İstehlakı</span>
+                  <span className="text-[9px] sm:text-[10px] text-gray-400 block mb-1 tracking-wider uppercase">Home Consumption</span>
                   <span className="text-sm sm:text-lg font-bold text-white">1.8 kW</span>
                 </div>
               </div>
@@ -761,9 +773,9 @@ export default function LandingPage() {
         <div className="mx-auto max-w-7xl reveal-group">
           
           <div className="reveal-item text-center max-w-2xl mx-auto mb-20 space-y-4">
-            <span className="text-[#64ffda] text-xs font-bold tracking-[0.3em] uppercase">MÖHTƏŞƏM FUNKSİONALLIQ</span>
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">EcoAI Nə Edir?</h2>
-            <p className="text-gray-400">Tamamilə avtomatlaşdırılmış idarəetmə ilə enerjinizi ağıllı şəkildə bölüşdürün.</p>
+            <span className="text-[#64ffda] text-xs font-bold tracking-[0.3em] uppercase">POWERFUL CAPABILITIES</span>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">What Does EcoAI Do?</h2>
+            <p className="text-gray-400">Distribute your energy intelligently with fully automated control.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -796,14 +808,14 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* DİNAMİK VƏ İNTERAKTİV 3D STATİSTİKA BÖLMƏSİ */}
+      {/* DİNAMİK VƏ İNTERACTIVE 3D STATİSTİKA BÖLMƏSİ */}
       <section id="stats" className="relative py-32 px-6 border-t border-white/5">
         <div className="mx-auto max-w-7xl reveal-group">
           
           <div className="reveal-item text-center max-w-2xl mx-auto mb-16 space-y-4">
-            <span className="text-[#64ffda] text-xs font-bold tracking-[0.3em] uppercase">CANLI GÖSTƏRİCİLƏR</span>
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Ölçülə Bilən <span className="text-shimmer bg-gradient-to-r from-[#64ffda] to-[#00e699]">Nəticələr</span></h2>
-            <p className="text-gray-400">Süni intellekt tərəfindən idarə olunan sisteminizin real vaxt qənaət balansı.</p>
+            <span className="text-[#64ffda] text-xs font-bold tracking-[0.3em] uppercase">LIVE METRICS</span>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Measurable <span className="text-shimmer bg-gradient-to-r from-[#64ffda] to-[#00e699]">Results</span></h2>
+            <p className="text-gray-400">Your real-time savings balance, powered by artificial intelligence.</p>
           </div>
 
           {/* 3D Göstərici Kartları */}
@@ -839,9 +851,9 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-8">
               <div className="space-y-1">
                 <h3 className="text-xl font-bold flex items-center gap-2">
-                  <Activity className="w-5 h-5 text-[#64ffda]" /> İllik Analitika Hesabatı
+                  <Activity className="w-5 h-5 text-[#64ffda]" /> Annual Analytics Report
                 </h3>
-                <p className="text-xs text-gray-500">Hər ay üçün sistemin real vaxt enerji paylanması (kWh)</p>
+                <p className="text-xs text-gray-500">Real-time energy distribution for each month (kWh)</p>
               </div>
 
               {/* Dinamik Tab Keçid Düymələri (Aydın İzahlı Yeni Konsept) */}
@@ -856,8 +868,8 @@ export default function LandingPage() {
                 >
                   <Sun className={`w-4 h-4 ${activeTab === "production" ? "text-[#fbbf24]" : "text-gray-500"}`} />
                   <div className="text-left">
-                    <span className="block leading-none">Enerji İstehsalı</span>
-                    <span className="text-[9px] text-gray-500 font-medium block mt-1">Panellərdən yaranan</span>
+                    <span className="block leading-none">Energy Production</span>
+                    <span className="text-[9px] text-gray-500 font-medium block mt-1">Generated by panels</span>
                   </div>
                 </button>
 
@@ -871,8 +883,8 @@ export default function LandingPage() {
                 >
                   <Zap className={`w-4 h-4 ${activeTab === "consumption" ? "text-[#ef4444]" : "text-gray-500"}`} />
                   <div className="text-left">
-                    <span className="block leading-none">Enerji İstehlakı</span>
-                    <span className="text-[9px] text-gray-500 font-medium block mt-1">Cihazların xərclədiyi</span>
+                    <span className="block leading-none">Energy Consumption</span>
+                    <span className="text-[9px] text-gray-500 font-medium block mt-1">Consumed by devices</span>
                   </div>
                 </button>
               </div>
@@ -917,8 +929,8 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl reveal-group">
           
           <div className="reveal-item text-center max-w-2xl mx-auto mb-20 space-y-4">
-            <span className="text-[#64ffda] text-xs font-bold tracking-[0.3em] uppercase">SADƏ VƏ SÜRLƏTLİ</span>
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Cəmi 3 Addımda Qoşulma</h2>
+            <span className="text-[#64ffda] text-xs font-bold tracking-[0.3em] uppercase">SIMPLE AND FAST</span>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Connect in Just 3 Steps</h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-10 relative">
@@ -950,20 +962,20 @@ export default function LandingPage() {
             <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-[#64ffda]/3 blur-[120px] -z-10" />
 
             <div className="reveal-item space-y-6">
-              <span className="text-xs font-bold tracking-widest text-[#64ffda] uppercase">PULSUZ ENERJİ AUDİTİ</span>
-              <h3 className="text-4xl font-bold leading-tight">Gələcəyin Enerjisini Bu Gün Sınayın</h3>
+              <span className="text-xs font-bold tracking-widest text-[#64ffda] uppercase">FREE ENERGY AUDIT</span>
+              <h3 className="text-4xl font-bold leading-tight">Experience the Future of Energy Today</h3>
               <p className="text-gray-400 text-sm leading-relaxed">
-                Müraciət edin və sizin üçün evinizin mövcud tariflərə uyğun pulsuz qənaət simulyasiyasını hazırlayaq.
+                Start today and we will prepare a free savings simulation tailored to your home's current tariffs.
               </p>
               
               <ul className="space-y-4 pt-4 text-sm text-gray-300">
                 <li className="flex items-center gap-3">
                   <span className="w-5 h-5 rounded-full bg-[#64ffda]/10 flex items-center justify-center text-[#64ffda]"><Check className="w-3 h-3" /></span>
-                  14 Günlük öhdəliksiz sınaq müddəti
+                  14-day commitment-free trial
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="w-5 h-5 rounded-full bg-[#64ffda]/10 flex items-center justify-center text-[#64ffda]"><Check className="w-3 h-3" /></span>
-                  Canlı ROI (Tərs İnvestisiya) hesabatı
+                  Live ROI report
                 </li>
               </ul>
             </div>
@@ -975,7 +987,7 @@ export default function LandingPage() {
                   required
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  placeholder="Adınız və Soyadınız"
+                  placeholder="Your full name"
                   className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-[#64ffda] outline-none transition duration-300 text-sm"
                 />
               </label>
@@ -987,13 +999,13 @@ export default function LandingPage() {
                   required
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  placeholder="nümunə@ecoai.com"
+                  placeholder="example@ecoai.com"
                   className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-[#64ffda] outline-none transition duration-300 text-sm"
                 />
               </label>
 
               <label className="block space-y-2">
-                <span className="text-xs text-gray-400">Telefon nömrəsi</span>
+                <span className="text-xs text-gray-400">Phone number</span>
                 <input
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
@@ -1010,11 +1022,11 @@ export default function LandingPage() {
                 {loading ? (
                   <>
                     <span className="w-5 h-5 border-2 border-[#030d0a] border-t-transparent rounded-full animate-spin" />
-                    Göndərilir...
+                    Sending...
                   </>
                 ) : (
                   <>
-                    Müraciət et <ArrowRight className="w-4 h-4" />
+                    Get started <ArrowRight className="w-4 h-4" />
                   </>
                 )}
               </button>
@@ -1032,7 +1044,7 @@ export default function LandingPage() {
             <div className="md:col-span-4 space-y-4">
               <Logo />
               <p className="text-sm text-gray-500 max-w-xs">
-                Süni intellekt əsaslı yaşıl enerji optimallaşdırma platforması.
+                An AI-powered platform for green energy optimization.
               </p>
               <div className="flex gap-3 pt-2">
                 {[
@@ -1067,7 +1079,7 @@ export default function LandingPage() {
           </div>
 
           <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-600">
-            <p>© 2026 EcoAI. Bütün hüquqlar qorunur.</p>
+            <p>© 2026 EcoAI. All rights reserved.</p>
             <p>Made with ⚡ in Baku</p>
           </div>
         </div>

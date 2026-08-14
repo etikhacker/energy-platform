@@ -14,7 +14,7 @@ const getInitialLanguage = (): SupportedLanguage => {
   const browserLang = (navigator.language || 'az').split('-')[0];
   if (isSupportedLanguage(browserLang)) return browserLang;
 
-  return 'az';
+  return 'en';
 };
 
 const resources = {
@@ -275,7 +275,7 @@ const resources = {
 i18n.use(initReactI18next).init({
   resources,
   lng: getInitialLanguage(),
-  fallbackLng: 'az',
+  fallbackLng: 'en',
   interpolation: { escapeValue: false },
   react: { useSuspense: false },
 });
