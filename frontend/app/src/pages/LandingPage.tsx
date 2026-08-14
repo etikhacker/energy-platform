@@ -437,7 +437,9 @@ export default function LandingPage() {
     const bars = chartRef.current?.querySelectorAll(".chart-bar");
     if (!bars || bars.length === 0) return;
     const anim = animate(bars, { scaleY: [0, 1], opacity: [0.4, 1], delay: stagger(45), duration: 750, ease: "out(3)" });
-    return () => anim.pause();
+    return () => {
+      anim.pause();
+    };
   }, [activeTab]);
 
   const onSubmit = async (e: FormEvent) => {
