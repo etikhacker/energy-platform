@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { supabase } from './lib/supabase';
+import { useTranslation } from 'react-i18next';
 import { Toaster } from 'sonner';
 import { Mail, Lock, User, Zap, ArrowRight, Sun, BrainCircuit, Activity, BatteryCharging } from 'lucide-react';
 import LivingCanvas from './components/LivingCanvas';
@@ -40,6 +41,7 @@ const inputStyle = {
 };
 
 function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
@@ -50,7 +52,7 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (isRegister && !fullName.trim()) {
-      setError('Ad Soyad daxil edin');
+      setError(t('authNameRequired'));
       return;
     }
     setLoading(true);
@@ -69,14 +71,14 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
             full_name: fullName.trim(),
           });
         }
-        setError('Emailinizi yoxlayın — təsdiq linki göndərildi.');
+        setError(t('authConfirmEmail'));
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         onLogin(data.session);
       }
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Xəta baş verdi');
+      setError(err instanceof Error ? err.message : t('authError'));
     } finally {
       setLoading(false);
     }
@@ -107,8 +109,8 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
               <Zap className="w-6 h-6 text-[#64ffda]" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white tracking-tight">EcoAI Platforması</h1>
-              <p className="text-[10px] text-gray-400 tracking-[0.2em] uppercase mt-1">Enerji İdarəetmə Sistemi</p>
+              <h1 className="text-2xl font-bold text-white tracking-tight">{t('authPlatformName')}</h1>
+              <p className="text-[10px] text-gray-400 tracking-[0.2em] uppercase mt-1">{t('authEnergySystem')}</p>
             </div>
           </div>
           
@@ -160,7 +162,7 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
               <div className="w-14 h-14 rounded-2xl border border-blue-500/30 bg-black/50 flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.2)] backdrop-blur-xl">
                 <Activity className="w-6 h-6 text-blue-400" />
               </div>
-              <div className="mt-2 text-[10px] text-blue-400/80 tracking-widest font-bold bg-black/50 px-2 py-1 rounded">ŞƏBƏKƏ</div>
+              <div className="mt-2 text-[10px] text-blue-400/80 tracking-widest font-bold bg-black/50 px-2 py-1 rounded">{t('authGrid')}</div>
             </div>
 
             {/* Battery Node (Bottom Left) */}
@@ -168,13 +170,13 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
               <div className="w-14 h-14 rounded-2xl border border-emerald-500/30 bg-black/50 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.2)] backdrop-blur-xl">
                 <BatteryCharging className="w-6 h-6 text-emerald-400" />
               </div>
-              <div className="mt-2 text-[10px] text-emerald-400/80 tracking-widest font-bold bg-black/50 px-2 py-1 rounded">BATAREYA</div>
+              <div className="mt-2 text-[10px] text-emerald-400/80 tracking-widest font-bold bg-black/50 px-2 py-1 rounded">{t('authBattery')}</div>
             </div>
           </div>
 
           <div className="z-20 max-w-md">
             <p className="text-sm text-gray-400 leading-relaxed border-l-2 border-[#64ffda]/50 pl-4 py-1">
-              Ağıllı şəbəkəyə qoşulun, enerji istehlakınızı optimallaşdırın və karbon izini minimuma endirin. Süni intellekt əsaslı gələcək.
+              {t('authTagline')}
             </p>
           </div>
         </div>
@@ -185,12 +187,12 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
             
             {/* The WELCOME badge (like the image) */}
             <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[#00e699] to-[#64ffda] text-[#030d0a] px-8 py-2 text-[10px] font-extrabold tracking-[0.2em] z-20 shadow-[0_5px_15px_rgba(100,255,218,0.3)]" style={{ clipPath: 'polygon(10% 0, 90% 0, 100% 100%, 0% 100%)' }}>
-              {isRegister ? 'QEYDİYYAT' : 'XOŞ GƏLMİSİNİZ'}
+              {isRegister ? t('authRegisterBadge') : t('authWelcomeBadge')}
             </div>
             
             <div className="rounded-[24px] border border-white/10 bg-[#071310]/80 p-8 pt-10 shadow-2xl backdrop-blur-xl">
               <h2 className="text-lg font-medium text-white/90 mb-8 text-center tracking-wide">
-                {isRegister ? 'Yeni hesab yaradın' : 'Sistemə daxil olun'}
+                {isRegister ? t('authCreateAccount') : t('authSignInTitle')}
               </h2>
 
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -202,7 +204,7 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
                     </div>
                     <input
                       type="text" value={fullName} onChange={(e) => setFullName(e.target.value)}
-                      placeholder="Ad Soyad" required
+                      placeholder={t('authFullName')} required
                       className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#64ffda]/50 focus:bg-[#64ffda]/5 transition-all"
                     />
                   </div>
@@ -214,7 +216,7 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
                   </div>
                   <input
                     type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                    placeholder="E-poçt (ID)" required
+                    placeholder={t('authEmail')} required
                     className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#64ffda]/50 focus:bg-[#64ffda]/5 transition-all"
                   />
                 </div>
@@ -225,13 +227,13 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
                   </div>
                   <input
                     type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Şifrə" required minLength={6}
+                    placeholder={t('authPassword')} required minLength={6}
                     className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#64ffda]/50 focus:bg-[#64ffda]/5 transition-all"
                   />
                 </div>
 
                 {error && (
-                  <div className={`px-4 py-3 rounded-xl text-xs font-medium border ${error.includes('göndərildi') ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'}`}>
+                  <div className={`px-4 py-3 rounded-xl text-xs font-medium border ${error === t('authConfirmEmail') ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'}`}>
                     {error}
                   </div>
                 )}
@@ -240,7 +242,7 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
                   type="submit" disabled={loading}
                   className="w-full py-4 rounded-xl bg-gradient-to-r from-[#00e699] to-[#64ffda] hover:opacity-90 text-[#030d0a] font-bold transition-all disabled:opacity-50 mt-4 shadow-[0_0_20px_rgba(0,230,153,0.3)] hover:shadow-[0_0_30px_rgba(0,230,153,0.5)]"
                 >
-                  {loading ? 'Gözləyin...' : (isRegister ? 'Qeydiyyat' : 'Daxil Ol')}
+                  {loading ? t('authLoading') : (isRegister ? t('authRegister') : t('authSignIn'))}
                 </button>
               </form>
 
@@ -250,9 +252,9 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
                   onClick={() => { setIsRegister(!isRegister); setError(''); setFullName(''); }}
                   className="text-gray-400 hover:text-[#64ffda] transition-colors"
                 >
-                  {isRegister ? 'Hesabınız var? Daxil olun' : 'Qeydiyyatdan keçin'}
+                  {isRegister ? t('authHaveAccount') : t('authNoAccount')}
                 </button>
-                <a href="/" className="text-gray-500 hover:text-white transition-colors">Ana səhifə</a>
+                <a href="/" className="text-gray-500 hover:text-white transition-colors">{t('authHome')}</a>
               </div>
             </div>
           </div>
