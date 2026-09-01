@@ -3,6 +3,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { supabase } from './lib/supabase';
 import { useTranslation } from 'react-i18next';
 import { Toaster } from 'sonner';
+import { Analytics } from '@vercel/analytics/react';
 import { Mail, Lock, User, Zap, ArrowRight, Sun, BrainCircuit, Activity, BatteryCharging } from 'lucide-react';
 import LivingCanvas from './components/LivingCanvas';
 import EnergyGlobe from './components/EnergyGlobe';
@@ -445,6 +446,7 @@ export default function App() {
   return (
     <>
       <Toaster position="top-right" richColors />
+      <Analytics />
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<DashboardApp />} />
