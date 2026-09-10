@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
-from judgement import AlertJudgement, classify_alert, log_cost
+from judgement import AlertJudgement, classify_alert_with_meta, log_cost
 from dotenv import load_dotenv
 import json
 import os
@@ -129,7 +129,7 @@ def triage_alert(body: AlertRequest):
     if not alert:
         raise HTTPException(status_code=422, detail="alert cannot be blank")
     try:
-        judgement = classify_alert(alert)
+        judgement, repaired = classify_alert_with_meta(alert)
     except RuntimeError as exc:
         status_code = 503 if "kill switch" in str(exc) else 502
         raise HTTPException(status_code=status_code, detail=str(exc)) from exc
@@ -137,8 +137,8 @@ def triage_alert(body: AlertRequest):
         raise HTTPException(status_code=502, detail="LLM returned an invalid judgement") from exc
 
     provider = "stub" if os.getenv("LLM_STUB_MODE", "0") == "1" else "openrouter"
-    log_cost(provider)
-    return {**judgement.model_dump(), "meta": {"provider": provider, "repaired": False}}
+    log_cost(provider, repaired=repaired)
+    return {**judgement.model_dump(), "meta": {"provider": provider, "repaired": repaired}}
 
 
 @router.post("/ask")

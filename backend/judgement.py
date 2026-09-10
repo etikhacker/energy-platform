@@ -114,18 +114,22 @@ def call_openrouter(prompt: str, repair: bool = False) -> str:
     raise RuntimeError(last_error)
 
 
-def classify_alert(alert: str) -> AlertJudgement:
+def classify_alert_with_meta(alert: str) -> tuple[AlertJudgement, bool]:
     if os.getenv("LLM_ENABLED", "1") != "1":
         raise RuntimeError("LLM integration is disabled by the kill switch.")
     if os.getenv("LLM_STUB_MODE", "0") == "1":
-        return _stub_judgement(alert)
+        return _stub_judgement(alert), False
 
     try:
         result = parse_judgement(call_openrouter(build_prompt(alert)))
-        return result
+        return result, False
     except (ValueError, json.JSONDecodeError) as exc:
         repaired = call_openrouter(build_prompt(alert, repair=True, error=str(exc)), repair=True)
-        return parse_judgement(repaired)
+        return parse_judgement(repaired), True
+
+
+def classify_alert(alert: str) -> AlertJudgement:
+    return classify_alert_with_meta(alert)[0]
 
 
 def log_cost(provider: str, repaired: bool = False) -> None:
