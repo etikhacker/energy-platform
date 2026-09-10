@@ -1,5 +1,7 @@
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+from judgement import AlertJudgement, classify_alert, log_cost
 from dotenv import load_dotenv
 import json
 import os
@@ -15,6 +17,10 @@ GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
 
 class QuestionRequest(BaseModel):
     question: str
+
+
+class AlertRequest(BaseModel):
+    alert: str = Field(..., min_length=1, max_length=2000)
 
 
 def call_gemini(prompt: str, system_instruction: str | None = None) -> str:
@@ -115,6 +121,24 @@ Yalnız valid JSON array qaytar, əlavə mətn yazma:
         recommendations = fallback_recommendations()
 
     return {"recommendations": recommendations}
+
+
+@router.post("/triage-alert", response_model=dict, summary="Classify an energy alert with a validated LLM judgement")
+def triage_alert(body: AlertRequest):
+    alert = body.alert.strip()
+    if not alert:
+        raise HTTPException(status_code=422, detail="alert cannot be blank")
+    try:
+        judgement = classify_alert(alert)
+    except RuntimeError as exc:
+        status_code = 503 if "kill switch" in str(exc) else 502
+        raise HTTPException(status_code=status_code, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=502, detail="LLM returned an invalid judgement") from exc
+
+    provider = "stub" if os.getenv("LLM_STUB_MODE", "0") == "1" else "openrouter"
+    log_cost(provider)
+    return {**judgement.model_dump(), "meta": {"provider": provider, "repaired": False}}
 
 
 @router.post("/ask")
