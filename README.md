@@ -225,3 +225,58 @@ CO₂ (kg) = kWh × 0.41
 ## 📄 Lisenziya
 
 MIT License © 2025 EcoAI Team — Bakı, Azərbaycan
+
+
+## Week 7 — Validated energy alert judgement
+
+Backend-də `POST /api/ai/triage-alert` endpoint-i əlavə edilib. Endpoint bir enerji-monitorinq alertini qəbul edir və əməliyyat komandası üçün validated judgement qaytarır. Bu, chatbot deyil; bir request daxil olur və bir strukturlaşdırılmış cavab çıxır.
+
+### Input
+
+```json
+{"alert":"Indoor temperature is 31°C and HVAC is running continuously."}
+```
+
+### Output contract
+
+```json
+{
+  "severity": "warning",
+  "category": "temperature",
+  "suggested_action": "Inspect HVAC settings and the temperature sensor.",
+  "confidence": 0.92,
+  "reason": "The alert describes an abnormal temperature condition.",
+  "meta": {"provider": "openrouter", "repaired": false}
+}
+```
+
+`severity` yalnız `normal`, `warning` və `critical`; `category` isə yalnız `power`, `temperature`, `air_quality`, `device` və `other` ola bilər. Qeyri-müəyyən alertlər `normal`, `other` və `0.5`-dən aşağı confidence ilə qaytarılmalıdır.
+
+### Reliability controls
+
+Model cavabı Pydantic ilə parse və validate edilir. Provider çağırışının timeout-u 8 saniyədir; yalnız request xətaları, HTTP 429 və HTTP 5xx üçün maksimum iki retry edilir. Invalid JSON üçün dəqiq bir repair cəhdi var. Hər judgement request-i JSONL cost log-a yazılır. `LLM_ENABLED=0` kill switch-dir, `LLM_STUB_MODE=1` isə quota istifadə etmədən lokal development üçündür.
+
+Yeni judgement endpoint-i OpenRouter provider və `openrouter/free` modelindən istifadə edir. API açarı `backend/.env` daxilində saxlanılmalıdır və repoya push edilməməlidir. Mövcud Gemini endpoint-ləri dəyişdirilməyib.
+
+### Run and test
+
+```bash
+cd backend
+python3 -m pip install -r requirements.txt
+cp .env.example .env
+uvicorn main:app --reload
+```
+
+Stub rejimində curl nümunəsi:
+
+```bash
+curl -X POST http://localhost:8000/api/ai/triage-alert \
+  -H 'Content-Type: application/json' \
+  -d '{"alert":"Power consumption is above the safe baseline."}'
+```
+
+Testləri işə salmaq üçün:
+
+```bash
+python3 -m unittest discover -s tests -v
+```
