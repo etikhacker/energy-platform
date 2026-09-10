@@ -55,6 +55,10 @@ def _stub_judgement(alert: str) -> AlertJudgement:
         return AlertJudgement(
             severity="critical", category="other", suggested_action="Escalate immediately and inspect the site.", confidence=0.96, reason="The alert contains an immediate safety signal."
         )
+    if any(word in lowered for word in ("not responding", "offline", "device", "equipment")):
+        return AlertJudgement(
+            severity="warning", category="device", suggested_action="Inspect the device connection and sensor status.", confidence=0.89, reason="The alert describes a device availability issue."
+        )
     if any(word in lowered for word in ("temperature", "hot", "cold", "hvac")):
         return AlertJudgement(
             severity="warning", category="temperature", suggested_action="Inspect HVAC settings and the temperature sensor.", confidence=0.92, reason="The alert describes an abnormal temperature condition."
