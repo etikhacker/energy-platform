@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { supabase } from './lib/supabase';
 import { useTranslation } from 'react-i18next';
-import { Toaster } from 'sonner';
+import { Toaster, toast } from 'sonner';
 import { Mail, Lock, User, Zap, ArrowRight, Sun, BrainCircuit, Activity, BatteryCharging } from 'lucide-react';
 import LivingCanvas from './components/LivingCanvas';
 import EnergyGlobe from './components/EnergyGlobe';
@@ -22,6 +22,11 @@ import LandingPage from './pages/LandingPage';
 import AdminPage from './pages/AdminPage';
 
 type Session = { user: { email?: string; id?: string } } | null;
+const dashboardPaths: Record<string, string> = {
+  dashboard: '/dashboard', analytics: '/dashboard/analytics',
+  grid: '/dashboard/grid', devices: '/dashboard/devices',
+  forecast: '/dashboard/forecast', settings: '/dashboard/settings',
+};
 
 const applyAppearanceSettings = () => {
   const theme = localStorage.getItem('theme') || 'okean';
@@ -265,7 +270,8 @@ function LoginPage({ onLogin }: { onLogin: (session: Session) => void }) {
 }
 
 function DashboardApp() {
-  const [activeNav, setActiveNav] = useState('dashboard');
+  const location = useLocation();
+  const activeNav = Object.entries(dashboardPaths).find(([, path]) => path === location.pathname)?.[0] ?? 'dashboard';
   const [session, setSession] = useState<Session>(null);
   const [loading, setLoading] = useState(true);
   const [fullName, setFullName] = useState('');
@@ -316,7 +322,19 @@ function DashboardApp() {
   }
 
   if (!session) {
-    return <LoginPage onLogin={setSession} />;
+    if (location.pathname !== '/login') {
+      return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+    }
+    return <LoginPage onLogin={(nextSession) => {
+      setSession(nextSession);
+      if (nextSession) {
+        const from = (location.state as { from?: string } | null)?.from;
+        navigate(from && Object.values(dashboardPaths).includes(from) ? from : '/dashboard', { replace: true });
+      }
+    }} />;
+  }
+  if (location.pathname === '/login' || !Object.values(dashboardPaths).includes(location.pathname)) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   const displayName = fullName || session.user?.email?.split('@')[0] || 'İstifadəçi';
@@ -329,11 +347,13 @@ function DashboardApp() {
       <div className="relative flex flex-col lg:flex-row lg:h-full" style={{ zIndex: 10 }}>
         <Sidebar
           activeItem={activeNav}
-          onNavigate={setActiveNav}
+          onNavigate={(id) => navigate(dashboardPaths[id] ?? '/dashboard')}
           onLogout={() => {
-            supabase.auth.signOut().then(() => {
+            void supabase.auth.signOut().then(({ error }) => {
+              if (error) { toast.error(error.message); return; }
               setSession(null);
-            });
+              navigate('/login', { replace: true });
+            }).catch(() => toast.error('Hesabdan çıxmaq mümkün olmadı.'));
           }}
           userEmail={session.user?.email}
           userName={displayName}
@@ -438,18 +458,31 @@ function DashboardApp() {
 }
 
 export default function App() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  useEffect(() => { applyAppearanceSettings(); }, []);
   useEffect(() => {
-    applyAppearanceSettings();
-  }, []);
+    const oldLinks: Record<string, string> = {
+      '#features': '/features', '#stats': '/stats',
+      '#how': '/how-it-works', '#contact': '/contact',
+    };
+    const target = oldLinks[location.hash];
+    if (location.pathname === '/' && target) navigate(target, { replace: true });
+  }, [location.pathname, location.hash, navigate]);
 
   return (
     <>
       <Toaster position="top-right" richColors />
     <Routes>
-      <Route path="/" element={<LandingPage />} />
+      <Route path="/" element={<LandingPage view="home" />} />
+      <Route path="/features" element={<LandingPage view="features" />} />
+      <Route path="/stats" element={<LandingPage view="stats" />} />
+      <Route path="/how-it-works" element={<LandingPage view="how" />} />
+      <Route path="/contact" element={<LandingPage view="contact" />} />
       <Route path="/login" element={<DashboardApp />} />
-      <Route path="/dashboard" element={<DashboardApp />} />
+      <Route path="/dashboard/*" element={<DashboardApp />} />
       <Route path="/admin" element={<AdminPage />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
     </>
   );
