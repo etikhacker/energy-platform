@@ -1,4 +1,3 @@
-import { supabase } from '../../lib/supabase';
 import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
 import { useIsMobile } from '../../lib/useIsMobile';
@@ -148,6 +147,7 @@ export default function Sidebar({
               <button
                 key={item.id}
                 onClick={() => handleNav(item.id)}
+                aria-current={isActive ? 'page' : undefined}
                 className={`sidebar-item gap-3 ${isActive ? 'active' : ''}`}
                 style={{
                   borderLeft: isActive ? '2px solid var(--accent-strong)' : '2px solid transparent',
@@ -187,10 +187,7 @@ export default function Sidebar({
             {/* Logout */}
             {onLogout && (
               <button
-                onClick={() => {
-                  localStorage.removeItem('ecoai-auth');
-                  window.location.href = '/login';
-                }}
+                onClick={onLogout}
                 className="w-7 h-7 flex items-center justify-center rounded-lg transition-colors flex-shrink-0"
                 style={{ color: 'rgba(255,255,255,0.35)' }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = '#e63946')}
