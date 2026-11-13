@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import EnergyGlobe from "../components/EnergyGlobe";
+import { FaTelegram } from 'react-icons/fa';
 import {
   Zap,
   Sun,
@@ -158,10 +159,10 @@ interface StatItem {
 }
 
 const nav: NavItem[] = [
-  { label: "Features", href: "/features" },
-  { label: "Analytics", href: "/stats" },
-  { label: "How It Works", href: "/how-it-works" },
-  { label: "Contact", href: "/contact" },
+  { label: "Features", href: "#features" },
+  { label: "Analytics", href: "#stats" },
+  { label: "How It Works", href: "#how" },
+  { label: "Contact", href: "#contact" },
 ];
 
 const features: FeatureItem[] = [
@@ -210,13 +211,10 @@ const chartData = {
 
 const footerCols: FooterCol[] = [
   { title: "Product", links: ["Dashboard", "Analytics", "AI Optimizer", "Grid Control"] },
-  { title: "Resources", links: ["Features", "How It Works", "Contact"] },
+  { title: "Company", links: ["About Us", "Team", "Careers", "Press"] },
+  { title: "Resources", links: ["Documentation", "API", "Blog", "Support"] },
+  { title: "Legal", links: ["Privacy", "Terms of Service", "Cookies", "GDPR"] },
 ];
-const footerRoutes: Record<string, string> = {
-  Dashboard: "/dashboard", Analytics: "/stats", "AI Optimizer": "/features",
-  "Grid Control": "/how-it-works", Features: "/features",
-  "How It Works": "/how-it-works", Contact: "/contact",
-};
 
 function SplitChars({ text, charClass = "" }: { text: string; charClass?: string }) {
   return (
@@ -263,7 +261,7 @@ function CountUp({ value, duration = 1800 }: { value: string; duration?: number 
 
 function Logo() {
   return (
-    <a href="/" className="flex items-center gap-2 group">
+    <a href="#" className="flex items-center gap-2 group">
       <span className="relative grid place-items-center w-9 h-9 rounded-xl backdrop-blur-md bg-white/10 border border-white/10">
         <Zap className="w-5 h-5 text-[#64ffda] drop-shadow-[0_0_8px_rgba(100,255,218,0.7)]" strokeWidth={2.5} />
       </span>
@@ -373,8 +371,7 @@ function TiltCard({ children, className = "", intensity = 10, style = {} }: any)
   );
 }
 
-type MarketingView = 'home' | 'features' | 'stats' | 'how' | 'contact';
-export default function LandingPage({ view = 'home' }: { view?: MarketingView }) {
+export default function LandingPage() {
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"production" | "consumption">("production");
@@ -392,25 +389,13 @@ export default function LandingPage({ view = 'home' }: { view?: MarketingView })
   const localizedFeatures = features.map((item) => ({ ...item, title: tx(item.title), desc: tx(item.desc) }));
   const localizedSteps = steps.map((item) => ({ ...item, title: tx(item.title), desc: tx(item.desc) }));
   const localizedStats = statsData.map((item) => ({ ...item, label: tx(item.label), desc: tx(item.desc) }));
-  const localizedFooter = footerCols.map((column) => ({ ...column, title: tx(column.title), links: column.links.map((label) => ({ label: tx(label), href: footerRoutes[label] })) }));
+  const localizedFooter = footerCols.map((column) => ({ ...column, title: tx(column.title), links: column.links.map(tx) }));
 
   const rootRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<HTMLDivElement>(null);
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
   useEffect(() => {
-    const titles: Record<MarketingView, string> = {
-      home: language === 'az' ? 'Ana səhifə' : 'Home',
-      features: tx('Features'), stats: tx('Analytics'),
-      how: tx('How It Works'), contact: tx('Contact'),
-    };
-    document.title = `${titles[view]} | EcoAI`;
-    document.documentElement.lang = language;
-    window.scrollTo({ top: 0, behavior: 'auto' });
-  }, [view, language]);
-
-  useEffect(() => {
-    if (view !== 'home') return;
     const scope = createScope({ root: rootRef }).add(() => {
       utils.set([".hero-nav", ".hero-badge", ".hero-char", ".hero-shimmer", ".hero-sub", ".hero-cta", ".hero-trust", ".hero-card"], { opacity: 0 });
       createTimeline({ defaults: { ease: "out(3)", duration: 800 } })
@@ -425,7 +410,7 @@ export default function LandingPage({ view = 'home' }: { view?: MarketingView })
       animate(".hero-card", { translateY: [0, -10], alternate: true, loop: true, duration: 3000, ease: "inOutSine", delay: 2400 });
     });
     return () => scope.revert();
-  }, [view]);
+  }, []);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -446,7 +431,7 @@ export default function LandingPage({ view = 'home' }: { view?: MarketingView })
       observers.push(io);
     });
     return () => observers.forEach((o) => o.disconnect());
-  }, [view]);
+  }, []);
 
   useEffect(() => {
     const bars = chartRef.current?.querySelectorAll(".chart-bar");
@@ -455,7 +440,7 @@ export default function LandingPage({ view = 'home' }: { view?: MarketingView })
     return () => {
       anim.pause();
     };
-  }, [activeTab, view]);
+  }, [activeTab]);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -467,8 +452,7 @@ export default function LandingPage({ view = 'home' }: { view?: MarketingView })
     try {
       const { createClient } = await import('@supabase/supabase-js');
       const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
-      const { error } = await supabase.from('muracietler').insert({ tam_ad: form.name.trim(), email: form.email.trim(), mobil: form.phone.trim() || null, oxunub: false });
-      if (error) throw error;
+      await supabase.from('muracietler').insert({ tam_ad: form.name, email: form.email, mobil: form.phone || null, oxunub: false });
       toast.success(tx("Your request has been received"), { description: tx("Our team will contact you shortly.") });
       setForm({ name: "", email: "", phone: "" });
     } catch {
@@ -504,7 +488,7 @@ export default function LandingPage({ view = 'home' }: { view?: MarketingView })
             <a href="/login" className="hidden sm:inline-flex text-sm text-gray-300 hover:text-white font-medium transition">
               {tx("Log in")}
             </a>
-            <a href="/contact" className="relative group overflow-hidden px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-[#00e699]/10 border border-[#00e699]/30 text-[#00e699] hover:text-white transition-all duration-300">
+            <a href="#contact" className="relative group overflow-hidden px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-[#00e699]/10 border border-[#00e699]/30 text-[#00e699] hover:text-white transition-all duration-300">
               <span className="absolute inset-0 bg-[#00e699] translate-y-full group-hover:translate-y-0 transition-transform duration-300 -z-10" />
               <span className="hidden sm:inline">{tx("Get started")}</span>
               <span className="sm:hidden">{tx("Start")}</span>
@@ -531,13 +515,12 @@ export default function LandingPage({ view = 'home' }: { view?: MarketingView })
             ))}
             <div className="pt-4 mt-4 border-t border-white/10 space-y-2">
               <a href="/login" onClick={closeMobileMenu} className="block px-4 py-3 rounded-xl text-sm font-semibold text-white bg-white/5 border border-white/10 hover:bg-white/10 transition text-center">{tx("Log in")}</a>
-              <a href="/contact" onClick={closeMobileMenu} className="block px-4 py-3 rounded-xl text-sm font-semibold bg-[#00e699]/10 border border-[#00e699]/30 text-[#00e699] hover:bg-[#00e699]/20 transition text-center">{tx("Get started")}</a>
+              <a href="#contact" onClick={closeMobileMenu} className="block px-4 py-3 rounded-xl text-sm font-semibold bg-[#00e699]/10 border border-[#00e699]/30 text-[#00e699] hover:bg-[#00e699]/20 transition text-center">{tx("Get started")}</a>
             </div>
           </nav>
         </div>
       </div>
 
-      {view === 'home' && (
       <section className="relative pt-28 sm:pt-36 lg:pt-44 pb-20 sm:pb-28 lg:pb-32 px-4 sm:px-6 min-h-[100dvh] flex items-center overflow-hidden">
         <div className="absolute inset-0 -z-0 opacity-50 pointer-events-none"><EnergyGlobe /></div>
         <div className="mx-auto w-full max-w-7xl grid lg:grid-cols-12 gap-10 lg:gap-16 items-center relative z-10">
@@ -554,10 +537,10 @@ export default function LandingPage({ view = 'home' }: { view?: MarketingView })
               {tx("Automate complex energy flows. EcoAI integrates your home into a smarter grid, using artificial intelligence to reduce costs and minimize your carbon footprint.")}
             </p>
             <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 pt-4">
-              <a href="/login" className="hero-cta inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-[#00e699] text-[#030d0a] font-bold hover:bg-[#00cc88] shadow-[0_0_30px_rgba(0,230,153,0.3)] hover:shadow-[0_0_40px_rgba(0,230,153,0.5)] transition-all duration-300">
+              <a href="#contact" className="hero-cta inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-[#00e699] text-[#030d0a] font-bold hover:bg-[#00cc88] shadow-[0_0_30px_rgba(0,230,153,0.3)] hover:shadow-[0_0_40px_rgba(0,230,153,0.5)] transition-all duration-300">
                 {tx("Try the Platform")} <ArrowRight className="w-5 h-5" />
               </a>
-              <a href="/how-it-works" className="hero-cta inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl backdrop-blur-md bg-white/5 border border-white/10 text-white font-semibold hover:bg-white/10 transition-all">
+              <a href="#how" className="hero-cta inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl backdrop-blur-md bg-white/5 border border-white/10 text-white font-semibold hover:bg-white/10 transition-all">
                 <PlayCircle className="w-5 h-5 text-[#64ffda]" /> {tx("See How It Works")}
               </a>
             </div>
@@ -614,9 +597,7 @@ export default function LandingPage({ view = 'home' }: { view?: MarketingView })
           </div>
         </div>
       </section>
-      )}
 
-      {view === 'features' && (
       <section id="features" className="relative py-32 px-6 border-t border-white/5">
         <div className="mx-auto max-w-7xl reveal-group">
           <div className="reveal-item text-center max-w-2xl mx-auto mb-20 space-y-4">
@@ -639,9 +620,7 @@ export default function LandingPage({ view = 'home' }: { view?: MarketingView })
           </div>
         </div>
       </section>
-      )}
 
-      {view === 'stats' && (
       <section id="stats" className="relative py-32 px-6 border-t border-white/5">
         <div className="mx-auto max-w-7xl reveal-group">
           <div className="reveal-item text-center max-w-2xl mx-auto mb-16 space-y-4">
@@ -694,9 +673,7 @@ export default function LandingPage({ view = 'home' }: { view?: MarketingView })
           </div>
         </div>
       </section>
-      )}
 
-      {view === 'how' && (
       <section id="how" className="relative py-24 px-4 border-t border-white/5 bg-black/10">
         <div className="mx-auto max-w-6xl reveal-group">
           <div className="reveal-item text-center max-w-2xl mx-auto mb-20 space-y-4">
@@ -719,9 +696,7 @@ export default function LandingPage({ view = 'home' }: { view?: MarketingView })
           </div>
         </div>
       </section>
-      )}
 
-      {view === 'contact' && (
       <section id="contact" className="relative py-32 px-6 border-t border-white/5">
         <div className="mx-auto max-w-5xl reveal-group">
           <div className="rounded-[40px] border border-white/5 bg-gradient-to-br from-white/5 to-transparent p-10 md:p-16 relative overflow-hidden grid md:grid-cols-2 gap-12 items-center">
@@ -746,7 +721,6 @@ export default function LandingPage({ view = 'home' }: { view?: MarketingView })
           </div>
         </div>
       </section>
-      )}
 
       <footer className="relative pt-20 pb-12 px-6 border-t border-white/5 bg-[#010604]">
         <div className="mx-auto max-w-7xl">
@@ -771,8 +745,8 @@ export default function LandingPage({ view = 'home' }: { view?: MarketingView })
                 <div key={i}>
                   <h4 className="text-sm font-bold text-white mb-4">{c.title}</h4>
                   <ul className="space-y-2 text-sm text-gray-500">
-                    {c.links.map((l: { label: string; href: string }, j: number) => (
-                      <li key={j}><a href={l.href} className="hover:text-[#64ffda] transition duration-300">{l.label}</a></li>
+                    {c.links.map((l: string, j: number) => (
+                      <li key={j}><a href="#" className="hover:text-[#64ffda] transition duration-300">{l}</a></li>
                     ))}
                   </ul>
                 </div>
