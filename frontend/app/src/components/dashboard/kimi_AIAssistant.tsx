@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { Brain, TrendingDown, Sun, Bot, User, Send } from 'lucide-react';
 import { useIsMobile } from '../../lib/useIsMobile';
+import { supabase } from '../../lib/supabase';
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 interface Message {
   id: number;
@@ -72,22 +72,25 @@ export default function AIAssistant() {
     setIsTyping(true);
 
     try {
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            system_instruction: {
-              parts: [{ text: 'Sən enerji qənaət ekspertisən. Yalnız Azərbaycanca cavab ver. Qısa və praktik ol — maksimum 2-3 cümLə.' }]
-            },
-            contents: [{ parts: [{ text: question }] }],
-          }),
-        }
-      );
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError || !session?.access_token) {
+        throw new Error('Sessiya bitib. Zəhmət olmasa yenidən daxil olun.');
+      }
 
-      const data = await response.json();
-      const answer = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Cavab alınmadı.';
+      const response = await fetch('/api/ai', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ question }),
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(typeof data.error === 'string' ? data.error : 'AI xidməti müvəqqəti əlçatan deyil.');
+      }
+      const answer = typeof data.answer === 'string' ? data.answer : 'Cavab alınmadı.';
 
       setMessages((prev) => [...prev, {
         id: Date.now() + 1,
@@ -95,11 +98,11 @@ export default function AIAssistant() {
         text: answer,
         timestamp: new Date(),
       }]);
-    } catch {
+    } catch (error) {
       setMessages((prev) => [...prev, {
         id: Date.now() + 1,
         sender: 'ai',
-        text: 'Xəta baş verdi. Yenidən cəhd edin.',
+        text: error instanceof Error ? error.message : 'Xəta baş verdi. Yenidən cəhd edin.',
         timestamp: new Date(),
       }]);
     } finally {
