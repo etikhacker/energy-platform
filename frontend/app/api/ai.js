@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   }
 
   const authHeader = req.headers.authorization || '';
-  const token = /^Bearer (\\S+)$/i.exec(authHeader)?.[1];
+  const token = /^Bearer (\S+)$/i.exec(authHeader)?.[1];
   if (!token) return res.status(401).json({ error: 'Giriş tələb olunur.' });
 
   const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
@@ -64,7 +64,7 @@ export default async function handler(req, res) {
     const result = await upstream.json();
     const answer = result.candidates?.[0]?.content?.parts
       ?.map(part => typeof part.text === 'string' ? part.text : '')
-      .filter(Boolean).join('\\n').trim();
+      .filter(Boolean).join('\n').trim();
     if (!answer) return res.status(502).json({ error: 'AI cavabı boş gəldi.' });
     return res.status(200).json({ answer });
   } catch (error) {
