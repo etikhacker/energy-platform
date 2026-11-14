@@ -36,7 +36,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const authCheck = await fetch(`${supabaseUrl.replace(/\\/+$/, '')}/auth/v1/user`, {
+    const authUrl = (supabaseUrl.endsWith('/') ? supabaseUrl.slice(0, -1) : supabaseUrl) + '/auth/v1/user';
+    const authCheck = await fetch(authUrl, {
       headers: { apikey: supabaseAnonKey, Authorization: `Bearer ${token}` },
       signal: AbortSignal.timeout(8000),
     });
