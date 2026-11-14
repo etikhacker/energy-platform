@@ -1,5 +1,3 @@
-import { createClient } from '@supabase/supabase-js';
-
 const SYSTEM_PROMPT = 'Sən enerji qənaəti üzrə ekspertsən. Azərbaycan dilində, qısa və praktik cavab ver. Fakt kimi təqdim etdiyin rəqəmlər yalnız istifadəçinin verdiyi məlumatlara əsaslansın.';
 const MAX_QUESTION_LENGTH = 1000;
 
@@ -38,11 +36,11 @@ export default async function handler(req, res) {
   }
 
   try {
-    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      auth: { persistSession: false, autoRefreshToken: false },
+    const authCheck = await fetch(`${supabaseUrl.replace(/\\/+$/, '')}/auth/v1/user`, {
+      headers: { apikey: supabaseAnonKey, Authorization: `Bearer ${token}` },
+      signal: AbortSignal.timeout(8000),
     });
-    const { data, error } = await supabase.auth.getUser(token);
-    if (error || !data.user) return res.status(401).json({ error: 'Sessiya etibarsızdır.' });
+    if (!authCheck.ok) return res.status(401).json({ error: 'Sessiya etibarsızdır.' });
 
     const upstream = await fetch(
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent',
